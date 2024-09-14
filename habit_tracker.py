@@ -74,7 +74,9 @@ class HabitTrackerApp:
         """
         self.master = master
         master.title("My Personal Habit Tracker")
+        logging.debug("------------------------------------------------------------")
         logging.debug("Initialized Habit Tracker App")
+        logging.debug("------------------------------------------------------------")
         # Set window icon if desired
         # master.iconbitmap('path_to_icon.ico')
 
@@ -110,6 +112,7 @@ class HabitTrackerApp:
 
         UI elements are positioned using a grid layout manager to organize widgets within frames.
         """
+        logging.debug("Initializing create_widgets method")
         # Habit input frame
         input_frame = ttk.Frame(self.master)
         input_frame.grid(row=0, column=0, padx=10, pady=10, sticky='ew')
@@ -155,6 +158,7 @@ class HabitTrackerApp:
         self.progress_frame.grid(row=3, column=0, padx=10, pady=10, sticky='ew')
 
     def view_edit_notes(self):
+        logging.debug("Initializing view_edit_notes method")
         """
         Opens a window to view and edit notes associated with the selected habit.
 
@@ -180,6 +184,7 @@ class HabitTrackerApp:
         # Fetch existing notes for the selected habit
         cursor.execute('SELECT id, note FROM completions WHERE habit_id = ? AND note IS NOT NULL', (habit_id,))
         notes = cursor.fetchall()
+        logging.debug("Fetching Notes for Selected habit.")
 
         # Frame to hold notes
         notes_frame = ttk.Frame(notes_window)
@@ -200,17 +205,21 @@ class HabitTrackerApp:
 
         # Function to handle adding a new note
         def add_note():
+            logging.debug("Initializing add_note method")
             new_note = simpledialog.askstring("Add Note", "Enter the new note:", parent=notes_window)
             if new_note:
                 cursor.execute('INSERT INTO completions (habit_id, date, note) VALUES (?, ?, ?)', (habit_id, date.today().isoformat(), new_note))
                 conn.commit()
+                logging.debug("New note inserted.  Is this upon completion??  >>  ??")
                 notes_listbox.insert(tk.END, new_note)
 
         # Function to handle editing a selected note
         def edit_note():
+            logging.debug("Initializing edit_note method")
             selected_index = notes_listbox.curselection()
             if not selected_index:
                 messagebox.showwarning("Edit Error", "Please select a note to edit.")
+                logging.warning("Edit Error: No note selected to edit.")
                 return
             selected_note = notes_listbox.get(selected_index)
             new_note = simpledialog.askstring("Edit Note", "Modify the note:", initialvalue=selected_note, parent=notes_window)
@@ -218,20 +227,24 @@ class HabitTrackerApp:
                 note_id = notes[selected_index[0]][0]  # Get the ID of the selected note
                 cursor.execute('UPDATE completions SET note = ? WHERE id = ?', (new_note, note_id))
                 conn.commit()
+                logging.debug(f"Updating note.id: {note_id} with new note")
                 notes_listbox.delete(selected_index)
                 notes_listbox.insert(selected_index, new_note)
 
         # Function to handle deleting a selected note
         def delete_note():
+            logging.debug("Initializing delete_note method")
             selected_index = notes_listbox.curselection()
             if not selected_index:
                 messagebox.showwarning("Delete Error", "Please select a note to delete.")
+                logging.warning("Delete Error: No note selected for deletion.")
                 return
             confirmation = messagebox.askyesno("Delete Note", "Are you sure you want to delete the selected note?")
             if confirmation:
                 note_id = notes[selected_index[0]][0]  # Get the ID of the selected note
                 cursor.execute('DELETE FROM completions WHERE id = ?', (note_id,))
                 conn.commit()
+                logging.info("Note Deleted.")
                 notes_listbox.delete(selected_index)
 
         # Buttons for adding, editing, and deleting notes
@@ -243,6 +256,7 @@ class HabitTrackerApp:
 
 
     def add_habit(self):
+        logging.debug("Initializing add_habit method")
         """
         Adds a new habit to the habit tracker.
 
@@ -261,13 +275,16 @@ class HabitTrackerApp:
         if habit_name and category:
             cursor.execute('INSERT INTO habits (name, category) VALUES (?, ?)', (habit_name, category))
             conn.commit()
+            logging.info(f"Habit added: {habit_name} - {category}")
             self.habit_name_var.set('')
             self.category_var.set('')
             self.load_habits()
         else:
             messagebox.showwarning("Input Error", "Please enter both habit name and category.")
+            logging.warning("Input Error: No Habit Name or Category provided.")
 
     def load_habits(self):
+        logging.debug("Initializing load_habits method")
         """
         Loads and displays the list of habits in the Treeview widget, including the daily completion count.
 
@@ -295,6 +312,7 @@ class HabitTrackerApp:
         ''')
         
         self.habits = cursor.fetchall()
+        logging.debug("Completed fetch all habits.")
         
         # Insert habit data into the Treeview, including the daily count
         for habit in self.habits:
@@ -304,6 +322,7 @@ class HabitTrackerApp:
 
 
     def on_habit_select(self, event):
+        logging.debug("Initializing on_habit_select method")
         """
         Handles the selection of a habit in the Treeview widget.
 
@@ -329,6 +348,7 @@ class HabitTrackerApp:
             self.selected_habit = None
 
     def mark_done(self):
+        logging.debug("Initializing mark_done method")
         """
         Marks the selected habit as completed for today and prompts the user to enter a note.
 
@@ -354,12 +374,15 @@ class HabitTrackerApp:
 
             # Insert completion record, allowing multiple entries per day
             cursor.execute('INSERT INTO completions (habit_id, date, note) VALUES (?, ?, ?)', (habit_id, today_str, note))
+            logging.debug("Updated daily completions.")
 
             # Get the last completed date and current streak from the habits table
             cursor.execute('SELECT last_completed, streak FROM habits WHERE id = ?', (habit_id,))
             result = cursor.fetchone()
+            logging.debug(f"Returned result: {result} from last_completed habit: {habit_id}")
             last_completed_str, streak = result
             last_completed = date.fromisoformat(last_completed_str) if last_completed_str else None
+            logging.debug(f"mark_done: last_completed = {last_completed}")
 
             # Update streak only if it hasn't already been updated today
             if last_completed != today:
@@ -370,17 +393,21 @@ class HabitTrackerApp:
 
                 # Update habit record with new streak and last completed date
                 cursor.execute('UPDATE habits SET streak = ?, last_completed = ? WHERE id = ?', (streak, today_str, habit_id))
+                logging.debug("mark_done: Habit record updated.")
 
             conn.commit()
             self.load_habits()
 
             messagebox.showinfo("Success", f"Habit marked as done for today! Current streak: {streak} days.")
+            logging.info(f"Habit marked as done for today! Current streak: {streak} days.")
         else:
             messagebox.showwarning("Selection Error", "Please select a habit from the list.")
+            logging.warning("Selection Erro: no selection made from habit list")
 
 
 
     def update_progress_bars(self):
+        logging.debug("Initializing update_progress_bars method")
         """
         Updates the progress bars for each habit based on total and daily completion data.
 
@@ -407,6 +434,8 @@ class HabitTrackerApp:
             # Calculate total completions
             cursor.execute('SELECT COUNT(*) FROM completions WHERE habit_id = ?', (habit_id,))
             total_completions = cursor.fetchone()[0]
+            logging.debug("Calculating total completions")
+            logging.info(f"update_progress_bars: total_compltions = {total_completions}")
 
             # For demonstration, set a goal of 30 completions
             goal = 30
@@ -423,6 +452,7 @@ class HabitTrackerApp:
 
 
     def view_progress(self):
+        logging.debug("Initializing view_progress method")
         """
         Displays the completion progress of the selected habit on a calendar, including notes for each completion.
 
@@ -444,15 +474,19 @@ class HabitTrackerApp:
             # Fetch completion dates and their associated notes
             cursor.execute('SELECT date, note FROM completions WHERE habit_id = ?', (habit_id,))
             completions = cursor.fetchall()
+            logging.debug("Fetching completion dates and their associated notes.")
             completion_data = [(date.fromisoformat(c[0]), c[1]) for c in completions]
+            logging.info(f"view_progress: completion_data = {completion_data} for {habit_id}")
 
             if not completion_data:
                 messagebox.showinfo("Progress", f"No completions recorded for '{habit_name}'.")
+                logging.info(f"Progress, No completions recorded for '{habit_name}'.")
                 return
 
             # Create a new window for the calendar
             cal_window = tk.Toplevel(self.master)
             cal_window.title(f"Progress for '{habit_name}'")
+            logging.debug(f"Display calendar window progress for '{habit_name}'")
 
             # Create a Calendar widget
             cal = Calendar(cal_window, selectmode='none')
@@ -471,9 +505,11 @@ class HabitTrackerApp:
 
         else:
             messagebox.showwarning("Selection Error", "Please select a habit from the list.")
+            logging.warning("Selection Error: no habit selected from list.")
 
 
     def show_chart(self):
+        logging.debug("Initializing show_chart method")
         """
         Displays a line chart showing the completion trend of the selected habit over time, including notes for each completion date.
 
@@ -496,10 +532,13 @@ class HabitTrackerApp:
             # Fetch completion dates and associated notes
             cursor.execute('SELECT date, note FROM completions WHERE habit_id = ?', (habit_id,))
             completions = cursor.fetchall()
+            logging.debug("Fetching all completion dates and associated notes")
             completion_data = [(date.fromisoformat(c[0]), c[1]) for c in completions]
+            logging.info(f"show_chart: completion_data = {completion_data}")
 
             if not completion_data:
                 messagebox.showinfo("No Data", f"No completion data to display for '{habit_name}'.")
+                logging.info(f"No Data, No completion data to display for '{habit_name}'.")
                 return
 
             # Prepare data for plotting
@@ -545,6 +584,7 @@ class HabitTrackerApp:
 
 
     def edit_habit(self):
+        logging.debug("Initializing edit_habit method")
         """
         Allows the user to edit the name and category of the selected habit.
 
@@ -569,13 +609,17 @@ class HabitTrackerApp:
             if new_name and new_category:
                 cursor.execute('UPDATE habits SET name = ?, category = ? WHERE id = ?', (new_name.strip(), new_category.strip(), habit_id))
                 conn.commit()
+                logging.info(f"Successfully created new name: {new_name} and new category: {new_category}")
                 self.load_habits()
             else:
                 messagebox.showwarning("Input Error", "Please enter both habit name and category.")
+                logging.warning("Input Error: Please enter both habit name and category.")
         else:
             messagebox.showwarning("Selection Error", "Please select a habit to edit.")
+            logging.warning("Selection Error: Please select a habit to edit.")
 
     def delete_habit(self):
+        logging.debug("Initializing delete_habit method")
         """
         Deletes the selected habit from the habit tracker.
 
@@ -599,12 +643,15 @@ class HabitTrackerApp:
                 cursor.execute('DELETE FROM habits WHERE id = ?', (habit_id,))
                 cursor.execute('DELETE FROM completions WHERE habit_id = ?', (habit_id,))
                 conn.commit()
+                logging.warning(f"{habit_name}!")
                 self.load_habits()
         else:
             messagebox.showwarning("Selection Error", "Please select a habit to delete.")
+            logging.warning("Selection Error: Please select a habit to delete.")
 
 
     def schedule_notifications(self):
+        logging.debug("Initializing schedule_notifications method")
         """
         Schedules daily notifications for the habit tracker application.
 
@@ -619,21 +666,28 @@ class HabitTrackerApp:
 
         # Schedule notifications at multiple times during the day
         def notify():
+            logging.debug("Initializing notify method")
             # Define target notification times (8 AM, 2 PM, and 8 PM)
             notification_times = [8, 12, 20]  # hours in 24-hour format
+            logging.debug(f"Notification Times: {notification_times}")
 
             while True:
                 now = datetime.now()
+                logging.info(f"notify noted time as: {now}")
                 # Calculate the next target time today or tomorrow
                 for hour in notification_times:
                     target_time = now.replace(hour=hour, minute=0, second=0, microsecond=0)
+                    logging.info(f"notify noted target time as: {target_time}")
                     
                     if now >= target_time:
+                        logging.warning(f"{now} >= {target_time}")
                         target_time += timedelta(days=1)
+                        logging.info(f"target_time now set to: {target_time}")
                     
                     # Calculate the number of seconds to wait until the next target time
                     wait_seconds = (target_time - now).total_seconds()
                     time.sleep(wait_seconds)
+                    logging.info(f"waiting {wait_seconds} until {target_time}")
 
                     # Schedule the notification
                     self.master.after(0, self.show_notification)
@@ -643,6 +697,7 @@ class HabitTrackerApp:
 
 
     def show_notification(self):
+        logging.debug("Initializing show_notification method")
         """
         Displays a reminder notification to the user.
 
@@ -651,8 +706,10 @@ class HabitTrackerApp:
         """
 
         messagebox.showinfo("Reminder", "Don't forget to update your habits for today!")
+        logging.info("Reminder: Don't forget to update your habits for today!")
 
     def save_preferences(self):
+        logging.debug("Initializing save_preferences")
         """
         Saves the current window size and position to a configuration file.
 
@@ -670,8 +727,10 @@ class HabitTrackerApp:
         }
         with open('config.ini', 'w') as configfile:
             config.write(configfile)
+            logging.info("Updated configfile.")
 
     def load_preferences(self):
+        logging.debug("Initializing load_preferences method")
         """
         Loads and applies the user's saved window size and position preferences.
 
@@ -684,10 +743,14 @@ class HabitTrackerApp:
             width = config.getint('Window', 'width')
             height = config.getint('Window', 'height')
             x = config.getint('Window', 'x')
+            logging.debug(f"Window 'x' values set to: {x}")
             y = config.getint('Window', 'y')
+            logging.debug(f"Window 'y' values set to: {y}")
             self.master.geometry(f"{width}x{height}+{x}+{y}")
+            # logging.debug(f"self master geometry set to: {self.master}")
 
     def on_closing(self):
+        logging.debug("Initializing on_closing method")
         """
         Handles the application's close event.
 
@@ -697,6 +760,7 @@ class HabitTrackerApp:
         """
 
         self.save_preferences()
+        logging.info("Preferences Saved!")
         self.master.destroy()
 
 # Initialize and run the application
@@ -704,6 +768,10 @@ if __name__ == "__main__":
     root = tk.Tk()
     app = HabitTrackerApp(root)
     root.protocol("WM_DELETE_WINDOW", app.on_closing)
+    logging.debug("------------------------------------------------------------")
+    logging.debug("Initializing mainloop")
+    logging.debug("------------------------------------------------------------")
     root.mainloop()
     # Close the database connection when the application is closed
     conn.close()
+    logging.debug("Connection closed")
