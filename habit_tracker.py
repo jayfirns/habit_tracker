@@ -5,7 +5,7 @@ This project was created with ChatGPTo1
 
 Author: John Firnschild
 Written: 9/14/2024
-Version: 0.4.111
+Version: 0.4.112
 
 """
 import tkinter as tk
@@ -473,7 +473,6 @@ class HabitTrackerApp:
 
 
     def update_progress_bars(self):
-        logging.debug("Initializing update_progress_bars method")
         """
         Updates the progress bars for each habit based on total and daily completion data.
 
@@ -487,21 +486,26 @@ class HabitTrackerApp:
         habit performance for the current day.
 
         The progress bars are dynamically displayed in the application window.
+
+        Notes:
+        - The `recent_note` column fetched from the database is not used in this method, as it does 
+        not contribute to the visualization of habit progress.
         """
-        
+        logging.debug("Initializing update_progress_bars method")
+
         # Clear existing progress bars
         for widget in self.progress_frame.winfo_children():
             widget.destroy()
 
         # Fetch completions and calculate progress
         for habit in self.habits:
-            habit_id, habit_name, category, streak, daily_count = habit
+            habit_id, habit_name, category, streak, daily_count, _ = habit  # Unpack recent_note but do not use it
 
             # Calculate total completions
             cursor.execute('SELECT COUNT(*) FROM completions WHERE habit_id = ?', (habit_id,))
             total_completions = cursor.fetchone()[0]
             logging.debug("Calculating total completions")
-            logging.info(f"update_progress_bars: total_compltions = {total_completions}")
+            logging.info(f"update_progress_bars: total_completions = {total_completions}")
 
             # For demonstration, set a goal of 30 completions
             goal = 30
