@@ -1,7 +1,7 @@
 import sqlite3
 
 # Connect to the database
-conn = sqlite3.connect('your_database.db')
+conn = sqlite3.connect('habit_tracker.db')
 
 # Create a cursor object
 cursor = conn.cursor()
