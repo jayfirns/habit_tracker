@@ -5,7 +5,7 @@ This project was created with ChatGPTo1
 
 Author: John Firnschild
 Written: 9/14/2024
-Version: 0.4.11
+Version: 0.4.110
 
 """
 import tkinter as tk
@@ -33,7 +33,11 @@ logging.basicConfig(
 # pip install tkcalendar matplotlib
 
 # Connect to SQLite database (or create it if it doesn't exist)
+logging.debug("------------------------------------------------------------")
+logging.debug("------------------------------------------------------------")
 logging.debug("Establishing connection to habit_tracker.db")
+logging.debug("------------------------------------------------------------")
+logging.debug("------------------------------------------------------------")
 conn = sqlite3.connect('habit_tracker.db')
 cursor = conn.cursor()
 
@@ -835,3 +839,5 @@ if __name__ == "__main__":
     # Close the database connection when the application is closed
     conn.close()
     logging.debug("Connection closed")
+    logging.debug("------------------------------------------------------------")
+    logging.debug("------------------------------------------------------------")
