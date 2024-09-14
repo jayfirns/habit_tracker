@@ -5,7 +5,7 @@ This project was created with ChatGPTo1
 
 Author: John Firnschild
 Written: 9/14/2024
-Version: 0.4.1
+Version: 0.4.11
 
 """
 import tkinter as tk
@@ -158,20 +158,21 @@ class HabitTrackerApp:
         self.progress_frame.grid(row=3, column=0, padx=10, pady=10, sticky='ew')
 
     def view_edit_notes(self):
-        logging.debug("Initializing view_edit_notes method")
         """
         Opens a window to view and edit notes associated with the selected habit.
 
         This method creates a new window that displays all notes for the currently selected habit.
         Users can add new notes, edit existing notes, or delete notes. Changes are saved to the 
-        database and the notes list is updated accordingly.
+        database, and the notes list is updated accordingly.
 
         Raises:
         - messagebox.showwarning: Warns the user if no habit is selected from the list.
         """
+        logging.debug("Initializing view_edit_notes method")
 
         if not self.selected_habit:
             messagebox.showwarning("Selection Error", "Please select a habit to view or edit notes.")
+            logging.warning("Selection Error: No habit selected.")
             return
 
         habit_id = self.selected_habit[0]
@@ -180,6 +181,7 @@ class HabitTrackerApp:
         # Create a new window for viewing/editing notes
         notes_window = tk.Toplevel(self.master)
         notes_window.title(f"View/Edit Notes for '{habit_name}'")
+        logging.debug(f"Displaying new window for view/edit on {habit_name}")
 
         # Fetch existing notes for the selected habit
         cursor.execute('SELECT id, note FROM completions WHERE habit_id = ? AND note IS NOT NULL', (habit_id,))
@@ -193,6 +195,7 @@ class HabitTrackerApp:
         # Listbox to display notes
         notes_listbox = tk.Listbox(notes_frame, height=10, width=50)
         notes_listbox.pack(side='left', fill='both', expand=True)
+        logging.debug("Initializing listbox to display notes.")
 
         # Scrollbar for the notes list
         scrollbar = ttk.Scrollbar(notes_frame, orient='vertical', command=notes_listbox.yview)
@@ -202,43 +205,99 @@ class HabitTrackerApp:
         # Populate the listbox with notes
         for note in notes:
             notes_listbox.insert(tk.END, note[1])
+            logging.debug("Populated listbox to display notes.")
 
         # Function to handle adding a new note
         def add_note():
+            """
+            Opens a custom dialog window to add a new note.
+
+            This function creates a new window with a multiline text area where the user can enter a new note.
+            The note is then saved to the database and displayed in the listbox if the user chooses to save it.
+            """
             logging.debug("Initializing add_note method")
-            new_note = simpledialog.askstring("Add Note", "Enter the new note:", parent=notes_window)
-            if new_note:
-                cursor.execute('INSERT INTO completions (habit_id, date, note) VALUES (?, ?, ?)', (habit_id, date.today().isoformat(), new_note))
-                conn.commit()
-                logging.debug("New note inserted.  Is this upon completion??  >>  ??")
-                notes_listbox.insert(tk.END, new_note)
+
+            # Create a new window for adding a note
+            add_note_window = tk.Toplevel(notes_window)
+            add_note_window.title("Add Note")
+            logging.debug("Display window for Add Note.")
+
+            # Multiline text input for the new note
+            note_text = tk.Text(add_note_window, height=10, width=50)
+            note_text.pack(padx=10, pady=10)
+
+            def save_new_note():
+                new_note = note_text.get("1.0", tk.END).strip()  # Get the note text
+                if new_note:
+                    cursor.execute('INSERT INTO completions (habit_id, date, note) VALUES (?, ?, ?)', 
+                                (habit_id, date.today().isoformat(), new_note))
+                    conn.commit()
+                    logging.debug("New note inserted.")
+                    notes_listbox.insert(tk.END, new_note)
+                    add_note_window.destroy()  # Close the window after saving
+
+            # Save and Cancel buttons
+            ttk.Button(add_note_window, text="Save", command=save_new_note).pack(pady=5)
+            ttk.Button(add_note_window, text="Cancel", command=add_note_window.destroy).pack(pady=5)
 
         # Function to handle editing a selected note
         def edit_note():
+            """
+            Opens a custom dialog window to edit the selected note.
+
+            This function opens a new window with a multiline text area pre-filled with the selected note.
+            The user can modify the note, and upon saving, the changes are updated in the database and the listbox.
+            """
             logging.debug("Initializing edit_note method")
+
             selected_index = notes_listbox.curselection()
             if not selected_index:
                 messagebox.showwarning("Edit Error", "Please select a note to edit.")
                 logging.warning("Edit Error: No note selected to edit.")
                 return
+
             selected_note = notes_listbox.get(selected_index)
-            new_note = simpledialog.askstring("Edit Note", "Modify the note:", initialvalue=selected_note, parent=notes_window)
-            if new_note:
-                note_id = notes[selected_index[0]][0]  # Get the ID of the selected note
-                cursor.execute('UPDATE completions SET note = ? WHERE id = ?', (new_note, note_id))
-                conn.commit()
-                logging.debug(f"Updating note.id: {note_id} with new note")
-                notes_listbox.delete(selected_index)
-                notes_listbox.insert(selected_index, new_note)
+
+            # Create a new window for editing the note
+            edit_note_window = tk.Toplevel(notes_window)
+            edit_note_window.title("Edit Note")
+
+            # Multiline text input pre-filled with the existing note
+            note_text = tk.Text(edit_note_window, height=10, width=50)
+            note_text.insert("1.0", selected_note)  # Insert the existing note text
+            note_text.pack(padx=10, pady=10)
+
+            def save_edited_note():
+                new_note = note_text.get("1.0", tk.END).strip()  # Get the updated note text
+                if new_note:
+                    note_id = notes[selected_index[0]][0]  # Get the ID of the selected note
+                    cursor.execute('UPDATE completions SET note = ? WHERE id = ?', (new_note, note_id))
+                    conn.commit()
+                    logging.debug(f"Updating note.id: {note_id} with new note")
+                    notes_listbox.delete(selected_index)
+                    notes_listbox.insert(selected_index, new_note)
+                    edit_note_window.destroy()  # Close the window after saving
+
+            # Save and Cancel buttons
+            ttk.Button(edit_note_window, text="Save", command=save_edited_note).pack(pady=5)
+            ttk.Button(edit_note_window, text="Cancel", command=edit_note_window.destroy).pack(pady=5)
 
         # Function to handle deleting a selected note
         def delete_note():
+            """
+            Deletes the selected note from the database and the listbox.
+
+            This function checks if a note is selected and confirms deletion with the user.
+            If confirmed, the note is deleted from the database and removed from the listbox.
+            """
             logging.debug("Initializing delete_note method")
+
             selected_index = notes_listbox.curselection()
             if not selected_index:
                 messagebox.showwarning("Delete Error", "Please select a note to delete.")
                 logging.warning("Delete Error: No note selected for deletion.")
                 return
+
             confirmation = messagebox.askyesno("Delete Note", "Are you sure you want to delete the selected note?")
             if confirmation:
                 note_id = notes[selected_index[0]][0]  # Get the ID of the selected note
@@ -251,6 +310,7 @@ class HabitTrackerApp:
         ttk.Button(notes_window, text="Add Note", command=add_note).pack(pady=5)
         ttk.Button(notes_window, text="Edit Note", command=edit_note).pack(pady=5)
         ttk.Button(notes_window, text="Delete Note", command=delete_note).pack(pady=5)
+
 
 
 
