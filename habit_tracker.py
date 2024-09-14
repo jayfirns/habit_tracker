@@ -5,7 +5,7 @@ This project was created with ChatGPTo1
 
 Author: John Firnschild
 Written: 9/14/2024
-Version: 0.3.0
+Version: 0.4.0
 
 """
 import tkinter as tk
@@ -88,9 +88,10 @@ class HabitTrackerApp:
         This method sets up several frames within the main window to hold different UI components:
         - An input frame for entering new habits and their categories.
         - A list frame to display existing habits in a table format with columns for Name, Category, Streak, 
-        and Daily Completions.
+        Daily Completions, and the most recent Note.
         - An action frame with buttons for managing habits (e.g., marking them as done, viewing progress, editing, deleting).
         - A progress frame for displaying progress bars related to habit tracking.
+        - A button to view or edit notes associated with each habit.
 
         UI elements are positioned using a grid layout manager to organize widgets within frames.
         """
@@ -109,8 +110,8 @@ class HabitTrackerApp:
         list_frame.grid(row=1, column=0, padx=10, pady=10, sticky='nsew')
         self.master.grid_rowconfigure(1, weight=1)
 
-        # Updated columns to include daily completions
-        columns = ('Name', 'Category', 'Streak', 'Daily Completions')
+        # Updated columns to include daily completions and recent note
+        columns = ('Name', 'Category', 'Streak', 'Daily Completions', 'Recent Note')
         self.habit_tree = ttk.Treeview(list_frame, columns=columns, show='headings')
 
         # Configure each column
@@ -130,10 +131,100 @@ class HabitTrackerApp:
         ttk.Button(action_frame, text="Show Chart", command=self.show_chart).grid(row=0, column=2, padx=5, pady=5)
         ttk.Button(action_frame, text="Edit Habit", command=self.edit_habit).grid(row=0, column=3, padx=5, pady=5)
         ttk.Button(action_frame, text="Delete Habit", command=self.delete_habit).grid(row=0, column=4, padx=5, pady=5)
+        
+        # Add the new button for viewing/editing notes
+        ttk.Button(action_frame, text="View/Edit Notes", command=self.view_edit_notes).grid(row=0, column=5, padx=5, pady=5)
 
         # Progress bars frame
         self.progress_frame = ttk.Frame(self.master)
         self.progress_frame.grid(row=3, column=0, padx=10, pady=10, sticky='ew')
+
+    def view_edit_notes(self):
+        """
+        Opens a window to view and edit notes associated with the selected habit.
+
+        This method creates a new window that displays all notes for the currently selected habit.
+        Users can add new notes, edit existing notes, or delete notes. Changes are saved to the 
+        database and the notes list is updated accordingly.
+
+        Raises:
+        - messagebox.showwarning: Warns the user if no habit is selected from the list.
+        """
+
+        if not self.selected_habit:
+            messagebox.showwarning("Selection Error", "Please select a habit to view or edit notes.")
+            return
+
+        habit_id = self.selected_habit[0]
+        habit_name = self.selected_habit[1]
+
+        # Create a new window for viewing/editing notes
+        notes_window = tk.Toplevel(self.master)
+        notes_window.title(f"View/Edit Notes for '{habit_name}'")
+
+        # Fetch existing notes for the selected habit
+        cursor.execute('SELECT id, note FROM completions WHERE habit_id = ? AND note IS NOT NULL', (habit_id,))
+        notes = cursor.fetchall()
+
+        # Frame to hold notes
+        notes_frame = ttk.Frame(notes_window)
+        notes_frame.pack(fill='both', expand=True, padx=10, pady=10)
+
+        # Listbox to display notes
+        notes_listbox = tk.Listbox(notes_frame, height=10, width=50)
+        notes_listbox.pack(side='left', fill='both', expand=True)
+
+        # Scrollbar for the notes list
+        scrollbar = ttk.Scrollbar(notes_frame, orient='vertical', command=notes_listbox.yview)
+        scrollbar.pack(side='right', fill='y')
+        notes_listbox.config(yscrollcommand=scrollbar.set)
+
+        # Populate the listbox with notes
+        for note in notes:
+            notes_listbox.insert(tk.END, note[1])
+
+        # Function to handle adding a new note
+        def add_note():
+            new_note = simpledialog.askstring("Add Note", "Enter the new note:", parent=notes_window)
+            if new_note:
+                cursor.execute('INSERT INTO completions (habit_id, date, note) VALUES (?, ?, ?)', (habit_id, date.today().isoformat(), new_note))
+                conn.commit()
+                notes_listbox.insert(tk.END, new_note)
+
+        # Function to handle editing a selected note
+        def edit_note():
+            selected_index = notes_listbox.curselection()
+            if not selected_index:
+                messagebox.showwarning("Edit Error", "Please select a note to edit.")
+                return
+            selected_note = notes_listbox.get(selected_index)
+            new_note = simpledialog.askstring("Edit Note", "Modify the note:", initialvalue=selected_note, parent=notes_window)
+            if new_note:
+                note_id = notes[selected_index[0]][0]  # Get the ID of the selected note
+                cursor.execute('UPDATE completions SET note = ? WHERE id = ?', (new_note, note_id))
+                conn.commit()
+                notes_listbox.delete(selected_index)
+                notes_listbox.insert(selected_index, new_note)
+
+        # Function to handle deleting a selected note
+        def delete_note():
+            selected_index = notes_listbox.curselection()
+            if not selected_index:
+                messagebox.showwarning("Delete Error", "Please select a note to delete.")
+                return
+            confirmation = messagebox.askyesno("Delete Note", "Are you sure you want to delete the selected note?")
+            if confirmation:
+                note_id = notes[selected_index[0]][0]  # Get the ID of the selected note
+                cursor.execute('DELETE FROM completions WHERE id = ?', (note_id,))
+                conn.commit()
+                notes_listbox.delete(selected_index)
+
+        # Buttons for adding, editing, and deleting notes
+        ttk.Button(notes_window, text="Add Note", command=add_note).pack(pady=5)
+        ttk.Button(notes_window, text="Edit Note", command=edit_note).pack(pady=5)
+        ttk.Button(notes_window, text="Delete Note", command=delete_note).pack(pady=5)
+
+
 
 
     def add_habit(self):
@@ -224,26 +315,30 @@ class HabitTrackerApp:
 
     def mark_done(self):
         """
-        Marks the selected habit as completed for today.
+        Marks the selected habit as completed for today and prompts the user to enter a note.
 
         This method updates the completion status of the currently selected habit.
         If a habit is selected, it inserts a record of today's completion into the database,
-        calculates and updates the habit's streak based on the last completion date, and then 
-        reloads the habits to reflect the changes. A success message is displayed if the update 
+        prompts the user to enter a note about the completion, and calculates and updates 
+        the habit's streak based on the last completion date. The habits list is then 
+        reloaded to reflect the changes. A success message is displayed if the update 
         is successful. If no habit is selected, a warning message is shown.
 
         Raises:
         - messagebox.showinfo: Informs the user that the habit was successfully marked as done.
         - messagebox.showwarning: Warns the user if no habit is selected from the list.
         """
-
+        
         if self.selected_habit:
             habit_id = self.selected_habit[0]
             today = date.today()
             today_str = today.isoformat()
 
+            # Prompt user to enter a note for today's completion
+            note = simpledialog.askstring("Add Note", "Enter a note for today's completion:", parent=self.master)
+
             # Insert completion record, allowing multiple entries per day
-            cursor.execute('INSERT INTO completions (habit_id, date) VALUES (?, ?)', (habit_id, today_str))
+            cursor.execute('INSERT INTO completions (habit_id, date, note) VALUES (?, ?, ?)', (habit_id, today_str, note))
 
             # Get the last completed date and current streak from the habits table
             cursor.execute('SELECT last_completed, streak FROM habits WHERE id = ?', (habit_id,))
@@ -267,6 +362,7 @@ class HabitTrackerApp:
             messagebox.showinfo("Success", f"Habit marked as done for today! Current streak: {streak} days.")
         else:
             messagebox.showwarning("Selection Error", "Please select a habit from the list.")
+
 
 
     def update_progress_bars(self):
@@ -313,27 +409,29 @@ class HabitTrackerApp:
 
     def view_progress(self):
         """
-        Displays the completion progress of the selected habit on a calendar.
+        Displays the completion progress of the selected habit on a calendar, including notes for each completion.
 
         This method opens a new window containing a calendar widget that highlights the dates 
-        on which the selected habit was completed. If no completions are recorded for the selected habit, 
-        an informational message is shown to the user. If no habit is selected, a warning message is displayed.
+        on which the selected habit was completed. Each highlighted date includes a tooltip or 
+        popup showing the note associated with that completion, if available. If no completions 
+        are recorded for the selected habit, an informational message is shown to the user. 
+        If no habit is selected, a warning message is displayed.
 
         Raises:
         - messagebox.showinfo: Informs the user if no completions are recorded for the selected habit.
         - messagebox.showwarning: Warns the user if no habit is selected from the list.
         """
-
+        
         if self.selected_habit:
             habit_id = self.selected_habit[0]
             habit_name = self.selected_habit[1]
 
-            # Fetch completion dates
-            cursor.execute('SELECT date FROM completions WHERE habit_id = ?', (habit_id,))
+            # Fetch completion dates and their associated notes
+            cursor.execute('SELECT date, note FROM completions WHERE habit_id = ?', (habit_id,))
             completions = cursor.fetchall()
-            completion_dates = [date.fromisoformat(c[0]) for c in completions]
+            completion_data = [(date.fromisoformat(c[0]), c[1]) for c in completions]
 
-            if not completion_dates:
+            if not completion_data:
                 messagebox.showinfo("Progress", f"No completions recorded for '{habit_name}'.")
                 return
 
@@ -345,24 +443,29 @@ class HabitTrackerApp:
             cal = Calendar(cal_window, selectmode='none')
             cal.pack(padx=10, pady=10)
 
-            # Highlight completion dates
-            for completion_date in completion_dates:
+            # Highlight completion dates and associate notes
+            for completion_date, note in completion_data:
                 cal.calevent_create(completion_date, 'Completed', 'completed')
+                if note:
+                    # Add a tooltip or similar display for notes
+                    cal.calevent_create(completion_date, f"Note: {note}", 'note')
 
-            # Define a tag style
+            # Define tag styles
             cal.tag_config('completed', background='green', foreground='white')
+            cal.tag_config('note', background='yellow', foreground='black')  # Style for notes
 
         else:
             messagebox.showwarning("Selection Error", "Please select a habit from the list.")
 
+
     def show_chart(self):
         """
-        Displays a line chart showing the completion trend of the selected habit over time.
+        Displays a line chart showing the completion trend of the selected habit over time, including notes for each completion date.
 
-        This method retrieves the completion dates of the selected habit from the database and 
-        plots them on a line chart to visualize the trend of habit completions. If no data is 
-        available for the selected habit, an informational message is shown. If no habit is 
-        selected, a warning message is displayed.
+        This method retrieves the completion dates and associated notes of the selected habit from the database and 
+        plots them on a line chart to visualize the trend of habit completions. The notes for each completion date 
+        are displayed as tooltips on the chart. If no data is available for the selected habit, an informational 
+        message is shown. If no habit is selected, a warning message is displayed.
 
         The chart is displayed in a new window embedded within the Tkinter interface.
 
@@ -370,25 +473,31 @@ class HabitTrackerApp:
         - messagebox.showinfo: Informs the user if no completion data is available for the selected habit.
         - messagebox.showwarning: Warns the user if no habit is selected from the list.
         """
-
+        
         if self.selected_habit:
             habit_id = self.selected_habit[0]
             habit_name = self.selected_habit[1]
 
-            # Fetch completion dates
-            cursor.execute('SELECT date FROM completions WHERE habit_id = ?', (habit_id,))
+            # Fetch completion dates and associated notes
+            cursor.execute('SELECT date, note FROM completions WHERE habit_id = ?', (habit_id,))
             completions = cursor.fetchall()
-            dates = [date.fromisoformat(c[0]) for c in completions]
+            completion_data = [(date.fromisoformat(c[0]), c[1]) for c in completions]
 
-            if not dates:
+            if not completion_data:
                 messagebox.showinfo("No Data", f"No completion data to display for '{habit_name}'.")
                 return
 
             # Prepare data for plotting
-            dates.sort()
+            completion_data.sort(key=lambda x: x[0])  # Sort by date
             date_counts = {}
-            for d in dates:
+            notes_by_date = {}
+
+            for d, note in completion_data:
                 date_counts[d] = date_counts.get(d, 0) + 1
+                if note:
+                    if d not in notes_by_date:
+                        notes_by_date[d] = []
+                    notes_by_date[d].append(note)  # Collect all notes for a specific date
 
             dates_list = list(date_counts.keys())
             completions_list = [date_counts[d] for d in dates_list]
@@ -401,6 +510,12 @@ class HabitTrackerApp:
             ax.set_ylabel('Completions')
             ax.grid(True)
 
+            # Add notes as annotations on the chart
+            for d, count in zip(dates_list, completions_list):
+                if d in notes_by_date:
+                    note_text = "\n".join(notes_by_date[d])  # Combine notes for the same date
+                    ax.annotate(note_text, (d, count), textcoords="offset points", xytext=(0, 10), ha='center', fontsize=8, color='blue')
+
             # Format date axis
             fig.autofmt_xdate()
 
@@ -412,6 +527,7 @@ class HabitTrackerApp:
             canvas.get_tk_widget().pack()
         else:
             messagebox.showwarning("Selection Error", "Please select a habit from the list.")
+
 
     def edit_habit(self):
         """
