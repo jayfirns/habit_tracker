@@ -6,7 +6,7 @@ conn = sqlite3.connect('habit_tracker.db')
 # Create a cursor object
 cursor = conn.cursor()
 
-cursor.execute("SELECT * FROM completions;")
+cursor.execute("SELECT * FROM habits;")
 rows = cursor.fetchall()
 for row in rows:
     print(row)
