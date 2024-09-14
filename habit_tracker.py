@@ -5,7 +5,7 @@ This project was created with ChatGPTo1
 
 Author: John Firnschild
 Written: 9/14/2024
-Version: 0.2.1
+Version: 0.2.2
 
 """
 import tkinter as tk
@@ -52,6 +52,16 @@ config.read('config.ini')
 
 class HabitTrackerApp:
     def __init__(self, master):
+        """
+        Initializes the HabitTrackerApp class.
+
+        Parameters:
+        master (tk.Tk): The root window or main frame for the habit tracker application.
+
+        This method sets the application title, initializes instance variables for habit and category,
+        loads user preferences, creates the user interface elements, loads existing habits, 
+        and schedules notifications for habit tracking.
+        """
         self.master = master
         master.title("My Personal Habit Tracker")
         # Set window icon if desired
@@ -72,6 +82,17 @@ class HabitTrackerApp:
         self.schedule_notifications()
 
     def create_widgets(self):
+        """
+        Creates and arranges all user interface (UI) elements for the Habit Tracker application.
+
+        This method sets up several frames within the main window to hold different UI components:
+        - An input frame for entering new habits and their categories.
+        - A list frame to display existing habits in a table format with columns for Name, Category, and Streak.
+        - An action frame with buttons for managing habits (e.g., marking them as done, viewing progress, editing, deleting).
+        - A progress frame for displaying progress bars related to habit tracking.
+
+        UI elements are positioned using a grid layout manager to organize widgets within frames.
+        """
         # Habit input frame
         input_frame = ttk.Frame(self.master)
         input_frame.grid(row=0, column=0, padx=10, pady=10, sticky='ew')
@@ -110,6 +131,19 @@ class HabitTrackerApp:
         self.progress_frame.grid(row=3, column=0, padx=10, pady=10, sticky='ew')
 
     def add_habit(self):
+        """
+        Adds a new habit to the habit tracker.
+
+        This method retrieves the habit name and category entered by the user, 
+        validates that both fields are not empty, and then inserts the new habit into the database.
+        If the input fields are valid, the habit is added to the database, the input fields are cleared, 
+        and the habit list is reloaded to reflect the changes. If either field is empty, a warning message 
+        is displayed to the user.
+
+        Raises:
+        - messagebox.showwarning: If the habit name or category is not provided.
+        """
+
         habit_name = self.habit_name_var.get().strip()
         category = self.category_var.get().strip()
         if habit_name and category:
@@ -122,6 +156,18 @@ class HabitTrackerApp:
             messagebox.showwarning("Input Error", "Please enter both habit name and category.")
 
     def load_habits(self):
+        """
+        Loads and displays the list of habits in the Treeview widget.
+
+        This method clears the existing entries in the Treeview, fetches the list of habits 
+        from the database, and inserts each habit into the Treeview sorted by category and name.
+        After populating the Treeview, the method also updates the progress bars to reflect the 
+        current habit data.
+
+        Calls:
+        - self.update_progress_bars: Updates the progress bars based on the loaded habits.
+        """
+
         # Clear the treeview
         for item in self.habit_tree.get_children():
             self.habit_tree.delete(item)
@@ -132,6 +178,18 @@ class HabitTrackerApp:
         self.update_progress_bars()
 
     def on_habit_select(self, event):
+        """
+        Handles the selection of a habit in the Treeview widget.
+
+        This method is triggered when a user selects a habit from the Treeview.
+        It retrieves the selected item's details and updates the `self.selected_habit` 
+        attribute with the corresponding habit data from the loaded habits. 
+        If no item is selected, `self.selected_habit` is set to None.
+
+        Parameters:
+        - event: The event object generated when an item is selected in the Treeview.
+        """
+
         selected_item = self.habit_tree.focus()
         if selected_item:
             values = self.habit_tree.item(selected_item, 'values')
@@ -145,6 +203,20 @@ class HabitTrackerApp:
             self.selected_habit = None
 
     def mark_done(self):
+        """
+        Marks the selected habit as completed for today.
+
+        This method updates the completion status of the currently selected habit.
+        If a habit is selected, it inserts a record of today's completion into the database,
+        calculates and updates the habit's streak based on the last completion date, and then 
+        reloads the habits to reflect the changes. A success message is displayed if the update 
+        is successful. If no habit is selected, a warning message is shown.
+
+        Raises:
+        - messagebox.showinfo: Informs the user that the habit was successfully marked as done.
+        - messagebox.showwarning: Warns the user if no habit is selected from the list.
+        """
+
         if self.selected_habit:
             habit_id = self.selected_habit[0]
             today = date.today()
@@ -178,6 +250,18 @@ class HabitTrackerApp:
 
 
     def update_progress_bars(self):
+        """
+        Updates the progress bars for each habit based on completion data.
+
+        This method clears any existing progress bars in the progress frame and calculates the 
+        progress for each habit by fetching the total number of completions from the database.
+        A progress bar is created for each habit, displaying its name, category, and progress 
+        toward a predefined goal of 30 completions (used for demonstration purposes). Progress 
+        is capped at a maximum of 100%.
+
+        The progress bars are dynamically displayed in the application window.
+        """
+
         # Clear existing progress bars
         for widget in self.progress_frame.winfo_children():
             widget.destroy()
@@ -204,6 +288,18 @@ class HabitTrackerApp:
             progress_bar.pack(side='right', padx=10)
 
     def view_progress(self):
+        """
+        Displays the completion progress of the selected habit on a calendar.
+
+        This method opens a new window containing a calendar widget that highlights the dates 
+        on which the selected habit was completed. If no completions are recorded for the selected habit, 
+        an informational message is shown to the user. If no habit is selected, a warning message is displayed.
+
+        Raises:
+        - messagebox.showinfo: Informs the user if no completions are recorded for the selected habit.
+        - messagebox.showwarning: Warns the user if no habit is selected from the list.
+        """
+
         if self.selected_habit:
             habit_id = self.selected_habit[0]
             habit_name = self.selected_habit[1]
@@ -236,6 +332,21 @@ class HabitTrackerApp:
             messagebox.showwarning("Selection Error", "Please select a habit from the list.")
 
     def show_chart(self):
+        """
+        Displays a line chart showing the completion trend of the selected habit over time.
+
+        This method retrieves the completion dates of the selected habit from the database and 
+        plots them on a line chart to visualize the trend of habit completions. If no data is 
+        available for the selected habit, an informational message is shown. If no habit is 
+        selected, a warning message is displayed.
+
+        The chart is displayed in a new window embedded within the Tkinter interface.
+
+        Raises:
+        - messagebox.showinfo: Informs the user if no completion data is available for the selected habit.
+        - messagebox.showwarning: Warns the user if no habit is selected from the list.
+        """
+
         if self.selected_habit:
             habit_id = self.selected_habit[0]
             habit_name = self.selected_habit[1]
@@ -279,6 +390,19 @@ class HabitTrackerApp:
             messagebox.showwarning("Selection Error", "Please select a habit from the list.")
 
     def edit_habit(self):
+        """
+        Allows the user to edit the name and category of the selected habit.
+
+        This method prompts the user to input a new name and category for the selected habit.
+        If both inputs are provided, the habit is updated in the database, and the list of habits 
+        is reloaded to reflect the changes. If either input is missing or no habit is selected, 
+        a warning message is displayed to the user.
+
+        Raises:
+        - messagebox.showwarning: Warns the user if no habit is selected or if either the habit name 
+        or category is not provided during editing.
+        """
+
         if self.selected_habit:
             habit_id = self.selected_habit[0]
             old_name = self.selected_habit[1]
@@ -297,6 +421,19 @@ class HabitTrackerApp:
             messagebox.showwarning("Selection Error", "Please select a habit to edit.")
 
     def delete_habit(self):
+        """
+        Deletes the selected habit from the habit tracker.
+
+        This method prompts the user to confirm the deletion of the selected habit.
+        If confirmed, the habit and its associated completion records are removed 
+        from the database, and the list of habits is reloaded to reflect the deletion. 
+        If no habit is selected, a warning message is displayed to the user.
+
+        Raises:
+        - messagebox.askyesno: Asks the user for confirmation before deleting the habit.
+        - messagebox.showwarning: Warns the user if no habit is selected from the list.
+        """
+
         if self.selected_habit:
             habit_id = self.selected_habit[0]
             habit_name = self.selected_habit[1]
@@ -312,6 +449,18 @@ class HabitTrackerApp:
             messagebox.showwarning("Selection Error", "Please select a habit to delete.")
 
     def schedule_notifications(self):
+        """
+        Schedules daily notifications for the habit tracker application.
+
+        This method creates a background thread that waits until a specific time (8 PM) each day 
+        to trigger a notification. Once the target time is reached, it schedules a call to the 
+        `show_notification` method on the main thread using Tkinter's `after` method. The 
+        notification process repeats every day.
+
+        Notes:
+        - The notification is scheduled in a separate daemon thread to prevent blocking the main application thread.
+        """
+
         # Schedule a notification every day at a specific time
         def notify():
             while True:
@@ -326,9 +475,25 @@ class HabitTrackerApp:
         threading.Thread(target=notify, daemon=True).start()
 
     def show_notification(self):
+        """
+        Displays a reminder notification to the user.
+
+        This method shows an informational message box reminding the user 
+        to update their habits for the day.
+        """
+
         messagebox.showinfo("Reminder", "Don't forget to update your habits for today!")
 
     def save_preferences(self):
+        """
+        Saves the current window size and position to a configuration file.
+
+        This method retrieves the current dimensions (width and height) and position (x and y coordinates)
+        of the main application window and stores these preferences in a 'config.ini' file. 
+        The preferences are saved under the 'Window' section to maintain the user's preferred window state 
+        for future sessions.
+        """
+
         config['Window'] = {
             'width': self.master.winfo_width(),
             'height': self.master.winfo_height(),
@@ -339,6 +504,14 @@ class HabitTrackerApp:
             config.write(configfile)
 
     def load_preferences(self):
+        """
+        Loads and applies the user's saved window size and position preferences.
+
+        This method reads the window dimensions (width and height) and position (x and y coordinates)
+        from the 'config.ini' file, if available, and applies them to the main application window. 
+        This ensures that the application starts with the user's preferred window state.
+        """
+
         if 'Window' in config:
             width = config.getint('Window', 'width')
             height = config.getint('Window', 'height')
@@ -347,6 +520,14 @@ class HabitTrackerApp:
             self.master.geometry(f"{width}x{height}+{x}+{y}")
 
     def on_closing(self):
+        """
+        Handles the application's close event.
+
+        This method is called when the user attempts to close the application window.
+        It saves the current window preferences (size and position) by calling the 
+        `save_preferences` method and then properly closes the main application window.
+        """
+
         self.save_preferences()
         self.master.destroy()
 
