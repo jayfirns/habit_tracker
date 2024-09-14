@@ -150,35 +150,32 @@ class HabitTrackerApp:
             today = date.today()
             today_str = today.isoformat()
 
-            # Check if already marked as done today
-            cursor.execute('SELECT * FROM completions WHERE habit_id = ? AND date = ?', (habit_id, today_str))
-            if cursor.fetchone():
-                messagebox.showinfo("Already Done", "You have already marked this habit as done today.")
-                return
-
-            # Insert completion record
+            # Insert completion record, allowing multiple entries per day
             cursor.execute('INSERT INTO completions (habit_id, date) VALUES (?, ?)', (habit_id, today_str))
 
-            # Get last completed date and current streak
+            # Get the last completed date and current streak from the habits table
             cursor.execute('SELECT last_completed, streak FROM habits WHERE id = ?', (habit_id,))
             result = cursor.fetchone()
             last_completed_str, streak = result
             last_completed = date.fromisoformat(last_completed_str) if last_completed_str else None
 
-            # Update streak
-            if last_completed == today - timedelta(days=1):
-                streak += 1
-            else:
-                streak = 1
+            # Update streak only if it hasn't already been updated today
+            if last_completed != today:
+                if last_completed == today - timedelta(days=1):
+                    streak += 1
+                else:
+                    streak = 1
 
-            # Update habit record
-            cursor.execute('UPDATE habits SET streak = ?, last_completed = ? WHERE id = ?', (streak, today_str, habit_id))
+                # Update habit record with new streak and last completed date
+                cursor.execute('UPDATE habits SET streak = ?, last_completed = ? WHERE id = ?', (streak, today_str, habit_id))
+
             conn.commit()
             self.load_habits()
 
             messagebox.showinfo("Success", f"Habit marked as done for today! Current streak: {streak} days.")
         else:
             messagebox.showwarning("Selection Error", "Please select a habit from the list.")
+
 
     def update_progress_bars(self):
         # Clear existing progress bars
