@@ -369,7 +369,10 @@ class HabitTrackerApp:
         cursor.execute('''
             SELECT h.id, h.name, h.category, h.streak,
                 COUNT(c.date) AS daily_count,
-                (SELECT note FROM completions WHERE habit_id = h.id ORDER BY date DESC LIMIT 1) AS recent_note
+                (SELECT note 
+                    FROM completions 
+                    WHERE habit_id = h.id 
+                    ORDER BY id DESC LIMIT 1) AS recent_note
             FROM habits h
             LEFT JOIN completions c ON h.id = c.habit_id AND c.date = CURRENT_DATE
             GROUP BY h.id, h.name, h.category, h.streak
