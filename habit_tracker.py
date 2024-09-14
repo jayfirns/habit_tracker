@@ -5,7 +5,7 @@ This project was created with ChatGPTo1
 
 Author: John Firnschild
 Written: 9/14/2024
-Version: 0.4.31
+Version: 0.4.311
 
 Need to add more details to config file.  I want the columns to be dynamicly saved.
 
@@ -113,16 +113,17 @@ class HabitTrackerApp:
 
         This method sets up several frames within the main window to hold different UI components:
         - An input frame for entering new habits and their categories.
-        - A list frame to display existing habits in a table format with columns for Name, Category, Streak, 
-        Daily Completions, and the most recent Note.
-        - An action frame with buttons for managing habits (e.g., marking them as done, viewing progress, editing, deleting).
+        - A list frame to display existing habits in a table format with columns for Name, Category, 
+        Streak, Daily Completions, and the most Recent Note.
+        - An action frame with buttons for managing habits (e.g., marking them as done, viewing progress, 
+        editing, deleting, and viewing/editing notes).
         - A progress frame for displaying progress bars related to habit tracking.
-        - A button to view or edit notes associated with each habit.
 
         UI elements are positioned using a grid layout manager to organize widgets within frames.
         """
         logging.debug("Initializing create_widgets method")
-        # Habit input frame
+
+        # Create the habit input frame for entering new habits
         input_frame = ttk.Frame(self.master)
         input_frame.grid(row=0, column=0, padx=10, pady=10, sticky='ew')
 
@@ -132,39 +133,48 @@ class HabitTrackerApp:
         ttk.Entry(input_frame, textvariable=self.category_var).grid(row=0, column=3, padx=5, pady=5)
         ttk.Button(input_frame, text="Add Habit", command=self.add_habit).grid(row=0, column=4, padx=5, pady=5)
 
-        # Habit list frame
+        # Create the list frame for displaying habits
         list_frame = ttk.Frame(self.master)
         list_frame.grid(row=1, column=0, padx=10, pady=10, sticky='nsew')
         self.master.grid_rowconfigure(1, weight=1)
 
-        # Updated columns to include daily completions and recent note
+        # Define columns for the Treeview, including daily completions and recent notes
         columns = ('Name', 'Category', 'Streak', 'Daily Completions', 'Recent Note')
         self.habit_tree = ttk.Treeview(list_frame, columns=columns, show='headings')
 
-        # Configure each column
+        # Configure each column in the Treeview
         for col in columns:
             self.habit_tree.heading(col, text=col)
             self.habit_tree.column(col, minwidth=0, width=150, stretch=tk.YES)
+            logging.debug(f"Configured Treeview column: {col}")
 
+        # Pack the Treeview widget to expand with the window size
         self.habit_tree.pack(fill='both', expand=True)
-        self.habit_tree.bind('<<TreeviewSelect>>', self.on_habit_select)
 
-        # Action buttons frame
+        # Bind the selection event to handle habit selection changes
+        self.habit_tree.bind('<<TreeviewSelect>>', self.on_habit_select)
+        logging.debug("Habit Treeview initialized and event bound")
+
+        # Create the action buttons frame
         action_frame = ttk.Frame(self.master)
         action_frame.grid(row=2, column=0, padx=10, pady=10, sticky='ew')
 
+        # Add action buttons for managing habits
         ttk.Button(action_frame, text="Mark as Done Today", command=self.mark_done).grid(row=0, column=0, padx=5, pady=5)
         ttk.Button(action_frame, text="View Progress", command=self.view_progress).grid(row=0, column=1, padx=5, pady=5)
         ttk.Button(action_frame, text="Show Chart", command=self.show_chart).grid(row=0, column=2, padx=5, pady=5)
         ttk.Button(action_frame, text="Edit Habit", command=self.edit_habit).grid(row=0, column=3, padx=5, pady=5)
         ttk.Button(action_frame, text="Delete Habit", command=self.delete_habit).grid(row=0, column=4, padx=5, pady=5)
         
-        # Add the new button for viewing/editing notes
+        # Add the button for viewing/editing notes associated with each habit
         ttk.Button(action_frame, text="View/Edit Notes", command=self.view_edit_notes).grid(row=0, column=5, padx=5, pady=5)
+        logging.debug("Action buttons for habit management added")
 
-        # Progress bars frame
+        # Create the progress bars frame for habit tracking
         self.progress_frame = ttk.Frame(self.master)
         self.progress_frame.grid(row=3, column=0, padx=10, pady=10, sticky='ew')
+        logging.debug("Progress frame for habit tracking initialized")
+
 
     def view_edit_notes(self):
         """
