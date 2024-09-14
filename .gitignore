@@ -1,2 +1,6 @@
 # Add the virtual environment directory name to .gitignore
 myenv/
+
+*.ini
+
+*.db
