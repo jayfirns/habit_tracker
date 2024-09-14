@@ -5,7 +5,7 @@ This project was created with ChatGPTo1
 
 Author: John Firnschild
 Written: 9/14/2024
-Version: 0.2.0
+Version: 0.2.1
 
 """
 import tkinter as tk
