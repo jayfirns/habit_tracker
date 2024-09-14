@@ -5,7 +5,7 @@ This project was created with ChatGPTo1
 
 Author: John Firnschild
 Written: 9/14/2024
-Version: 0.4.0
+Version: 0.4.1
 
 """
 import tkinter as tk
@@ -19,11 +19,21 @@ import configparser
 from tkcalendar import Calendar
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+import logging
+
+# Set up the logger
+logging.basicConfig(
+    filename='habit_tracker_log.log',           # Log file name
+    filemode='a',                 # Append mode
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    level=logging.DEBUG           # Set the minimum log level to DEBUG
+)
 
 # Install required packages:
 # pip install tkcalendar matplotlib
 
 # Connect to SQLite database (or create it if it doesn't exist)
+logging.debug("Establishing connection to habit_tracker.db")
 conn = sqlite3.connect('habit_tracker.db')
 cursor = conn.cursor()
 
@@ -64,6 +74,7 @@ class HabitTrackerApp:
         """
         self.master = master
         master.title("My Personal Habit Tracker")
+        logging.debug("Initialized Habit Tracker App")
         # Set window icon if desired
         # master.iconbitmap('path_to_icon.ico')
 
@@ -73,13 +84,17 @@ class HabitTrackerApp:
 
         # Load user preferences
         self.load_preferences()
+        logging.debug("Preferences Loaded")
 
         # Create UI elements
         self.create_widgets()
+        logging.debug("UI Elements Created")
         # Load existing habits
         self.load_habits()
+        logging.debug("Habits Loaded")
         # Schedule notifications
         self.schedule_notifications()
+        logging.debug("Scheduling Notifications...  I don't think this is working.")
 
     def create_widgets(self):
         """
