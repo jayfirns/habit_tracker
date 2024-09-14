@@ -5,7 +5,7 @@ This project was created with ChatGPTo1
 
 Author: John Firnschild
 Written: 9/14/2024
-Version: 0.2.2
+Version: 0.2.3
 
 """
 import tkinter as tk
@@ -448,32 +448,45 @@ class HabitTrackerApp:
         else:
             messagebox.showwarning("Selection Error", "Please select a habit to delete.")
 
+###########################################
     def schedule_notifications(self):
         """
         Schedules daily notifications for the habit tracker application.
 
-        This method creates a background thread that waits until a specific time (8 PM) each day 
-        to trigger a notification. Once the target time is reached, it schedules a call to the 
+        This method creates a background thread that waits until specific times (8 AM, 2 PM, and 8 PM) each day 
+        to trigger notifications. Once the target time is reached, it schedules a call to the 
         `show_notification` method on the main thread using Tkinter's `after` method. The 
-        notification process repeats every day.
+        notification process repeats daily for each target time.
 
         Notes:
-        - The notification is scheduled in a separate daemon thread to prevent blocking the main application thread.
+        - The notifications are scheduled in a separate daemon thread to prevent blocking the main application thread.
         """
 
-        # Schedule a notification every day at a specific time
+        # Schedule notifications at multiple times during the day
         def notify():
+            # Define target notification times (8 AM, 2 PM, and 8 PM)
+            notification_times = [8, 12, 20]  # hours in 24-hour format
+
             while True:
                 now = datetime.now()
-                target_time = now.replace(hour=20, minute=0, second=0, microsecond=0)  # 8 PM
-                if now >= target_time:
-                    target_time += timedelta(days=1)
-                wait_seconds = (target_time - now).total_seconds()
-                time.sleep(wait_seconds)
-                self.master.after(0, self.show_notification)
+                # Calculate the next target time today or tomorrow
+                for hour in notification_times:
+                    target_time = now.replace(hour=hour, minute=0, second=0, microsecond=0)
+                    
+                    if now >= target_time:
+                        target_time += timedelta(days=1)
+                    
+                    # Calculate the number of seconds to wait until the next target time
+                    wait_seconds = (target_time - now).total_seconds()
+                    time.sleep(wait_seconds)
 
+                    # Schedule the notification
+                    self.master.after(0, self.show_notification)
+
+        # Start the notification thread
         threading.Thread(target=notify, daemon=True).start()
 
+###########################################
     def show_notification(self):
         """
         Displays a reminder notification to the user.
