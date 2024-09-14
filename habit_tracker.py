@@ -5,7 +5,7 @@ This project was created with ChatGPTo1
 
 Author: John Firnschild
 Written: 9/14/2024
-Version: 0.4.113
+Version: 0.4.2
 
 Need to add more details to config file.  I want the columns to be dynamicly saved.
 
@@ -786,43 +786,73 @@ class HabitTrackerApp:
     def save_preferences(self):
         logging.debug("Initializing save_preferences")
         """
-        Saves the current window size and position to a configuration file.
+        Saves the current window size, position, and column configuration to a configuration file.
 
         This method retrieves the current dimensions (width and height) and position (x and y coordinates)
-        of the main application window and stores these preferences in a 'config.ini' file. 
-        The preferences are saved under the 'Window' section to maintain the user's preferred window state 
-        for future sessions.
+        of the main application window and stores these preferences in a 'config.ini' file. Additionally,
+        it saves the current configuration (width and order) of the Treeview columns under the 'Columns' section.
+        The preferences are saved to maintain the user's preferred window state and column settings for future sessions.
         """
 
+        # Save window size and position
         config['Window'] = {
             'width': self.master.winfo_width(),
             'height': self.master.winfo_height(),
             'x': self.master.winfo_x(),
             'y': self.master.winfo_y()
         }
+
+        # Save column settings
+        column_config = {}
+        for col in self.habit_tree['columns']:
+            width = self.habit_tree.column(col, 'width')
+            position = self.habit_tree['displaycolumns'].index(col)
+            column_config[f'{col}_width'] = width
+            column_config[f'{col}_position'] = position
+            logging.debug(f"Saving column: {col}, width: {width}, position: {position}")
+
+        config['Columns'] = column_config
+
+        # Write all settings to config file
         with open('config.ini', 'w') as configfile:
             config.write(configfile)
-            logging.info("Updated configfile.")
+            logging.info("Updated configfile with window size, position, and column configurations.")
 
     def load_preferences(self):
         logging.debug("Initializing load_preferences method")
         """
-        Loads and applies the user's saved window size and position preferences.
+        Loads and applies the user's saved window size, position, and column configuration preferences.
 
-        This method reads the window dimensions (width and height) and position (x and y coordinates)
-        from the 'config.ini' file, if available, and applies them to the main application window. 
-        This ensures that the application starts with the user's preferred window state.
+        This method reads the window dimensions (width and height), position (x and y coordinates), and column 
+        configurations from the 'config.ini' file, if available, and applies them to the main application window 
+        and Treeview widget. This ensures that the application starts with the user's preferred window state 
+        and column settings.
         """
 
+        # Load window size and position
         if 'Window' in config:
             width = config.getint('Window', 'width')
             height = config.getint('Window', 'height')
             x = config.getint('Window', 'x')
-            logging.debug(f"Window 'x' values set to: {x}")
             y = config.getint('Window', 'y')
-            logging.debug(f"Window 'y' values set to: {y}")
             self.master.geometry(f"{width}x{height}+{x}+{y}")
-            # logging.debug(f"self master geometry set to: {self.master}")
+            logging.debug(f"Window loaded with width: {width}, height: {height}, x: {x}, y: {y}")
+
+        # Load column settings
+        if 'Columns' in config:
+            column_config = config['Columns']
+            for col in self.habit_tree['columns']:
+                try:
+                    width = column_config.getint(f'{col}_width')
+                    position = column_config.getint(f'{col}_position')
+                    self.habit_tree.column(col, width=width)
+                    current_display = list(self.habit_tree['displaycolumns'])
+                    current_display.remove(col)
+                    current_display.insert(position, col)
+                    self.habit_tree['displaycolumns'] = tuple(current_display)
+                    logging.debug(f"Loaded column: {col}, width: {width}, position: {position}")
+                except Exception as e:
+                    logging.error(f"Error loading column configuration for {col}: {e}")
 
     def on_closing(self):
         logging.debug("Initializing on_closing method")
@@ -830,13 +860,14 @@ class HabitTrackerApp:
         Handles the application's close event.
 
         This method is called when the user attempts to close the application window.
-        It saves the current window preferences (size and position) by calling the 
-        `save_preferences` method and then properly closes the main application window.
+        It saves the current window preferences (size, position) and column configurations 
+        by calling the `save_preferences` method and then properly closes the main application window.
         """
 
         self.save_preferences()
         logging.info("Preferences Saved!")
         self.master.destroy()
+
 
 # Initialize and run the application
 if __name__ == "__main__":
