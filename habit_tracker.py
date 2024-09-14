@@ -5,7 +5,7 @@ This project was created with ChatGPTo1
 
 Author: John Firnschild
 Written: 9/14/2024
-Version: 0.4.2
+Version: 0.4.31
 
 Need to add more details to config file.  I want the columns to be dynamicly saved.
 
@@ -75,7 +75,7 @@ class HabitTrackerApp:
         master (tk.Tk): The root window or main frame for the habit tracker application.
 
         This method sets the application title, initializes instance variables for habit and category,
-        loads user preferences, creates the user interface elements, loads existing habits, 
+        creates the user interface elements, loads user preferences, loads existing habits, 
         and schedules notifications for habit tracking.
         """
         self.master = master
@@ -83,26 +83,29 @@ class HabitTrackerApp:
         logging.debug("------------------------------------------------------------")
         logging.debug("Initialized Habit Tracker App")
         logging.debug("------------------------------------------------------------")
-        # Set window icon if desired
-        # master.iconbitmap('path_to_icon.ico')
 
+        # Initialize instance variables
         self.habit_name_var = tk.StringVar()
         self.category_var = tk.StringVar()
         self.selected_habit = None
 
-        # Load user preferences
-        self.load_preferences()
-        logging.debug("Preferences Loaded")
-
         # Create UI elements
         self.create_widgets()
         logging.debug("UI Elements Created")
+
+        # Load user preferences after creating UI elements
+        self.load_preferences()
+        logging.debug("Preferences Loaded")
+
         # Load existing habits
         self.load_habits()
         logging.debug("Habits Loaded")
+
         # Schedule notifications
         self.schedule_notifications()
         logging.debug("Scheduling Notifications...  I don't think this is working.")
+
+
 
     def create_widgets(self):
         """
@@ -793,7 +796,6 @@ class HabitTrackerApp:
         it saves the current configuration (width and order) of the Treeview columns under the 'Columns' section.
         The preferences are saved to maintain the user's preferred window state and column settings for future sessions.
         """
-
         # Save window size and position
         config['Window'] = {
             'width': self.master.winfo_width(),
@@ -806,17 +808,27 @@ class HabitTrackerApp:
         column_config = {}
         for col in self.habit_tree['columns']:
             width = self.habit_tree.column(col, 'width')
-            position = self.habit_tree['displaycolumns'].index(col)
-            column_config[f'{col}_width'] = width
-            column_config[f'{col}_position'] = position
-            logging.debug(f"Saving column: {col}, width: {width}, position: {position}")
+            # Ensure the column is present in the display columns tuple
+            if col in self.habit_tree['displaycolumns']:
+                position = self.habit_tree['displaycolumns'].index(col)
+                column_config[f'{col}_width'] = width
+                column_config[f'{col}_position'] = position
+                logging.debug(f"Saving column: {col}, width: {width}, position: {position}")
+            else:
+                # Log a warning if the column is not found in the current display columns
+                logging.warning(f"Column '{col}' not found in display columns. It might be hidden or removed.")
 
+        # Store column configuration under the 'Columns' section
         config['Columns'] = column_config
 
-        # Write all settings to config file
-        with open('config.ini', 'w') as configfile:
-            config.write(configfile)
-            logging.info("Updated configfile with window size, position, and column configurations.")
+        # Write all settings to the config file
+        try:
+            with open('config.ini', 'w') as configfile:
+                config.write(configfile)
+                logging.info("Updated config file with window size, position, and column configurations.")
+        except Exception as e:
+            logging.error(f"Failed to write to config file: {e}")
+
 
     def load_preferences(self):
         logging.debug("Initializing load_preferences method")
