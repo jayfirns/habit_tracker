@@ -5,7 +5,9 @@ This project was created with ChatGPTo1
 
 Author: John Firnschild
 Written: 9/14/2024
-Version: 0.4.112
+Version: 0.4.113
+
+Need to add more details to config file.  I want the columns to be dynamicly saved.
 
 """
 import tkinter as tk
