@@ -5,7 +5,7 @@ This project was created with ChatGPTo1
 
 Author: John Firnschild
 Written: 9/14/2024
-Version: 0.4.312
+Version: 0.4.313
 
 Need to add more details to config file.  I want the columns to be dynamicly saved.
 
@@ -805,28 +805,43 @@ class HabitTrackerApp:
         of the main application window and stores these preferences in a 'config.ini' file. Additionally,
         it saves the current configuration (width and order) of the Treeview columns under the 'Columns' section.
         The preferences are saved to maintain the user's preferred window state and column settings for future sessions.
+
+        Handles cases where columns may not be present in the display columns, ensuring only existing columns are saved.
         """
+
         # Save window size and position
-        config['Window'] = {
-            'width': self.master.winfo_width(),
-            'height': self.master.winfo_height(),
-            'x': self.master.winfo_x(),
-            'y': self.master.winfo_y()
-        }
+        try:
+            config['Window'] = {
+                'width': self.master.winfo_width(),
+                'height': self.master.winfo_height(),
+                'x': self.master.winfo_x(),
+                'y': self.master.winfo_y()
+            }
+            logging.debug(f"Window size and position saved: width={config['Window']['width']}, "
+                        f"height={config['Window']['height']}, x={config['Window']['x']}, y={config['Window']['y']}")
+        except Exception as e:
+            logging.error(f"Error saving window preferences: {e}")
 
         # Save column settings
         column_config = {}
         for col in self.habit_tree['columns']:
-            width = self.habit_tree.column(col, 'width')
-            # Ensure the column is present in the display columns tuple
-            if col in self.habit_tree['displaycolumns']:
-                position = self.habit_tree['displaycolumns'].index(col)
-                column_config[f'{col}_width'] = width
-                column_config[f'{col}_position'] = position
-                logging.debug(f"Saving column: {col}, width: {width}, position: {position}")
-            else:
-                # Log a warning if the column is not found in the current display columns
-                logging.warning(f"Column '{col}' not found in display columns. It might be hidden or removed.")
+            try:
+                # Retrieve the current width of the column
+                width = self.habit_tree.column(col, 'width')
+
+                # Ensure the column is present in the display columns tuple
+                if col in self.habit_tree['displaycolumns']:
+                    # Find the position of the column in display columns
+                    position = self.habit_tree['displaycolumns'].index(col)
+                    column_config[f'{col}_width'] = width
+                    column_config[f'{col}_position'] = position
+                    logging.debug(f"Saving column: {col}, width: {width}, position: {position}")
+                else:
+                    # Log a warning if the column is not found in the current display columns
+                    logging.warning(f"Column '{col}' not found in display columns. It might be hidden or removed.")
+
+            except Exception as e:
+                logging.error(f"Error saving configuration for column '{col}': {e}")
 
         # Store column configuration under the 'Columns' section
         config['Columns'] = column_config
@@ -838,6 +853,7 @@ class HabitTrackerApp:
                 logging.info("Updated config file with window size, position, and column configurations.")
         except Exception as e:
             logging.error(f"Failed to write to config file: {e}")
+
 
 
     def load_preferences(self):
