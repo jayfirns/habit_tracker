@@ -5,7 +5,7 @@ This project was created with ChatGPTo1
 
 Author: John Firnschild
 Written: 9/14/2024
-Version: 0.4.311
+Version: 0.4.312
 
 Need to add more details to config file.  I want the columns to be dynamicly saved.
 
@@ -849,32 +849,57 @@ class HabitTrackerApp:
         configurations from the 'config.ini' file, if available, and applies them to the main application window 
         and Treeview widget. This ensures that the application starts with the user's preferred window state 
         and column settings.
+
+        It handles cases where the saved configuration might not match the current state (e.g., missing columns) 
+        by checking the existence of columns before attempting to modify them.
         """
 
         # Load window size and position
         if 'Window' in config:
-            width = config.getint('Window', 'width')
-            height = config.getint('Window', 'height')
-            x = config.getint('Window', 'x')
-            y = config.getint('Window', 'y')
-            self.master.geometry(f"{width}x{height}+{x}+{y}")
-            logging.debug(f"Window loaded with width: {width}, height: {height}, x: {x}, y: {y}")
+            try:
+                width = config.getint('Window', 'width')
+                height = config.getint('Window', 'height')
+                x = config.getint('Window', 'x')
+                y = config.getint('Window', 'y')
+                self.master.geometry(f"{width}x{height}+{x}+{y}")
+                logging.debug(f"Window loaded with width: {width}, height: {height}, x: {x}, y: {y}")
+            except Exception as e:
+                logging.error(f"Error loading window preferences: {e}")
 
         # Load column settings
         if 'Columns' in config:
             column_config = config['Columns']
+
             for col in self.habit_tree['columns']:
                 try:
-                    width = column_config.getint(f'{col}_width')
-                    position = column_config.getint(f'{col}_position')
-                    self.habit_tree.column(col, width=width)
-                    current_display = list(self.habit_tree['displaycolumns'])
-                    current_display.remove(col)
-                    current_display.insert(position, col)
-                    self.habit_tree['displaycolumns'] = tuple(current_display)
-                    logging.debug(f"Loaded column: {col}, width: {width}, position: {position}")
+                    # Safely retrieve the column width
+                    width_key = f'{col}_width'
+                    if width_key in column_config:
+                        width = column_config.getint(width_key)
+                        self.habit_tree.column(col, width=width)
+                        logging.debug(f"Set width for column '{col}': {width}")
+                    else:
+                        logging.warning(f"Width configuration missing for column '{col}'")
+
+                    # Safely retrieve the column position
+                    position_key = f'{col}_position'
+                    if position_key in column_config:
+                        position = column_config.getint(position_key)
+                        current_display = list(self.habit_tree['displaycolumns'])
+                        # Check if column exists in current display columns
+                        if col in current_display:
+                            current_display.remove(col)
+                            current_display.insert(position, col)
+                            self.habit_tree['displaycolumns'] = tuple(current_display)
+                            logging.debug(f"Set position for column '{col}': {position}")
+                        else:
+                            logging.warning(f"Column '{col}' not found in current display columns.")
+                    else:
+                        logging.warning(f"Position configuration missing for column '{col}'")
+
                 except Exception as e:
                     logging.error(f"Error loading column configuration for {col}: {e}")
+
 
     def on_closing(self):
         logging.debug("Initializing on_closing method")
