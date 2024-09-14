@@ -5,7 +5,7 @@ This project was created with ChatGPTo1
 
 Author: John Firnschild
 Written: 9/14/2024
-Version: 0.4.110
+Version: 0.4.111
 
 """
 import tkinter as tk
@@ -348,27 +348,28 @@ class HabitTrackerApp:
             logging.warning("Input Error: No Habit Name or Category provided.")
 
     def load_habits(self):
-        logging.debug("Initializing load_habits method")
         """
-        Loads and displays the list of habits in the Treeview widget, including the daily completion count.
+        Loads and displays the list of habits in the Treeview widget, including daily completion count and recent notes.
 
-        This method clears the existing entries in the Treeview, fetches the list of habits and their 
-        daily completion counts from the database, and inserts each habit into the Treeview sorted by 
-        category and name. After populating the Treeview, the method also updates the progress bars to 
-        reflect the current habit data.
+        This method clears the existing entries in the Treeview, fetches the list of habits, their daily completion counts, 
+        and the most recent note associated with each habit from the database. Each habit is then inserted into the 
+        Treeview sorted by category and name. After populating the Treeview, the method also updates the progress bars 
+        to reflect the current habit data.
 
         Calls:
         - self.update_progress_bars: Updates the progress bars based on the loaded habits.
         """
+        logging.debug("Initializing load_habits method")
 
         # Clear the Treeview
         for item in self.habit_tree.get_children():
             self.habit_tree.delete(item)
         
-        # Query to fetch habits and their daily completion counts
+        # Query to fetch habits, their daily completion counts, and the most recent note
         cursor.execute('''
             SELECT h.id, h.name, h.category, h.streak,
-                COUNT(c.date) AS daily_count
+                COUNT(c.date) AS daily_count,
+                (SELECT note FROM completions WHERE habit_id = h.id ORDER BY date DESC LIMIT 1) AS recent_note
             FROM habits h
             LEFT JOIN completions c ON h.id = c.habit_id AND c.date = CURRENT_DATE
             GROUP BY h.id, h.name, h.category, h.streak
@@ -376,14 +377,15 @@ class HabitTrackerApp:
         ''')
         
         self.habits = cursor.fetchall()
-        logging.debug("Completed fetch all habits.")
-        
-        # Insert habit data into the Treeview, including the daily count
+        logging.debug("Completed fetching all habits, including recent notes.")
+
+        # Insert habit data into the Treeview, including the daily count and the most recent note
         for habit in self.habits:
-            self.habit_tree.insert('', tk.END, values=(habit[1], habit[2], f"{habit[3]} days", f"{habit[4]} completions today"))
+            # Handle potential None values for recent notes
+            recent_note = habit[5] if habit[5] else ""
+            self.habit_tree.insert('', tk.END, values=(habit[1], habit[2], f"{habit[3]} days", f"{habit[4]} completions today", recent_note))
 
         self.update_progress_bars()
-
 
     def on_habit_select(self, event):
         logging.debug("Initializing on_habit_select method")
