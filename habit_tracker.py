@@ -5,7 +5,7 @@ This project was created with ChatGPTo1
 
 Author: John Firnschild
 Written: 9/14/2024
-Version: 0.2.3
+Version: 0.3.0
 
 """
 import tkinter as tk
@@ -87,7 +87,8 @@ class HabitTrackerApp:
 
         This method sets up several frames within the main window to hold different UI components:
         - An input frame for entering new habits and their categories.
-        - A list frame to display existing habits in a table format with columns for Name, Category, and Streak.
+        - A list frame to display existing habits in a table format with columns for Name, Category, Streak, 
+        and Daily Completions.
         - An action frame with buttons for managing habits (e.g., marking them as done, viewing progress, editing, deleting).
         - A progress frame for displaying progress bars related to habit tracking.
 
@@ -108,11 +109,15 @@ class HabitTrackerApp:
         list_frame.grid(row=1, column=0, padx=10, pady=10, sticky='nsew')
         self.master.grid_rowconfigure(1, weight=1)
 
-        columns = ('Name', 'Category', 'Streak')
+        # Updated columns to include daily completions
+        columns = ('Name', 'Category', 'Streak', 'Daily Completions')
         self.habit_tree = ttk.Treeview(list_frame, columns=columns, show='headings')
+
+        # Configure each column
         for col in columns:
             self.habit_tree.heading(col, text=col)
             self.habit_tree.column(col, minwidth=0, width=150, stretch=tk.YES)
+
         self.habit_tree.pack(fill='both', expand=True)
         self.habit_tree.bind('<<TreeviewSelect>>', self.on_habit_select)
 
@@ -129,6 +134,7 @@ class HabitTrackerApp:
         # Progress bars frame
         self.progress_frame = ttk.Frame(self.master)
         self.progress_frame.grid(row=3, column=0, padx=10, pady=10, sticky='ew')
+
 
     def add_habit(self):
         """
@@ -157,25 +163,39 @@ class HabitTrackerApp:
 
     def load_habits(self):
         """
-        Loads and displays the list of habits in the Treeview widget.
+        Loads and displays the list of habits in the Treeview widget, including the daily completion count.
 
-        This method clears the existing entries in the Treeview, fetches the list of habits 
-        from the database, and inserts each habit into the Treeview sorted by category and name.
-        After populating the Treeview, the method also updates the progress bars to reflect the 
-        current habit data.
+        This method clears the existing entries in the Treeview, fetches the list of habits and their 
+        daily completion counts from the database, and inserts each habit into the Treeview sorted by 
+        category and name. After populating the Treeview, the method also updates the progress bars to 
+        reflect the current habit data.
 
         Calls:
         - self.update_progress_bars: Updates the progress bars based on the loaded habits.
         """
 
-        # Clear the treeview
+        # Clear the Treeview
         for item in self.habit_tree.get_children():
             self.habit_tree.delete(item)
-        cursor.execute('SELECT id, name, category, streak FROM habits ORDER BY category, name')
+        
+        # Query to fetch habits and their daily completion counts
+        cursor.execute('''
+            SELECT h.id, h.name, h.category, h.streak,
+                COUNT(c.date) AS daily_count
+            FROM habits h
+            LEFT JOIN completions c ON h.id = c.habit_id AND c.date = CURRENT_DATE
+            GROUP BY h.id, h.name, h.category, h.streak
+            ORDER BY h.category, h.name
+        ''')
+        
         self.habits = cursor.fetchall()
+        
+        # Insert habit data into the Treeview, including the daily count
         for habit in self.habits:
-            self.habit_tree.insert('', tk.END, values=(habit[1], habit[2], f"{habit[3]} days"))
+            self.habit_tree.insert('', tk.END, values=(habit[1], habit[2], f"{habit[3]} days", f"{habit[4]} completions today"))
+
         self.update_progress_bars()
+
 
     def on_habit_select(self, event):
         """
@@ -251,24 +271,27 @@ class HabitTrackerApp:
 
     def update_progress_bars(self):
         """
-        Updates the progress bars for each habit based on completion data.
+        Updates the progress bars for each habit based on total and daily completion data.
 
         This method clears any existing progress bars in the progress frame and calculates the 
-        progress for each habit by fetching the total number of completions from the database.
-        A progress bar is created for each habit, displaying its name, category, and progress 
-        toward a predefined goal of 30 completions (used for demonstration purposes). Progress 
-        is capped at a maximum of 100%.
+        progress for each habit by fetching the total number of completions and today's completions 
+        from the database. A progress bar is created for each habit, displaying its name, category, 
+        and progress toward a predefined goal of 30 completions (used for demonstration purposes). 
+        Progress is capped at a maximum of 100%.
+
+        The progress bars also show the daily completions count to provide a quick view of the 
+        habit performance for the current day.
 
         The progress bars are dynamically displayed in the application window.
         """
-
+        
         # Clear existing progress bars
         for widget in self.progress_frame.winfo_children():
             widget.destroy()
 
         # Fetch completions and calculate progress
         for habit in self.habits:
-            habit_id, habit_name, category, streak = habit
+            habit_id, habit_name, category, streak, daily_count = habit
 
             # Calculate total completions
             cursor.execute('SELECT COUNT(*) FROM completions WHERE habit_id = ?', (habit_id,))
@@ -279,13 +302,14 @@ class HabitTrackerApp:
             progress = int((total_completions / goal) * 100) if goal else 0
             progress = min(progress, 100)  # Cap at 100%
 
-            # Display habit name and progress bar
+            # Display habit name, category, daily completions, and progress bar
             frame = ttk.Frame(self.progress_frame)
             frame.pack(fill='x', pady=2)
 
-            ttk.Label(frame, text=f"{habit_name} ({category})").pack(side='left')
+            ttk.Label(frame, text=f"{habit_name} ({category}) - {daily_count} completions today").pack(side='left')
             progress_bar = ttk.Progressbar(frame, length=200, value=progress)
             progress_bar.pack(side='right', padx=10)
+
 
     def view_progress(self):
         """
@@ -448,7 +472,7 @@ class HabitTrackerApp:
         else:
             messagebox.showwarning("Selection Error", "Please select a habit to delete.")
 
-###########################################
+
     def schedule_notifications(self):
         """
         Schedules daily notifications for the habit tracker application.
@@ -486,7 +510,7 @@ class HabitTrackerApp:
         # Start the notification thread
         threading.Thread(target=notify, daemon=True).start()
 
-###########################################
+
     def show_notification(self):
         """
         Displays a reminder notification to the user.
