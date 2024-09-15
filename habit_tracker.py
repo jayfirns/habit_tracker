@@ -11,6 +11,7 @@ Need to add more details to config file.  I want the columns to be dynamicly sav
 
 """
 import tkinter as tk
+import os
 from tkinter import messagebox, simpledialog
 from tkinter import ttk
 import sqlite3
@@ -75,8 +76,8 @@ class HabitTrackerApp:
         master (tk.Tk): The root window or main frame for the habit tracker application.
 
         This method sets the application title, initializes instance variables for habit and category,
-        creates the user interface elements, loads user preferences, loads existing habits, 
-        and schedules notifications for habit tracking.
+        initializes the database, creates the user interface elements, loads user preferences, 
+        loads existing habits, and schedules notifications for habit tracking.
         """
         self.master = master
         master.title("My Personal Habit Tracker")
@@ -89,23 +90,137 @@ class HabitTrackerApp:
         self.category_var = tk.StringVar()
         self.selected_habit = None
 
-        # Create UI elements
-        self.create_widgets()
-        logging.debug("UI Elements Created")
+        # Step 1: Initialize the database before any UI elements or operations
+        try:
+            self.initialize_database()
+            logging.info("Database initialized successfully.")
+        except Exception as e:
+            logging.error(f"Failed to initialize the database: {e}")
+            messagebox.showerror("Database Error", "An error occurred while initializing the database. Please check the logs.")
+            self.master.destroy()  # Terminate the application if the database initialization fails
+            return
 
-        # Load user preferences after creating UI elements
-        self.load_preferences()
-        logging.debug("Preferences Loaded")
+        # Step 2: Create UI elements after ensuring the database is initialized
+        try:
+            self.create_widgets()
+            logging.debug("UI Elements Created")
+        except Exception as e:
+            logging.error(f"Error while creating UI elements: {e}")
+            messagebox.showerror("UI Error", "An error occurred while creating the UI elements. Please check the logs.")
+            self.master.destroy()  # Terminate the application if creating UI elements fails
+            return
 
-        # Load existing habits
-        self.load_habits()
-        logging.debug("Habits Loaded")
+        # Step 3: Load user preferences after creating UI elements
+        try:
+            self.load_preferences()
+            logging.debug("Preferences Loaded")
+        except Exception as e:
+            logging.error(f"Error while loading preferences: {e}")
+            messagebox.showwarning("Preferences Error", "An error occurred while loading preferences. Default settings will be used.")
 
-        # Schedule notifications
-        self.schedule_notifications()
-        logging.debug("Scheduling Notifications...  I don't think this is working.")
+        # Step 4: Load existing habits after ensuring database and UI are set up
+        try:
+            self.load_habits()
+            logging.debug("Habits Loaded")
+        except Exception as e:
+            logging.error(f"Error while loading habits: {e}")
+            messagebox.showwarning("Loading Error", "An error occurred while loading habits. The habit list may not be complete.")
+
+        # Step 5: Schedule notifications
+        try:
+            self.schedule_notifications()
+            logging.debug("Notifications scheduled successfully.")
+        except Exception as e:
+            logging.error(f"Error while scheduling notifications: {e}")
+            messagebox.showwarning("Notification Error", "An error occurred while scheduling notifications. Notifications may not work.")
 
 
+#############################################################
+
+    def initialize_database(self):
+        """
+        Initializes the SQLite database by checking if it exists, and if not, creates it along with 
+        the necessary tables and columns.
+
+        This method ensures that the required database file, tables (`habits` and `completions`), and 
+        columns are created if they do not exist. It also handles any missing columns for an existing 
+        database by adding them dynamically.
+
+        Enhancements:
+        - Robust error handling and logging for every critical operation.
+        - Ensures the database schema is consistent and up-to-date.
+
+        Raises:
+        - sqlite3.DatabaseError: If there is an issue connecting to the database or executing SQL commands.
+        """
+        import os
+        logging.debug("Initializing database setup")
+
+        # Check if the database file exists
+        db_exists = os.path.exists('habit_tracker.db')
+
+        try:
+            # Connect to the SQLite database (creates the file if it does not exist)
+            conn = sqlite3.connect('habit_tracker.db')
+            cursor = conn.cursor()
+
+            # If the database did not exist, we are creating a new one
+            if not db_exists:
+                logging.info("Database file not found. Creating a new database.")
+            else:
+                logging.info("Database file exists. Ensuring schema is up to date.")
+
+            # Create the 'habits' table if it does not exist
+            cursor.execute('''
+                CREATE TABLE IF NOT EXISTS habits (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    name TEXT NOT NULL,
+                    category TEXT,
+                    streak INTEGER DEFAULT 0,
+                    last_completed TEXT
+                )
+            ''')
+            logging.debug("Ensured 'habits' table exists with the correct schema.")
+
+            # Create the 'completions' table if it does not exist
+            cursor.execute('''
+                CREATE TABLE IF NOT EXISTS completions (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    habit_id INTEGER,
+                    date TEXT,
+                    note TEXT,  -- Ensure the 'note' column is included
+                    FOREIGN KEY (habit_id) REFERENCES habits (id)
+                )
+            ''')
+            logging.debug("Ensured 'completions' table exists with the correct schema.")
+
+            # Check for missing columns in 'completions' table
+            cursor.execute("PRAGMA table_info(completions)")
+            columns = [column[1] for column in cursor.fetchall()]
+
+            if 'note' not in columns:
+                cursor.execute('ALTER TABLE completions ADD COLUMN note TEXT')
+                logging.info("Added missing 'note' column to 'completions' table.")
+
+            # Commit changes to the database
+            conn.commit()
+            logging.info("Database initialized successfully.")
+
+        except sqlite3.DatabaseError as e:
+            logging.error(f"Database error occurred: {e}")
+            raise
+
+        except Exception as e:
+            logging.error(f"An unexpected error occurred during database initialization: {e}")
+            raise
+
+        finally:
+            # Ensure the database connection is closed properly
+            if conn:
+                conn.close()
+                logging.debug("Database connection closed.")
+
+#############################################################
 
     def create_widgets(self):
         """
