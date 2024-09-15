@@ -5,7 +5,7 @@ This project was created with ChatGPTo1
 
 Author: John Firnschild
 Written: 9/14/2024
-Version: 0.5.111
+Version: 0.5.112
 
 Need to add more details to config file.  I want the columns to be dynamicly saved.
 
@@ -139,19 +139,18 @@ class HabitTrackerApp:
 
     def initialize_database(self):
         """
-        Initializes the SQLite database by checking if it exists and creating necessary tables and columns if they do not.
+        Initializes the SQLite database by creating necessary tables with the required schema.
 
         This method ensures that the required database file, tables (`habits` and `completions`), and 
-        columns are created if they do not exist. It also handles any missing columns for an existing 
-        database by adding them dynamically to maintain schema consistency.
+        columns are created if they do not exist. It avoids any modification checks for existing columns,
+        treating the setup as a fresh installation.
 
         Enhancements:
-        - Robust error handling and logging for every critical operation.
-        - Ensures the database schema is consistent and up-to-date.
+        - Simplified logic to handle table creation only.
+        - Robust error handling and logging for database initialization.
 
         Raises:
         - sqlite3.DatabaseError: If there is an issue connecting to the database or executing SQL commands.
-        - Exception: For any other unforeseen errors during the database initialization process.
         """
         import os
         logging.debug("Initializing database setup")
@@ -164,7 +163,7 @@ class HabitTrackerApp:
             conn = sqlite3.connect('habit_tracker.db')
             cursor = conn.cursor()
 
-            # Log the status of the database file
+            # If the database did not exist, we are creating a new one
             if not db_exists:
                 logging.info("Database file not found. Creating a new database.")
             else:
@@ -193,20 +192,6 @@ class HabitTrackerApp:
                 )
             ''')
             logging.debug("Ensured 'completions' table exists with the correct schema.")
-
-            # Check for missing columns in the 'completions' table
-            cursor.execute("PRAGMA table_info(completions)")
-            columns = [column[1] for column in cursor.fetchall()]
-
-            # Ensure the 'id' column exists in the 'completions' table
-            if 'id' not in columns:
-                cursor.execute('ALTER TABLE completions ADD COLUMN id INTEGER PRIMARY KEY AUTOINCREMENT')
-                logging.info("Added missing 'id' column to 'completions' table.")
-
-            # Ensure the 'note' column exists in the 'completions' table
-            if 'note' not in columns:
-                cursor.execute('ALTER TABLE completions ADD COLUMN note TEXT')
-                logging.info("Added missing 'note' column to 'completions' table.")
 
             # Commit changes to the database
             conn.commit()
