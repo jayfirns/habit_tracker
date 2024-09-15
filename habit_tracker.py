@@ -5,7 +5,7 @@ This project was created with ChatGPTo1
 
 Author: John Firnschild
 Written: 9/14/2024
-Version: 0.5.11
+Version: 0.5.111
 
 Need to add more details to config file.  I want the columns to be dynamicly saved.
 
@@ -139,12 +139,11 @@ class HabitTrackerApp:
 
     def initialize_database(self):
         """
-        Initializes the SQLite database by checking if it exists, and if not, creates it along with 
-        the necessary tables and columns.
+        Initializes the SQLite database by checking if it exists and creating necessary tables and columns if they do not.
 
         This method ensures that the required database file, tables (`habits` and `completions`), and 
         columns are created if they do not exist. It also handles any missing columns for an existing 
-        database by adding them dynamically.
+        database by adding them dynamically to maintain schema consistency.
 
         Enhancements:
         - Robust error handling and logging for every critical operation.
@@ -152,6 +151,7 @@ class HabitTrackerApp:
 
         Raises:
         - sqlite3.DatabaseError: If there is an issue connecting to the database or executing SQL commands.
+        - Exception: For any other unforeseen errors during the database initialization process.
         """
         import os
         logging.debug("Initializing database setup")
@@ -164,7 +164,7 @@ class HabitTrackerApp:
             conn = sqlite3.connect('habit_tracker.db')
             cursor = conn.cursor()
 
-            # If the database did not exist, we are creating a new one
+            # Log the status of the database file
             if not db_exists:
                 logging.info("Database file not found. Creating a new database.")
             else:
@@ -188,16 +188,22 @@ class HabitTrackerApp:
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     habit_id INTEGER,
                     date TEXT,
-                    note TEXT,  -- Ensure the 'note' column is included
+                    note TEXT,
                     FOREIGN KEY (habit_id) REFERENCES habits (id)
                 )
             ''')
             logging.debug("Ensured 'completions' table exists with the correct schema.")
 
-            # Check for missing columns in 'completions' table
+            # Check for missing columns in the 'completions' table
             cursor.execute("PRAGMA table_info(completions)")
             columns = [column[1] for column in cursor.fetchall()]
 
+            # Ensure the 'id' column exists in the 'completions' table
+            if 'id' not in columns:
+                cursor.execute('ALTER TABLE completions ADD COLUMN id INTEGER PRIMARY KEY AUTOINCREMENT')
+                logging.info("Added missing 'id' column to 'completions' table.")
+
+            # Ensure the 'note' column exists in the 'completions' table
             if 'note' not in columns:
                 cursor.execute('ALTER TABLE completions ADD COLUMN note TEXT')
                 logging.info("Added missing 'note' column to 'completions' table.")
