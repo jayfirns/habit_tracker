@@ -1,5 +1,3 @@
-Here's a comprehensive `README.md` file for your habit tracker application. This README will provide a clear overview of your application, its purpose, setup instructions, usage, and additional information for users or contributors.
-
 ### README.md
 
 # My Personal Habit Tracker
