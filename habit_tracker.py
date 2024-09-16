@@ -26,7 +26,7 @@ logging.basicConfig(
     filename='habit_tracker_log.log',           # Log file name
     filemode='a',                 # Append mode
     format='%(asctime)s - %(levelname)s - %(message)s',
-    level=logging.DEBUG           # Set the minimum log level to DEBUG
+    level=logging.INFO           # Set the minimum log level to DEBUG
 )
 
 # Install required packages:
