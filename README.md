@@ -2,7 +2,6 @@ Here's a comprehensive `README.md` file for your habit tracker application. This
 
 ### README.md
 
-```markdown
 # My Personal Habit Tracker
 
 A simple and intuitive Habit Tracker application built using Python and Tkinter. This application helps users to track their habits, view their progress, and manage habit-related notes effectively. The application supports adding, editing, deleting habits, and scheduling notifications for daily habits.
@@ -137,7 +136,7 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 ---
 
 Enjoy tracking your habits and achieving your goals!
-```
+
 
 ### Explanation of Key Sections
 
