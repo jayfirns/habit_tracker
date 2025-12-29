@@ -4,7 +4,15 @@ version = "0.1.0"
 description = "Backend for FocusOS web application"
 dependencies = [
     "fastapi",
+    "sqlalchemy",
+    "alembic",
     "uvicorn",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "httpx",
 ]
 
 [build-system]

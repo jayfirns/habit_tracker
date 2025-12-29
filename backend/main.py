@@ -1,7 +1,72 @@
-from fastapi import FastAPI
+from fastapi import Depends, FastAPI, HTTPException, Response, status
+from sqlalchemy.orm import Session
 
-app = FastAPI()
+import crud
+import models
+import schemas
+from database import Base, engine, get_db
+
+Base.metadata.create_all(bind=engine)
+
+app = FastAPI(title="FocusOS Backend")
 
 @app.get("/")
 async def read_root():
     return {"message": "Welcome to FocusOS Backend!"}
+
+
+@app.post("/habits", response_model=schemas.HabitRead, status_code=status.HTTP_201_CREATED)
+def create_habit(habit: schemas.HabitCreate, db: Session = Depends(get_db)):
+    return crud.create_habit(db, habit)
+
+
+@app.get("/habits", response_model=list[schemas.HabitRead])
+def list_habits(db: Session = Depends(get_db)):
+    return crud.list_habits(db)
+
+
+@app.get("/habits/{habit_id}", response_model=schemas.HabitRead)
+def get_habit(habit_id: int, db: Session = Depends(get_db)):
+    habit = crud.get_habit(db, habit_id)
+    if habit is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Habit not found")
+    return habit
+
+
+@app.put("/habits/{habit_id}", response_model=schemas.HabitRead)
+def update_habit(habit_id: int, habit: schemas.HabitUpdate, db: Session = Depends(get_db)):
+    updated = crud.update_habit(db, habit_id, habit)
+    if updated is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Habit not found")
+    return updated
+
+
+@app.delete("/habits/{habit_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_habit(habit_id: int, db: Session = Depends(get_db)):
+    deleted = crud.delete_habit(db, habit_id)
+    if not deleted:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Habit not found")
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+
+@app.post(
+    "/habits/{habit_id}/complete",
+    response_model=schemas.CompletionRead,
+    status_code=status.HTTP_201_CREATED,
+)
+def complete_habit(
+    habit_id: int, completion: schemas.CompletionCreate, db: Session = Depends(get_db)
+):
+    result = crud.create_completion(db, habit_id, completion)
+    if result is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Habit not found")
+    created_completion, _habit = result
+    return created_completion
+
+
+@app.get("/habits/{habit_id}/completions", response_model=list[schemas.CompletionRead])
+def list_completions(habit_id: int, db: Session = Depends(get_db)):
+    habit = crud.get_habit(db, habit_id)
+    if habit is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Habit not found")
+    return crud.list_completions(db, habit_id)

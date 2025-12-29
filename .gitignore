@@ -1,5 +1,8 @@
 # Add the virtual environment directory name to .gitignore
 myenv/
+backend/venv/
+
+**/__pycache__/
 
 *.ini
 

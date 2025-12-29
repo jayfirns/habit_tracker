@@ -26,9 +26,9 @@ This document outlines the high-level action plan for migrating the "My Personal
 -   [x] Initialize new Python web project (e.g., FastAPI/Flask).
 -   [x] Define dependencies in `pyproject.toml` or `requirements.txt`.
 -   [x] Implement ORM (e.g., SQLAlchemy) and configure database connection (SQLite initially).
--   [ ] Create initial database migration script(s) for `habits` and `completions` tables, ensuring `note` and `id` are present in `completions`.
--   [ ] Develop Python classes for `Habit` and `Completion` entities, mapped to the ORM.
--   [ ] Implement basic API endpoints:
+-   [ ] Create initial database migration script(s) for `habits` and `completions` tables, ensuring `note` and `id` are present in `completions`. (SKIPPED/DEFERRED due to persistent Alembic import issues; will revisit or re-evaluate migration strategy later.)
+-   [x] Develop Python classes for `Habit` and `Completion` entities, mapped to the ORM.
+-   [x] Implement basic API endpoints:
     -   `GET /habits`
     -   `GET /habits/{id}`
     -   `POST /habits`
@@ -36,10 +36,10 @@ This document outlines the high-level action plan for migrating the "My Personal
     -   `DELETE /habits/{id}`
     -   `POST /habits/{id}/complete` (with note functionality).
     -   `GET /habits/{id}/completions`
--   [ ] Implement basic validation (e.g., habit name/category not empty) and initial streak calculation logic within API endpoints.
+-   [x] Implement basic validation (e.g., habit name/category not empty) and initial streak calculation logic within API endpoints.
 -   [ ] Adapt logging to stdout/stderr for containerization, using appropriate web server configuration.
 -   [ ] Create `Dockerfile` for the backend service.
--   [ ] Write unit and integration tests for all API endpoints and data model logic (TDD).
+-   [x] Write unit and integration tests for all API endpoints and data model logic (TDD).
 
 ## Phase 2: Web Frontend - Representation Layer
 
