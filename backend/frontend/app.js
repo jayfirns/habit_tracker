@@ -8,9 +8,13 @@ const streakSummary = document.querySelector("#streak-summary");
 const form = document.querySelector("#habit-form");
 const refreshBtn = document.querySelector("#refresh");
 const habitTemplate = document.querySelector("#habit-template");
+const editOverlay = document.querySelector("#edit-overlay");
+const editForm = document.querySelector("#edit-form");
+const closeEditBtn = document.querySelector("#close-edit");
 
 const state = {
   habits: [],
+  editingId: null,
 };
 
 const setStatus = (text, isError = false) => {
@@ -46,6 +50,10 @@ async function loadHabits() {
   }
 }
 
+function todayValue() {
+  return new Date().toISOString().slice(0, 10);
+}
+
 function formatDate(iso) {
   if (!iso) return "—";
   const d = new Date(iso);
@@ -68,8 +76,18 @@ function renderHabits() {
     node.querySelector(".js-completions").textContent = `${habit.completions.length} completions`;
     node.querySelector(".js-id").textContent = `ID ${habit.id}`;
 
-    node.querySelector(".js-complete").addEventListener("click", () => completeHabit(habit.id));
+    const dateInput = node.querySelector(".complete-date");
+    const noteInput = node.querySelector(".complete-note");
+    dateInput.value = todayValue();
+
+    node.querySelector(".js-complete").addEventListener("click", () =>
+      completeHabit(habit.id, {
+        note: noteInput.value,
+        date: dateInput.value,
+      }),
+    );
     node.querySelector(".js-delete").addEventListener("click", () => deleteHabit(habit.id));
+    node.querySelector(".js-edit").addEventListener("click", () => openEdit(habit));
 
     habitsContainer.appendChild(node);
   });
@@ -124,12 +142,14 @@ async function createHabit(formData) {
   await loadHabits();
 }
 
-async function completeHabit(id) {
-  const note = prompt("Add a note (optional):") ?? "";
+async function completeHabit(id, { note, date }) {
+  const payload = {};
+  if (note) payload.note = note;
+  if (date) payload.date = date;
   setStatus("Completing...");
   await api(`${HABITS_URL}/${id}/complete`, {
     method: "POST",
-    body: JSON.stringify({ note }),
+    body: JSON.stringify(payload),
   });
   setStatus("Logged");
   await loadHabits();
@@ -155,5 +175,48 @@ form.addEventListener("submit", async (event) => {
 });
 
 refreshBtn.addEventListener("click", loadHabits);
+
+function openEdit(habit) {
+  state.editingId = habit.id;
+  document.querySelector("#edit-id").value = habit.id;
+  document.querySelector("#edit-name").value = habit.name;
+  document.querySelector("#edit-category").value = habit.category;
+  editOverlay.hidden = false;
+}
+
+function closeEdit() {
+  state.editingId = null;
+  editOverlay.hidden = true;
+}
+
+closeEditBtn.addEventListener("click", closeEdit);
+editOverlay.addEventListener("click", (e) => {
+  if (e.target === editOverlay) closeEdit();
+});
+
+editForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  if (!state.editingId) return;
+  const name = document.querySelector("#edit-name").value.trim();
+  const category = document.querySelector("#edit-category").value.trim();
+  if (!name || !category) {
+    setStatus("Name and category are required", true);
+    return;
+  }
+
+  setStatus("Saving...");
+  try {
+    await api(`${HABITS_URL}/${state.editingId}`, {
+      method: "PUT",
+      body: JSON.stringify({ name, category }),
+    });
+    setStatus("Updated");
+    closeEdit();
+    await loadHabits();
+  } catch (err) {
+    console.error(err);
+    setStatus("Failed to update habit", true);
+  }
+});
 
 loadHabits();

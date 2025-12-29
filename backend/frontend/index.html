@@ -70,6 +70,30 @@
       </section>
     </main>
 
+    <div class="overlay" id="edit-overlay" hidden>
+      <div class="overlay__content">
+        <div class="overlay__header">
+          <div>
+            <p class="eyebrow">Edit</p>
+            <h3>Edit Habit</h3>
+          </div>
+          <button class="ghost small" type="button" id="close-edit">Close</button>
+        </div>
+        <form id="edit-form" class="form overlay__form">
+          <div class="field">
+            <label for="edit-category">Category</label>
+            <input id="edit-category" name="category" type="text" required />
+          </div>
+          <div class="field">
+            <label for="edit-name">Name</label>
+            <input id="edit-name" name="name" type="text" required />
+          </div>
+          <input type="hidden" id="edit-id" />
+          <button type="submit" class="button full">Save changes</button>
+        </form>
+      </div>
+    </div>
+
     <template id="habit-template">
       <article class="habit-card">
         <div class="habit-card__top">
@@ -84,8 +108,19 @@
           <span class="pill js-completions"></span>
           <span class="pill subtle js-id"></span>
         </div>
+        <div class="complete-inline">
+          <label>
+            <span class="meta">Date</span>
+            <input class="complete-date" type="date" />
+          </label>
+          <label>
+            <span class="meta">Note</span>
+            <input class="complete-note" type="text" placeholder="Optional note" />
+          </label>
+          <button class="button small js-complete">Mark done</button>
+        </div>
         <div class="habit-card__actions">
-          <button class="button ghost small js-complete">Mark done</button>
+          <button class="button ghost small js-edit">Edit</button>
           <button class="button ghost small js-delete">Delete</button>
         </div>
       </article>

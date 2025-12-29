@@ -78,6 +78,8 @@ a {
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   gap: 18px;
   padding: 0 7vw 48px;
+  max-width: 1400px;
+  margin: 0 auto;
 }
 
 .panel {
@@ -117,6 +119,7 @@ a {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 12px;
+  align-items: start;
 }
 
 .field {
@@ -213,6 +216,17 @@ input:focus {
   gap: 8px;
 }
 
+.complete-inline {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 8px;
+  align-items: end;
+}
+
+.complete-inline input {
+  width: 100%;
+}
+
 .streak {
   min-width: 54px;
   height: 54px;
@@ -240,6 +254,35 @@ input:focus {
 .meta {
   color: var(--muted);
   margin: 4px 0 0;
+}
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(5, 10, 18, 0.75);
+  display: grid;
+  place-items: center;
+  z-index: 20;
+}
+
+.overlay__content {
+  width: min(520px, 92vw);
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 18px;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.45);
+}
+
+.overlay__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.overlay__form {
+  grid-template-columns: 1fr 1fr;
 }
 
 .timeline {
@@ -277,6 +320,10 @@ input:focus {
   }
 
   .form {
+    grid-template-columns: 1fr;
+  }
+
+  .overlay__form {
     grid-template-columns: 1fr;
   }
 }
