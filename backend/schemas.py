@@ -1,4 +1,4 @@
-from datetime import date
+import datetime
 from typing import List, Optional
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
@@ -39,13 +39,13 @@ class CompletionBase(BaseModel):
 
 
 class CompletionCreate(CompletionBase):
-    date: Optional[date] = None
+    date: Optional[datetime.date] = None
 
 
 class CompletionRead(CompletionBase):
     id: int
     habit_id: int
-    date: date
+    date: datetime.date
 
     model_config = ConfigDict(from_attributes=True)
 
@@ -53,7 +53,7 @@ class CompletionRead(CompletionBase):
 class HabitRead(HabitBase):
     id: int
     streak: int
-    last_completed: Optional[date] = None
+    last_completed: Optional[datetime.date] = None
     completions: List[CompletionRead] = Field(default_factory=list)
 
     model_config = ConfigDict(from_attributes=True)

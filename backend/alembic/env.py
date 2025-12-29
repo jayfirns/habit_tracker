@@ -1,4 +1,6 @@
 from logging.config import fileConfig
+import os
+import sys
 
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool
@@ -14,12 +16,13 @@ config = context.config
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
-# --- Start of new imports ---
-# Add your model's MetaData object here for 'autogenerate' support
-from backend.database import Base
-from backend.models import Habit, Completion # Import your models here
+# Ensure the backend package is importable when Alembic runs from the CLI
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
+from database import Base  # noqa: E402
+from models import Completion, Habit  # noqa: F401, E402
+
 target_metadata = Base.metadata
-# --- End of new imports ---
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:

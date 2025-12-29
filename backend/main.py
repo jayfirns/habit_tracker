@@ -1,3 +1,6 @@
+import logging
+import time
+
 from fastapi import Depends, FastAPI, HTTPException, Response, status
 from sqlalchemy.orm import Session
 
@@ -6,13 +9,35 @@ import models
 import schemas
 from database import Base, engine, get_db
 
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(levelname)s:%(name)s:%(message)s",
+)
+logger = logging.getLogger("focusos.api")
+
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="FocusOS Backend")
 
+
 @app.get("/")
 async def read_root():
     return {"message": "Welcome to FocusOS Backend!"}
+
+
+@app.middleware("http")
+async def log_requests(request, call_next):
+    start = time.monotonic()
+    response = await call_next(request)
+    duration_ms = (time.monotonic() - start) * 1000
+    logger.info(
+        "%s %s -> %s (%.2fms)",
+        request.method,
+        request.url.path,
+        response.status_code,
+        duration_ms,
+    )
+    return response
 
 
 @app.post("/habits", response_model=schemas.HabitRead, status_code=status.HTTP_201_CREATED)

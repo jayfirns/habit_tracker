@@ -1,6 +1,7 @@
 import pytest
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.pool import StaticPool
 from datetime import date
 
 # Adjusting import paths for testing context
@@ -20,13 +21,19 @@ from models import Habit, Completion # Direct import from backend/models
 # Setup an in-memory SQLite database for testing
 @pytest.fixture(scope="module")
 def db_engine():
-    engine = create_engine("sqlite:///:memory:")
+    engine = create_engine(
+        "sqlite:///:memory:",
+        connect_args={"check_same_thread": False},
+        poolclass=StaticPool,
+    )
     Base.metadata.create_all(engine)
     yield engine
     Base.metadata.drop_all(engine)
 
 @pytest.fixture(scope="function")
 def db_session(db_engine):
+    Base.metadata.drop_all(bind=db_engine)
+    Base.metadata.create_all(bind=db_engine)
     Session = sessionmaker(autocommit=False, autoflush=False, bind=db_engine)
     session = Session()
     yield session
@@ -86,4 +93,3 @@ def test_retrieve_habits_with_completions(db_session):
             assert h.completions[0].note == "Project X"
         elif h.name == "Meditate":
             assert len(h.completions) == 0
-

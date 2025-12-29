@@ -8,6 +8,8 @@ This document tracks significant changes, features, and fixes implemented throug
 
 ### Added
 -   **Backend Project Structure**: Created `backend/` directory with FastAPI application (`main.py`).
+-   **Habit API & Validation**: Implemented habits/completions CRUD endpoints with streak calculation and validation schemas.
+-   **Testing**: Added unit/integration-style tests for ORM models and API handlers.
 -   **Virtual Environment**: Initialized `backend/venv` for project dependencies.
 -   **Dependencies**: Added `fastapi`, `uvicorn`, `sqlalchemy`, `alembic` to `backend/pyproject.toml`.
 -   **Database Setup**: Configured `backend/database.py` for SQLite connection and `backend/models.py` for SQLAlchemy ORM `Habit` and `Completion` models.

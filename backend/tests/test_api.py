@@ -3,151 +3,131 @@ import os
 from datetime import date, timedelta
 
 import pytest
-from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.pool import StaticPool
 
 # Ensure the backend package is importable when running tests from this file
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-from database import Base, get_db  # noqa: E402
-from main import app  # noqa: E402
-from models import Habit  # noqa: E402
+import schemas  # noqa: E402
+from fastapi import HTTPException  # noqa: E402
+from database import Base  # noqa: E402
+from main import (  # noqa: E402
+    complete_habit,
+    create_habit,
+    delete_habit,
+    get_habit,
+    list_completions,
+    list_habits,
+    update_habit,
+)
 
 TEST_DATABASE_URL = "sqlite:///:memory:"
 
-engine = create_engine(TEST_DATABASE_URL, connect_args={"check_same_thread": False})
+engine = create_engine(
+    TEST_DATABASE_URL,
+    connect_args={"check_same_thread": False},
+    poolclass=StaticPool,
+)
 TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
-def override_get_db():
-    db = TestingSessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
-
-
-app.dependency_overrides[get_db] = override_get_db
-
-
-@pytest.fixture(autouse=True)
-def reset_database():
+@pytest.fixture(scope="function", autouse=True)
+def db_session():
     Base.metadata.drop_all(bind=engine)
     Base.metadata.create_all(bind=engine)
-    yield
+    session = TestingSessionLocal()
+    yield session
+    session.close()
 
 
-@pytest.fixture()
-def client():
-    return TestClient(app)
+def test_create_and_list_habits(db_session):
+    created = create_habit(schemas.HabitCreate(name="Exercise", category="Health"), db_session)
+    assert created.name == "Exercise"
+    assert created.category == "Health"
+    assert created.streak == 0
+    assert created.last_completed is None
 
-
-def create_habit(client, name="Read Book", category="Growth"):
-    response = client.post("/habits", json={"name": name, "category": category})
-    assert response.status_code == 201
-    return response.json()
-
-
-def test_create_and_list_habits(client):
-    created = create_habit(client, name="Exercise", category="Health")
-    assert created["name"] == "Exercise"
-    assert created["category"] == "Health"
-    assert created["streak"] == 0
-    assert created["last_completed"] is None
-
-    list_response = client.get("/habits")
-    assert list_response.status_code == 200
-    habits = list_response.json()
+    habits = list_habits(db_session)
     assert len(habits) == 1
-    assert habits[0]["name"] == "Exercise"
-    assert habits[0]["completions"] == []
+    assert habits[0].name == "Exercise"
+    assert habits[0].completions == []
 
 
-def test_get_habit_by_id(client):
-    habit = create_habit(client, name="Meditate", category="Wellness")
+def test_get_habit_by_id(db_session):
+    habit = create_habit(schemas.HabitCreate(name="Meditate", category="Wellness"), db_session)
 
-    get_response = client.get(f"/habits/{habit['id']}")
-    assert get_response.status_code == 200
-    payload = get_response.json()
-    assert payload["name"] == "Meditate"
-    assert payload["id"] == habit["id"]
-    assert payload["completions"] == []
+    retrieved = get_habit(habit.id, db_session)
+    assert retrieved.name == "Meditate"
+    assert retrieved.id == habit.id
+    assert retrieved.completions == []
 
 
-def test_update_habit(client):
-    habit = create_habit(client)
+def test_update_habit(db_session):
+    habit = create_habit(schemas.HabitCreate(name="Read Book", category="Growth"), db_session)
 
-    update_response = client.put(
-        f"/habits/{habit['id']}",
-        json={"name": "Read Fiction", "category": "Leisure"},
+    updated = update_habit(
+        habit.id,
+        schemas.HabitUpdate(name="Read Fiction", category="Leisure"),
+        db_session,
     )
-    assert update_response.status_code == 200
-    payload = update_response.json()
-    assert payload["name"] == "Read Fiction"
-    assert payload["category"] == "Leisure"
+    assert updated.name == "Read Fiction"
+    assert updated.category == "Leisure"
 
 
-def test_delete_habit_removes_it_from_listing(client):
-    habit = create_habit(client)
+def test_delete_habit_removes_it_from_listing(db_session):
+    habit = create_habit(schemas.HabitCreate(name="Walk", category="Health"), db_session)
 
-    delete_response = client.delete(f"/habits/{habit['id']}")
-    assert delete_response.status_code == 204
+    response = delete_habit(habit.id, db_session)
+    assert response.status_code == 204
 
-    list_response = client.get("/habits")
-    assert list_response.status_code == 200
-    assert list_response.json() == []
+    assert list_habits(db_session) == []
 
 
-def test_complete_habit_updates_streak_and_last_completed(client):
-    habit = create_habit(client, name="Code", category="Work")
+def test_complete_habit_updates_streak_and_last_completed(db_session):
+    habit = create_habit(schemas.HabitCreate(name="Code", category="Work"), db_session)
 
     today = date.today()
     yesterday = today - timedelta(days=1)
 
-    first_completion = client.post(
-        f"/habits/{habit['id']}/complete",
-        json={"note": "Started new feature", "date": yesterday.isoformat()},
+    complete_habit(
+        habit.id,
+        schemas.CompletionCreate(note="Started new feature", date=yesterday),
+        db_session,
     )
-    assert first_completion.status_code == 201
-
-    second_completion = client.post(
-        f"/habits/{habit['id']}/complete",
-        json={"note": "Continued work", "date": today.isoformat()},
+    complete_habit(
+        habit.id,
+        schemas.CompletionCreate(note="Continued work", date=today),
+        db_session,
     )
-    assert second_completion.status_code == 201
 
-    habit_response = client.get(f"/habits/{habit['id']}")
-    assert habit_response.status_code == 200
-    payload = habit_response.json()
-    assert payload["streak"] == 2
-    assert payload["last_completed"] == today.isoformat()
-    assert len(payload["completions"]) == 2
+    refreshed = get_habit(habit.id, db_session)
+    assert refreshed.streak == 2
+    assert refreshed.last_completed == today.isoformat()
+    assert len(refreshed.completions) == 2
 
 
-def test_get_completions_for_habit(client):
-    habit = create_habit(client, name="Journal", category="Reflection")
+def test_get_completions_for_habit(db_session):
+    habit = create_habit(schemas.HabitCreate(name="Journal", category="Reflection"), db_session)
 
-    client.post(f"/habits/{habit['id']}/complete", json={"note": "Morning entry"})
+    complete_habit(habit.id, schemas.CompletionCreate(note="Morning entry"), db_session)
 
-    completions_response = client.get(f"/habits/{habit['id']}/completions")
-    assert completions_response.status_code == 200
-    completions = completions_response.json()
+    completions = list_completions(habit.id, db_session)
     assert len(completions) == 1
-    assert completions[0]["note"] == "Morning entry"
+    assert completions[0].note == "Morning entry"
 
 
-def test_validation_errors_for_blank_fields(client):
-    invalid_response = client.post("/habits", json={"name": "", "category": ""})
-    assert invalid_response.status_code == 422
+def test_validation_errors_for_blank_fields(db_session):
+    with pytest.raises(ValueError):
+        schemas.HabitCreate(name="", category="")
 
-    habit = create_habit(client, name="Walk", category="Fitness")
-    update_response = client.put(
-        f"/habits/{habit['id']}", json={"name": "", "category": " "}
-    )
-    assert update_response.status_code == 422
+    habit = create_habit(schemas.HabitCreate(name="Walk", category="Fitness"), db_session)
+    with pytest.raises(ValueError):
+        schemas.HabitUpdate(name="", category=" ")
 
 
-def test_complete_nonexistent_habit_returns_404(client):
-    response = client.post("/habits/999/complete", json={"note": "Should fail"})
-    assert response.status_code == 404
+def test_complete_nonexistent_habit_returns_none(db_session):
+    with pytest.raises(HTTPException) as excinfo:
+        complete_habit(999, schemas.CompletionCreate(note="Should fail"), db_session)
+    assert excinfo.value.status_code == 404
