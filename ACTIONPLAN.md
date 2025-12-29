@@ -37,8 +37,8 @@ This document outlines the high-level action plan for migrating the "My Personal
     -   `POST /habits/{id}/complete` (with note functionality).
     -   `GET /habits/{id}/completions`
 -   [x] Implement basic validation (e.g., habit name/category not empty) and initial streak calculation logic within API endpoints.
--   [ ] Adapt logging to stdout/stderr for containerization, using appropriate web server configuration.
--   [ ] Create `Dockerfile` for the backend service.
+-   [x] Adapt logging to stdout/stderr for containerization, using appropriate web server configuration.
+-   [x] Create `Dockerfile` for the backend service.
 -   [x] Write unit and integration tests for all API endpoints and data model logic (TDD).
 
 ## Phase 2: Web Frontend - Representation Layer
