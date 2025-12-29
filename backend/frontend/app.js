@@ -17,6 +17,11 @@ const state = {
   editingId: null,
 };
 
+// Ensure overlay is hidden on load
+if (editOverlay) {
+  editOverlay.hidden = true;
+}
+
 const setStatus = (text, isError = false) => {
   statusEl.textContent = text;
   statusEl.style.color = isError ? "#ffb4a2" : "var(--muted)";
