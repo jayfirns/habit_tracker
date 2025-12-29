@@ -1,7 +1,9 @@
 import logging
 import time
+from pathlib import Path
 
 from fastapi import Depends, FastAPI, HTTPException, Response, status
+from fastapi.staticfiles import StaticFiles
 from sqlalchemy.orm import Session
 
 import crud
@@ -18,6 +20,10 @@ logger = logging.getLogger("focusos.api")
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="FocusOS Backend")
+
+frontend_dir = Path(__file__).parent / "frontend"
+if frontend_dir.exists():
+    app.mount("/ui", StaticFiles(directory=frontend_dir, html=True), name="frontend")
 
 
 @app.get("/")

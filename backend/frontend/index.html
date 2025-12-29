@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FocusOS Habit Board</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="hero">
+      <div class="hero__text">
+        <p class="eyebrow">FocusOS</p>
+        <h1>Stay on track with a clear habit dashboard</h1>
+        <p class="lede">
+          Add habits, log completions with notes, and watch streaks grow—all local, no
+          cloud required.
+        </p>
+        <div class="hero__actions">
+          <a class="button" href="/docs" target="_blank" rel="noreferrer">API Docs</a>
+          <a class="button ghost" href="/ui" aria-current="page">Frontend</a>
+        </div>
+      </div>
+      <div class="hero__badge">
+        <div class="badge__value" id="streak-summary">0</div>
+        <div class="badge__label">Total streak days</div>
+      </div>
+    </header>
+
+    <main class="layout">
+      <section class="panel">
+        <div class="panel__header">
+          <div>
+            <p class="eyebrow">Create</p>
+            <h2>New Habit</h2>
+          </div>
+          <div class="status" id="status">Ready</div>
+        </div>
+        <form id="habit-form" class="form">
+          <div class="field">
+            <label for="name">Name</label>
+            <input id="name" name="name" type="text" placeholder="Daily write, Walk, Meditate" required />
+          </div>
+          <div class="field">
+            <label for="category">Category</label>
+            <input id="category" name="category" type="text" placeholder="Focus, Health, Growth" required />
+          </div>
+          <button type="submit" class="button full">Add Habit</button>
+        </form>
+      </section>
+
+      <section class="panel">
+        <div class="panel__header">
+          <div>
+            <p class="eyebrow">Track</p>
+            <h2>Habit Board</h2>
+          </div>
+          <button class="ghost small" id="refresh">Refresh</button>
+        </div>
+        <div id="habits" class="habits-grid"></div>
+      </section>
+
+      <section class="panel wide">
+        <div class="panel__header">
+          <div>
+            <p class="eyebrow">Reflect</p>
+            <h2>Recent Completions</h2>
+          </div>
+        </div>
+        <div id="completions" class="timeline"></div>
+      </section>
+    </main>
+
+    <template id="habit-template">
+      <article class="habit-card">
+        <div class="habit-card__top">
+          <div>
+            <p class="eyebrow js-category"></p>
+            <h3 class="js-name"></h3>
+            <p class="meta js-last"></p>
+          </div>
+          <div class="streak js-streak"></div>
+        </div>
+        <div class="habit-card__meta">
+          <span class="pill js-completions"></span>
+          <span class="pill subtle js-id"></span>
+        </div>
+        <div class="habit-card__actions">
+          <button class="button ghost small js-complete">Mark done</button>
+          <button class="button ghost small js-delete">Delete</button>
+        </div>
+      </article>
+    </template>
+
+    <script src="app.js" type="module"></script>
+  </body>
+</html>

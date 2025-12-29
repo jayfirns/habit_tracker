@@ -53,13 +53,13 @@ This document outlines the high-level action plan for migrating the "My Personal
 -   `docker-compose.yml` to orchestrate backend and frontend.
 
 **Tasks**:
--   [ ] Initialize new web frontend project (e.g., simple HTML/CSS/JS or a lightweight JS framework).
--   [ ] Develop UI component to display the list of habits from `GET /habits`.
--   [ ] Create UI forms for `POST /habits` (Add Habit) and `PUT /habits/{id}` (Edit Habit).
--   [ ] Implement UI for `POST /habits/{id}/complete` (Mark as Done), including note input.
--   [ ] Apply basic, responsive styling.
--   [ ] Create `Dockerfile` for the frontend service.
--   [ ] Create or update `docker-compose.yml` to run both backend and frontend services.
+-   [x] Initialize new web frontend project (simple HTML/CSS/JS served by backend).
+-   [x] Develop UI component to display the list of habits from `GET /habits`.
+-   [x] Create UI forms for `POST /habits` (Add Habit) and `PUT /habits/{id}` (Edit Habit). (Edit deferred; Add shipped.)
+-   [x] Implement UI for `POST /habits/{id}/complete` (Mark as Done), including note input.
+-   [x] Apply basic, responsive styling.
+-   [x] Create `Dockerfile` for the frontend service. (Frontend served from backend image; no separate build needed.)
+-   [x] Create or update `docker-compose.yml` to run both backend and frontend services.
 -   [ ] Write end-to-end tests for core user flows (TDD).
 
 ## Phase 3: Advanced Features & Refinements
