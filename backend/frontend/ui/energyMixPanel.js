@@ -397,6 +397,10 @@ export function createEnergyMixPanel(elements = {}, helpers = {}) {
     return state.valueMode === "duration" ? formatMinutes(value) : `${value}`;
   }
 
+  function formatValueWithMode(value, valueMode) {
+    return valueMode === "duration" ? formatMinutes(value) : `${value}`;
+  }
+
   function updateControls(model) {
     if (tabsContainer) {
       tabsContainer.querySelectorAll("[data-chart-mode]").forEach((btn) => {
@@ -420,13 +424,13 @@ export function createEnergyMixPanel(elements = {}, helpers = {}) {
     }
     const suffix = model.valueMode === "duration" ? "logged" : "sessions";
     if (chartCenterValue) {
-      chartCenterValue.textContent = formatValue(total);
+      chartCenterValue.textContent = formatValueWithMode(total, model.valueMode);
     }
     if (chartCenterLabel) {
       chartCenterLabel.textContent = model.valueMode === "duration" ? "minutes" : "sessions";
     }
     if (chartTotalPill) {
-      chartTotalPill.textContent = `${formatValue(total)} ${suffix}`;
+      chartTotalPill.textContent = `${formatValueWithMode(total, model.valueMode)} ${suffix}`;
     }
   }
 
@@ -454,59 +458,103 @@ export function createEnergyMixPanel(elements = {}, helpers = {}) {
     }
   }
 
+  function selectSeries(filtered, chartMode) {
+    if (chartMode === "pie") return filtered.categorySeries;
+    if (chartMode === "grouped") return filtered.groupedSeries;
+    return filtered.habitSeries;
+  }
+
+  function sumSeries(series, chartMode) {
+    return chartMode === "grouped"
+      ? series.reduce((sum, group) => sum + group.value, 0)
+      : series.reduce((sum, item) => sum + item.value, 0);
+  }
+
   function render(payload = {}) {
     state.lastPayload = payload;
-    const model = buildEnergyMixModel({
+    const baseConfig = {
       ...payload,
       chartMode: state.chartMode,
       valueMode: state.valueMode,
-    });
+    };
+    const model = buildEnergyMixModel(baseConfig);
 
     const filteredSeries = filterSeries(model);
-    const activeSeries =
-      model.chartMode === "pie"
-        ? filteredSeries.categorySeries
-        : model.chartMode === "grouped"
-          ? filteredSeries.groupedSeries
-          : filteredSeries.habitSeries;
-    const activeTotal =
-      model.chartMode === "grouped"
-        ? activeSeries.reduce((sum, group) => sum + group.value, 0)
-        : activeSeries.reduce((sum, item) => sum + item.value, 0);
+    const activeSeries = selectSeries(filteredSeries, model.chartMode);
+    let renderModel = model;
+    let renderFiltered = filteredSeries;
+    let renderSeries = activeSeries;
+    let renderTotal = sumSeries(renderSeries, model.chartMode);
 
     updateControls(model);
-    updateTotals(activeTotal, model);
 
-    if (!activeSeries.length) {
+    if (!renderSeries.length && state.valueMode !== "frequency") {
+      const fallbackModel = buildEnergyMixModel({ ...baseConfig, valueMode: "frequency" });
+      const fallbackFiltered = filterSeries(fallbackModel);
+      const fallbackSeries = selectSeries(fallbackFiltered, fallbackModel.chartMode);
+      if (fallbackSeries.length) {
+        renderModel = fallbackModel;
+        renderFiltered = fallbackFiltered;
+        renderSeries = fallbackSeries;
+        renderTotal = sumSeries(renderSeries, fallbackModel.chartMode);
+      }
+    }
+
+    updateTotals(renderTotal, renderModel);
+
+    if (!renderSeries.length) {
       renderEmptyState("No data available");
       return;
     }
 
-    if (model.chartMode === "pie") {
+    if (renderModel.chartMode === "pie") {
       renderPieDom(
         { categoryChart: chartContainer, categoryLegend },
-        filteredSeries.categorySeries,
-        activeTotal,
-        model,
+        renderFiltered.categorySeries,
+        renderTotal,
+        renderModel,
         {
-          formatValue,
+          formatValue: (value) => formatValueWithMode(value, renderModel.valueMode),
         },
       );
-    } else if (model.chartMode === "grouped") {
-      renderGroupedDom({ categoryChart: chartContainer, categoryLegend }, filteredSeries.groupedSeries, model, {
-        formatValue,
-      });
+    } else if (renderModel.chartMode === "grouped") {
+      renderGroupedDom(
+        { categoryChart: chartContainer, categoryLegend },
+        renderFiltered.groupedSeries,
+        renderModel,
+        {
+          formatValue: (value) => formatValueWithMode(value, renderModel.valueMode),
+        },
+      );
     } else {
-      const legendModel = { ...model, categorySeries: filteredSeries.categorySeries };
-      renderBarsDom({ categoryChart: chartContainer, categoryLegend }, filteredSeries.habitSeries, legendModel, {
-        formatValue,
-      });
+      const legendModel = { ...renderModel, categorySeries: renderFiltered.categorySeries };
+      renderBarsDom(
+        { categoryChart: chartContainer, categoryLegend },
+        renderFiltered.habitSeries,
+        legendModel,
+        {
+          formatValue: (value) => formatValueWithMode(value, renderModel.valueMode),
+        },
+      );
     }
+  }
+
+  function updateEnergyMixData(newData = {}) {
+    const nextPayload =
+      newData && typeof newData === "object"
+        ? { ...newData, mockEntries: Array.isArray(newData.mockEntries) ? newData.mockEntries : [] }
+        : { mockEntries: [] };
+    render(nextPayload);
+  }
+
+  if (typeof globalThis !== "undefined") {
+    globalThis.updateEnergyMixData = updateEnergyMixData;
   }
 
   return {
     render,
     setChartMode: (mode) => (state.chartMode = coerceChartMode(mode)),
     setValueMode: (mode) => (state.valueMode = coerceValueMode(mode)),
+    updateEnergyMixData,
   };
 }
