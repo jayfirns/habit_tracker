@@ -7,12 +7,12 @@
 | Element Name | Description | Example content | CSS class | Notes |
 | --- | --- | --- | --- | --- |
 | ChartCardShell | Gradient card container with border, radius, and shadow framing the chart and legend. | — | `card chart-card wide` | Uses the card surface instead of PanelShell; spans full grid width. |
-| PanelHeader (glossary) | Header row aligning eyebrow/title with the total pill. | — | `panel__header` | Inherits flex layout and spacing from shared header style. |
-| Eyebrow (glossary) | Upper label introducing the panel. | Energy mix | `eyebrow` | Accent2-colored label preceding the title. |
-| PanelTitle (glossary) | Section title for the panel. | Category Completions | `<h3>` | Uses heading defaults; sits under eyebrow. |
-| Pill (glossary) | Subtle pill showing total completions. | 0 logged | `pill subtle` (`#chart-total-pill`) | Updated dynamically with total completions count. |
+| PanelHeader ([glossary](DESIGN_GLOSSARY.md#ui-design-glossary-new-habit--habit-board)) | Header row aligning eyebrow/title with the total pill. | — | `panel__header` | Inherits flex layout and spacing from shared header style. |
+| Eyebrow ([glossary](DESIGN_GLOSSARY.md#glossary-legend)) | Upper label introducing the panel. | Energy mix | `eyebrow` | Accent2-colored label preceding the title. |
+| PanelTitle ([glossary](DESIGN_GLOSSARY.md#ui-design-glossary-new-habit--habit-board)) | Section title for the panel. | Category Completions | `<h3>` | Uses heading defaults; sits under eyebrow. |
+| Pill ([glossary](DESIGN_GLOSSARY.md#glossary-legend)) | Subtle pill showing total completions. | 0 logged | `pill subtle` (`#chart-total-pill`) | Updated dynamically with total completions count. |
 | PieCanvas | SVG container for the donut chart. | Segmented donut by category | `pie-chart` (`#category-chart`) | Populated at runtime; falls back to meta text when empty. |
-| ChartCenterBadge (glossary: Badge) | Center-aligned total completions figure with muted label. | 12 / completions | `chart-center` with `badge__value`, `meta` | Badge number updates with total completions. |
+| ChartCenterBadge (glossary: [Badge](DESIGN_GLOSSARY.md#glossary-legend)) | Center-aligned total completions figure with muted label. | 12 / completions | `chart-center` with `badge__value`, `meta` | Badge number updates with total completions. |
 | LegendGrid | Grid of category legend rows rendered per category. | Focus · 4 completions · 2 habits | `chart-legend` hosting `legend-item`, `legend-swatch`, `legend-title`, `meta` | Rows are generated from data; swatch color matches chart palette. |
 
 - Interactions: No direct user input. Data and rendering driven by `renderCategoryChart` in `backend/frontend/ui/dashboardView.js`, which runs during dashboard render after habits load/refresh. Shows fallback meta text when no completions exist.
@@ -27,15 +27,15 @@
 
 | Element Name | Description | Example content | CSS class | Notes |
 | --- | --- | --- | --- | --- |
-| PanelShell (glossary) | Panel container with panel surface, border, radius, and shadow. | — | `panel insight-panel` | Uses insight-panel styling for padding and shadow. |
-| PanelHeader (glossary) | Flex header row for eyebrow/title and scope pill. | — | `panel__header` | Shared layout spacing. |
-| Eyebrow (glossary) | Context eyebrow preceding title. | SMART pulse | `eyebrow` | Accent2 color label. |
-| PanelTitle (glossary) | Panel heading. | Goal Dashboard | `<h3>` | Display font, default heading size. |
-| ScopePill (glossary: Pill) | Subtle pill showing dominant goal scope. | Quarter focus | `pill subtle` (`#goal-scope-highlight`) | Text updated by JS based on top scope count. |
+| PanelShell ([glossary](DESIGN_GLOSSARY.md#ui-design-glossary-new-habit--habit-board)) | Panel container with panel surface, border, radius, and shadow. | — | `panel insight-panel` | Uses insight-panel styling for padding and shadow. |
+| PanelHeader ([glossary](DESIGN_GLOSSARY.md#ui-design-glossary-new-habit--habit-board)) | Flex header row for eyebrow/title and scope pill. | — | `panel__header` | Shared layout spacing. |
+| Eyebrow ([glossary](DESIGN_GLOSSARY.md#glossary-legend)) | Context eyebrow preceding title. | SMART pulse | `eyebrow` | Accent2 color label. |
+| PanelTitle ([glossary](DESIGN_GLOSSARY.md#ui-design-glossary-new-habit--habit-board)) | Panel heading. | Goal Dashboard | `<h3>` | Display font, default heading size. |
+| ScopePill (glossary: [Pill](DESIGN_GLOSSARY.md#glossary-legend)) | Subtle pill showing dominant goal scope. | Quarter focus | `pill subtle` (`#goal-scope-highlight`) | Text updated by JS based on top scope count. |
 | InsightGrid | Grid wrapper for the stat cards. | — | `insight-grid` | Responsive auto-fit columns. |
 | InsightStatCard | Individual stat tile with border and subtle background. | Active goals | `insight-stat` | Three instances for active goals, linked habits, due soon. |
 | StatLabel | Muted label for each stat. | Active goals | `stat-label` | 12px, muted. |
-| StatValue (glossary: Badge) | Bold numeric value for the stat. | 3 | `stat-value` with IDs `goal-count`, `goal-habits-linked`, `goal-due-count` | Populated dynamically. |
+| StatValue (glossary: [Badge](DESIGN_GLOSSARY.md#glossary-legend)) | Bold numeric value for the stat. | 3 | `stat-value` with IDs `goal-count`, `goal-habits-linked`, `goal-due-count` | Populated dynamically. |
 | StatNote | Supporting meta line under each stat. | Set your first target | `meta` with IDs `goal-highlight`, `goal-habit-coverage`, `goal-due-label` | JS fills contextual text (coverage %, deadlines, highlights). |
 | NextStepNote | Callout note suggesting next action. | Use SMART to define one measurable outcome this week. | `smart-note` (`#goal-next-step`) | Border dashed, muted color-mix background. |
 
@@ -51,10 +51,10 @@
 
 | Element Name | Description | Example content | CSS class | Notes |
 | --- | --- | --- | --- | --- |
-| PanelShell (glossary) | Panel container framing controls and progress bar. | — | `panel day-timer` | Uses panel surface/border/shadow. |
-| PanelHeader (glossary) | Header row with eyebrow/title and control cluster. | — | `panel__header` | Flex align center. |
-| Eyebrow (glossary) | Context label. | Workday | `eyebrow` | Accent2 color. |
-| PanelTitle (glossary) | Panel heading. | Time Glide | `<h3>` | Display font. |
+| PanelShell ([glossary](DESIGN_GLOSSARY.md#ui-design-glossary-new-habit--habit-board)) | Panel container framing controls and progress bar. | — | `panel day-timer` | Uses panel surface/border/shadow. |
+| PanelHeader ([glossary](DESIGN_GLOSSARY.md#ui-design-glossary-new-habit--habit-board)) | Header row with eyebrow/title and control cluster. | — | `panel__header` | Flex align center. |
+| Eyebrow ([glossary](DESIGN_GLOSSARY.md#glossary-legend)) | Context label. | Workday | `eyebrow` | Accent2 color. |
+| PanelTitle ([glossary](DESIGN_GLOSSARY.md#ui-design-glossary-new-habit--habit-board)) | Panel heading. | Time Glide | `<h3>` | Display font. |
 | WorkdayControls | Inline control row for start time, hours, apply buttons. | Start 09:00 / Hours 8 / Set / Clock out / Worked override | `day-controls` with inputs `#workday-start`, `#workday-hours`, `#workday-worked-override`; buttons `#workday-save`, `#workday-clockout`, `#workday-apply-worked` | Inputs use global input styling; ghost/small buttons use `.button.ghost.small` and inherit focus ring tokens. |
 | WorkdayBar | Horizontal bar showing worked vs planned. | Gradient bar with inner fill | `workday-bar` containing `workday-progress` and `workday-label` | Progress fill width and color animate with usage; label overlays center. |
 
@@ -70,11 +70,11 @@
 
 | Element Name | Description | Example content | CSS class | Notes |
 | --- | --- | --- | --- | --- |
-| PanelShell (glossary) | Panel container housing the focus grid. | — | `panel dashboard` | Uses panel surface/border/shadow. |
-| PanelHeader (glossary) | Header row with eyebrow/title and CTA pills. | — | `panel__header` | Flex layout. |
-| Eyebrow (glossary) | Context label. | Alignment | `eyebrow` | Accent2 color. |
-| PanelTitle (glossary) | Main heading. | Today’s Focus | `<h2>` | Display font. |
-| PillRow (glossary: Pill) | Action pills to open goal/reflection overlays. | Q1 · March / Reflection | `pill subtle period-cta` (`#period-cta`), `pill subtle` (`#reflection-cta`) | Click handlers open respective overlays; text populated by JS. |
+| PanelShell ([glossary](DESIGN_GLOSSARY.md#ui-design-glossary-new-habit--habit-board)) | Panel container housing the focus grid. | — | `panel dashboard` | Uses panel surface/border/shadow. |
+| PanelHeader ([glossary](DESIGN_GLOSSARY.md#ui-design-glossary-new-habit--habit-board)) | Header row with eyebrow/title and CTA pills. | — | `panel__header` | Flex layout. |
+| Eyebrow ([glossary](DESIGN_GLOSSARY.md#glossary-legend)) | Context label. | Alignment | `eyebrow` | Accent2 color. |
+| PanelTitle ([glossary](DESIGN_GLOSSARY.md#ui-design-glossary-new-habit--habit-board)) | Main heading. | Today’s Focus | `<h2>` | Display font. |
+| PillRow (glossary: [Pill](DESIGN_GLOSSARY.md#glossary-legend)) | Action pills to open goal/reflection overlays. | Q1 · March / Reflection | `pill subtle period-cta` (`#period-cta`), `pill subtle` (`#reflection-cta`) | Click handlers open respective overlays; text populated by JS. |
 | PeriodPrompt | Prompt text describing alignment question. | How do your habits today support your Q1 goals? | `meta` (`#period-prompt`) | Filled by dashboard render. |
 | PeriodActionsList | Bullet list of suggested actions. | Review top 3 habits... | `meta` list (`#period-actions`) | Items injected by JS. |
 | HabitsSummaryBadge | Numeric badge card showing total habits and streak sum. | 5 Habits tracked | `badge card` with `badge__value`, `badge__label`, `meta` (`#habit-count`, `#streak-summary-card`) | Uses card gradient surface. |
@@ -93,9 +93,9 @@
 
 | Element Name | Description | Example content | CSS class | Notes |
 | --- | --- | --- | --- | --- |
-| PanelShell (glossary) | Form container with panel styling. | — | `panel` | Standard panel surface. |
-| PanelHeader (glossary) | Header with eyebrow/title and status text. | Create / Ready | `panel__header` with `eyebrow`, `status` (`#status`) | Status color shifts on errors via inline style. |
-| PanelTitle (glossary) | Section heading. | New Habit | `<h2>` | Display font. |
+| PanelShell ([glossary](DESIGN_GLOSSARY.md#ui-design-glossary-new-habit--habit-board)) | Form container with panel styling. | — | `panel` | Standard panel surface. |
+| PanelHeader ([glossary](DESIGN_GLOSSARY.md#ui-design-glossary-new-habit--habit-board)) | Header with eyebrow/title and status text. | Create / Ready | `panel__header` with `eyebrow`, `status` (`#status`) | Status color shifts on errors via inline style. |
+| PanelTitle ([glossary](DESIGN_GLOSSARY.md#ui-design-glossary-new-habit--habit-board)) | Section heading. | New Habit | `<h2>` | Display font. |
 | FormGrid | Responsive form layout for fields. | — | `form` (`#habit-form`) | Auto-fit minmax columns. |
 | FieldLabel (glossary) | Muted label above each input. | Category | `<label>` | Uses global label styling. |
 | TextInput (glossary) | Inputs for category, name, tags. | Focus, Health, Growth | `<input>` fields | Inherit focus ring, radius-sm, border tokens. |
@@ -113,11 +113,11 @@
 
 | Element Name | Description | Example content | CSS class | Notes |
 | --- | --- | --- | --- | --- |
-| PanelShell (glossary) | Container for filters and habit grid. | — | `panel` | Standard panel styling. |
-| PanelHeader (glossary) | Header with eyebrow/title and filter row. | Track / Refresh | `panel__header` | Contains filters on right. |
-| Eyebrow (glossary) | Context label. | Track | `eyebrow` | Accent2 color. |
-| PanelTitle (glossary) | Section heading. | Habit Board | `<h2>` | Display font. |
-| ActiveTagPill (glossary: Pill) | Shows active tag filter. | Filter: #focus | `pill subtle` (`#active-tag`) | Hidden when no filter. |
+| PanelShell ([glossary](DESIGN_GLOSSARY.md#ui-design-glossary-new-habit--habit-board)) | Container for filters and habit grid. | — | `panel` | Standard panel styling. |
+| PanelHeader ([glossary](DESIGN_GLOSSARY.md#ui-design-glossary-new-habit--habit-board)) | Header with eyebrow/title and filter row. | Track / Refresh | `panel__header` | Contains filters on right. |
+| Eyebrow ([glossary](DESIGN_GLOSSARY.md#glossary-legend)) | Context label. | Track | `eyebrow` | Accent2 color. |
+| PanelTitle ([glossary](DESIGN_GLOSSARY.md#ui-design-glossary-new-habit--habit-board)) | Section heading. | Habit Board | `<h2>` | Display font. |
+| ActiveTagPill (glossary: [Pill](DESIGN_GLOSSARY.md#glossary-legend)) | Shows active tag filter. | Filter: #focus | `pill subtle` (`#active-tag`) | Hidden when no filter. |
 | RefreshButton | Ghost small button to reload data. | Refresh | `ghost small` (`#refresh`) | Lacks `.button` class; renders as pill-like button. |
 | CategoryBlock | Group per category containing title and habit cards grid. | Focus | `category-block` with `category-title` | Created dynamically in JS. |
 | HabitsGrid | Responsive grid for habit cards. | — | `habits-grid` | Auto-fit columns. |
@@ -138,7 +138,7 @@
 | CardHeader | Clickable top row toggling body visibility. | Habit name, streak badge, chevron | `habit-card__top` with `.js-toggle` | Chevron rotates on collapse. |
 | HabitNameTitle (glossary) | Habit title text. | Daily write | `.js-name` inside `<h3>` | Display font. |
 | LastCompletedMeta | Last completion date. | Last: 2024-05-01 | `meta js-last` | Muted text. |
-| StreakBadge (glossary: Badge) | Gradient badge showing streak days. | 12 | `streak js-streak` | Fixed size, accent gradient. |
+| StreakBadge (glossary: [Badge](DESIGN_GLOSSARY.md#glossary-legend)) | Gradient badge showing streak days. | 12 | `streak js-streak` | Fixed size, accent gradient. |
 | HabitMetaRow | Inline pills for completions and ID. | 8 completions / ID 3 | `habit-card__meta` with `pill`, `pill subtle js-id` | Pills inherit pill tokens. |
 | TagRow | Clickable tag chips for filtering. | #focus | `tag-row js-tag-row` with `pill` | Chips add filter via `onFilterTag`. |
 | CompletionInline | Inputs to log completion with optional note. | Date + Mark done | `complete-inline` with `.complete-date`, `.complete-note`, `.js-complete` | Button uses `.button.small`. |
@@ -158,8 +158,8 @@
 
 | Element Name | Description | Example content | CSS class | Notes |
 | --- | --- | --- | --- | --- |
-| PanelShell (glossary) | Wide panel container. | — | `panel wide` | Spans grid width. |
-| PanelHeader (glossary) | Header with eyebrow/title. | Reflect / Recent Completions | `panel__header` with `eyebrow` and `<h2>` | No actions in header. |
+| PanelShell ([glossary](DESIGN_GLOSSARY.md#ui-design-glossary-new-habit--habit-board)) | Wide panel container. | — | `panel wide` | Spans grid width. |
+| PanelHeader ([glossary](DESIGN_GLOSSARY.md#ui-design-glossary-new-habit--habit-board)) | Header with eyebrow/title. | Reflect / Recent Completions | `panel__header` with `eyebrow` and `<h2>` | No actions in header. |
 | Timeline | Container for completion rows. | — | `timeline` (`#completions`) | Rows inserted by JS. |
 | TimelineRow | Individual completion entry with date pill, habit name, note, ID. | 2024-05-01 / Daily write / No note / #12 | `timeline__row` containing `pill`, `pill subtle`, `meta` | Uses border/radius background. |
 
