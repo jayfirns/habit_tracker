@@ -58,6 +58,12 @@ a {
   align-items: center;
 }
 
+.hero__options {
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 8px;
+}
+
 .hero__actions-bar {
   justify-content: center;
   padding-bottom: 32px;
@@ -71,6 +77,14 @@ a {
   display: flex;
   align-items: center;
   gap: 8px;
+}
+
+.theme-picker .ghost,
+.goal-actions .ghost,
+.hero__actions .ghost {
+  background: var(--pill);
+  border: 1px solid var(--border);
+  color: var(--text);
 }
 
 .pill-row {
