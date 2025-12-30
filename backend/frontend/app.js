@@ -111,7 +111,7 @@ function renderHabits() {
       const node = habitTemplate.content.firstElementChild.cloneNode(true);
       node.dataset.id = habit.id;
       node.querySelector(".js-name").textContent = habit.name;
-      node.querySelector(".js-category").textContent = habit.category;
+      node.querySelector(".js-category").textContent = category;
       node.querySelector(".js-last").textContent = `Last: ${formatDate(habit.last_completed)}`;
       node.querySelector(".js-streak").textContent = habit.streak ?? 0;
       node.querySelector(".js-completions").textContent = `${habit.completions.length} completions`;
