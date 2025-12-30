@@ -9,11 +9,15 @@
   <body>
     <header class="hero">
       <div class="hero__text">
-        <div class="hero__options">
-          <div class="theme-picker" aria-label="Choose theme">
-            <button class="ghost small" type="button" data-theme="default">Default</button>
-            <button class="ghost small" type="button" data-theme="cyberpunk">Cyberpunk</button>
-            <button class="ghost small" type="button" data-theme="enterprise">Enterprise</button>
+        <div class="options-menu">
+          <button class="ghost small" id="options-toggle" type="button">Options ▾</button>
+          <div class="options-panel" id="options-panel" hidden>
+            <p class="meta">Themes</p>
+            <div class="theme-picker" aria-label="Choose theme">
+              <button class="ghost small" type="button" data-theme="default">Default</button>
+              <button class="ghost small" type="button" data-theme="cyberpunk">Cyberpunk</button>
+              <button class="ghost small" type="button" data-theme="enterprise">Enterprise</button>
+            </div>
           </div>
         </div>
         <p class="eyebrow">FocusOS</p>

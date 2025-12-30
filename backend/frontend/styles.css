@@ -64,6 +64,25 @@ a {
   margin-bottom: 8px;
 }
 
+.options-menu {
+  position: relative;
+  display: inline-block;
+  margin-bottom: 8px;
+}
+
+.options-panel {
+  position: absolute;
+  top: 32px;
+  left: 0;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px;
+  min-width: 220px;
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.25);
+  z-index: 10;
+}
+
 .hero__actions-bar {
   justify-content: center;
   padding-bottom: 32px;
@@ -118,6 +137,12 @@ a {
 .goal-actions {
   display: flex;
   gap: 6px;
+}
+
+.panel__header .ghost {
+  background: var(--pill);
+  border: 1px solid var(--border);
+  color: var(--text);
 }
 
 .hero__badge {

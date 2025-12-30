@@ -29,6 +29,8 @@ const reflectionForm = document.querySelector("#reflection-form");
 const goalsList = document.querySelector("#goals-list");
 const newGoalBtn = document.querySelector("#new-goal");
 const themeButtons = document.querySelectorAll("[data-theme]");
+const optionsToggle = document.querySelector("#options-toggle");
+const optionsPanel = document.querySelector("#options-panel");
 
 const state = {
   habits: [],
@@ -365,6 +367,7 @@ loadHabits();
 loadGoals();
 loadReflections();
 initThemePicker();
+initOptionsMenu();
 
 function openOverlay(el) {
   el.hidden = false;
@@ -615,5 +618,17 @@ function initThemePicker() {
     btn.addEventListener("click", () => {
       applyTheme(btn.dataset.theme);
     });
+  });
+}
+
+function initOptionsMenu() {
+  if (!optionsToggle || !optionsPanel) return;
+  optionsToggle.addEventListener("click", () => {
+    optionsPanel.hidden = !optionsPanel.hidden;
+  });
+  document.addEventListener("click", (e) => {
+    if (!optionsPanel.hidden && !optionsPanel.contains(e.target) && e.target !== optionsToggle) {
+      optionsPanel.hidden = true;
+    }
   });
 }
