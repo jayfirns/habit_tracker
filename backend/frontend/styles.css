@@ -36,6 +36,8 @@ a {
   align-items: start;
   padding: 48px 7vw 32px;
   gap: 24px;
+  max-width: 1400px;
+  margin: 0 auto;
 }
 
 .hero__text h1 {
@@ -68,6 +70,7 @@ a {
   box-shadow: 0 20px 60px rgba(255, 111, 97, 0.3);
   min-width: 0;
   width: fit-content;
+  justify-self: end;
 }
 
 .badge__value {
