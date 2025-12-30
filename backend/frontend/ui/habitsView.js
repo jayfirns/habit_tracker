@@ -58,7 +58,6 @@ export function renderHabitsView({
       node.dataset.id = habit.id;
       habitCardRefs.set(habit.id, node);
       node.querySelector(".js-name").textContent = habit.name;
-      node.querySelector(".js-category").textContent = habit.category || "Uncategorized";
       node.querySelector(".js-last").textContent = `Last: ${formatDate(habit.last_completed)}`;
       node.querySelector(".js-streak").textContent = habit.streak ?? 0;
       node.querySelector(".js-completions").textContent = `${habit.completions.length} completions`;

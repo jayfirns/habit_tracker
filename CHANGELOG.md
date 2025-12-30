@@ -19,6 +19,7 @@ This document tracks significant changes, features, and fixes implemented throug
 - SMART goal form now sends the backend-compatible payload, surfaces clearer save errors, and the modal footprint is slightly smaller for easier use.
 
 ### Fixed
+- Safely removed redundant `.js-category` element from habit cards, fixing a critical rendering failure on the Habit Board.
 - Eliminated double-counting of focus minutes across completions, timers, and overrides; ensured manual worked values propagate through all calculations.
 
 ## 0.1.2 - 2025-12-30 (Frontend Modularization and Gitignore Updates)
