@@ -9,8 +9,9 @@ const PALETTE = [
   "#f97316",
 ];
 
-export const CHART_MODES = ["pie", "habit", "grouped"];
+export const CHART_MODES = ["pie", "bars", "grouped"];
 export const VALUE_MODES = ["duration", "frequency"];
+const CHART_MODE_ALIASES = { habit: "bars" };
 
 export const DEFAULT_MOCK_ENTRIES = [
   {
@@ -40,7 +41,8 @@ export const DEFAULT_MOCK_ENTRIES = [
 ];
 
 export function coerceChartMode(mode) {
-  return CHART_MODES.includes(mode) ? mode : "pie";
+  const normalized = CHART_MODE_ALIASES[mode] || mode;
+  return CHART_MODES.includes(normalized) ? normalized : "pie";
 }
 
 export function coerceValueMode(mode) {
@@ -177,7 +179,7 @@ export function renderLegendDom(
   if (!categoryLegend) return;
   categoryLegend.innerHTML = "";
   if (!series.length) {
-    categoryLegend.innerHTML = `<p class="meta">No data yet. Log habits or use mock data to preview.</p>`;
+    categoryLegend.innerHTML = `<p class="meta">No data available</p>`;
     return;
   }
   series.forEach((item, idx) => {
@@ -211,7 +213,7 @@ export function renderPieDom(
   categoryChart.classList.add("pie-chart");
 
   if (!series.length || total === 0) {
-    categoryChart.innerHTML = `<p class="meta">Log completions or focus time to see your mix.</p>`;
+    categoryChart.innerHTML = `<p class="meta">No data available</p>`;
     renderLegendDom(categoryLegend, [], model, { formatValue, palette });
     return;
   }
@@ -270,7 +272,7 @@ export function renderBarsDom(
   categoryChart.classList.remove("pie-chart");
 
   if (!series.length) {
-    categoryChart.innerHTML = `<p class="meta">No chart data yet. Log some focus time to populate bars.</p>`;
+    categoryChart.innerHTML = `<p class="meta">No data available</p>`;
     renderLegendDom(categoryLegend, [], model, { formatValue, palette });
     return;
   }
@@ -308,7 +310,7 @@ export function renderGroupedDom(
   categoryChart.classList.remove("pie-chart");
 
   if (!groupedSeries.length) {
-    categoryChart.innerHTML = `<p class="meta">Add habits with categories to compare them here.</p>`;
+    categoryChart.innerHTML = `<p class="meta">No data available</p>`;
     renderLegendDom(categoryLegend, [], model, { formatValue, palette });
     return;
   }
@@ -323,7 +325,7 @@ export function renderGroupedDom(
     group.habits.forEach((habit) => {
       const width = Math.max(6, Math.round((habit.value / maxValue) * 100));
       const row = document.createElement("div");
-      row.className = "bar-row";
+      row.className = "bar-row grouped-row";
       row.innerHTML = `
           <div class="bar-row__label meta">${habit.label}</div>
           <div class="bar-row__bar">
@@ -340,17 +342,30 @@ export function renderGroupedDom(
   renderLegendDom(categoryLegend, groupedSeries, model, { formatValue, palette });
 }
 
-export function createEnergyMixPanel(elements, helpers = {}) {
-  const {
-    chartTotalPill,
-    chartCenterValue,
-    chartCenterLabel,
-    chartCenterContainer,
-    categoryChart,
-    categoryLegend,
-    tabsContainer,
-    valueToggleContainer,
-  } = elements;
+export function createEnergyMixPanel(elements = {}, helpers = {}) {
+  const { root } = elements || {};
+  const scopedRoot = root || (typeof document !== "undefined" ? document : null);
+  const resolve = (explicit, selectors = []) => {
+    if (explicit) return explicit;
+    if (!scopedRoot) return null;
+    for (const selector of selectors) {
+      const node = scopedRoot.querySelector(selector);
+      if (node) return node;
+    }
+    return null;
+  };
+
+  const chartContainer = resolve(elements.chartContainer || elements.categoryChart, [
+    ".chart-container",
+    "#category-chart",
+  ]);
+  const categoryLegend = resolve(elements.categoryLegend, [".chart-legend", "#category-legend"]);
+  const chartTotalPill = resolve(elements.chartTotalPill, [".chart-total-pill", "#chart-total-pill"]);
+  const chartCenterValue = resolve(elements.chartCenterValue, [".chart-center__value", "#chart-center-value"]);
+  const chartCenterLabel = resolve(elements.chartCenterLabel, [".chart-center__label", "#chart-center-label"]);
+  const chartCenterContainer = resolve(elements.chartCenterContainer, [".chart-center"]);
+  const tabsContainer = resolve(elements.tabsContainer, [".chart-tabs", "#energy-tabs"]);
+  const valueToggleContainer = resolve(elements.valueToggleContainer, [".chart-toggle", "#energy-value-toggle"]);
   const { formatMinutes = (value) => `${value}m` } = helpers;
 
   const state = {
@@ -385,8 +400,10 @@ export function createEnergyMixPanel(elements, helpers = {}) {
   function updateControls(model) {
     if (tabsContainer) {
       tabsContainer.querySelectorAll("[data-chart-mode]").forEach((btn) => {
-        btn.classList.toggle("active", btn.dataset.chartMode === model.chartMode);
-        btn.setAttribute("aria-selected", btn.dataset.chartMode === model.chartMode ? "true" : "false");
+        const btnMode = coerceChartMode(btn.dataset.chartMode);
+        const isActive = btnMode === model.chartMode;
+        btn.classList.toggle("active", isActive);
+        btn.setAttribute("aria-selected", isActive ? "true" : "false");
       });
     }
     if (valueToggleContainer) {
@@ -413,6 +430,30 @@ export function createEnergyMixPanel(elements, helpers = {}) {
     }
   }
 
+  function filterSeries(model) {
+    const categorySeries = model.categorySeries.filter((item) => item.value > 0);
+    const habitSeries = model.habitSeries.filter((item) => item.value > 0);
+    const groupedSeries = model.groupedSeries
+      .map((group) => {
+        const habits = group.habits.filter((habit) => habit.value > 0);
+        const value = habits.reduce((sum, habit) => sum + habit.value, 0);
+        return { ...group, habits, value };
+      })
+      .filter((group) => group.value > 0 && group.habits.length > 0);
+    return { categorySeries, habitSeries, groupedSeries };
+  }
+
+  function renderEmptyState(message = "No data available") {
+    if (chartContainer) {
+      chartContainer.innerHTML = `<p class="meta">${message}</p>`;
+      chartContainer.classList.remove("pie-chart");
+      chartContainer.classList.remove("bar-stack");
+    }
+    if (categoryLegend) {
+      categoryLegend.innerHTML = `<p class="meta">${message}</p>`;
+    }
+  }
+
   function render(payload = {}) {
     state.lastPayload = payload;
     const model = buildEnergyMixModel({
@@ -421,26 +462,45 @@ export function createEnergyMixPanel(elements, helpers = {}) {
       valueMode: state.valueMode,
     });
 
+    const filteredSeries = filterSeries(model);
+    const activeSeries =
+      model.chartMode === "pie"
+        ? filteredSeries.categorySeries
+        : model.chartMode === "grouped"
+          ? filteredSeries.groupedSeries
+          : filteredSeries.habitSeries;
+    const activeTotal =
+      model.chartMode === "grouped"
+        ? activeSeries.reduce((sum, group) => sum + group.value, 0)
+        : activeSeries.reduce((sum, item) => sum + item.value, 0);
+
     updateControls(model);
-    updateTotals(model.total, model);
+    updateTotals(activeTotal, model);
+
+    if (!activeSeries.length) {
+      renderEmptyState("No data available");
+      return;
+    }
 
     if (model.chartMode === "pie") {
-      renderPieDom({ categoryChart, categoryLegend }, model.categorySeries, model.total, model, {
-        formatValue,
-      });
-    } else if (model.chartMode === "grouped") {
-      renderGroupedDom({ categoryChart, categoryLegend }, model.groupedSeries, model, {
-        formatValue,
-      });
-    } else {
-      renderBarsDom(
-        { categoryChart, categoryLegend },
-        model.habitSeries,
+      renderPieDom(
+        { categoryChart: chartContainer, categoryLegend },
+        filteredSeries.categorySeries,
+        activeTotal,
         model,
         {
           formatValue,
         },
       );
+    } else if (model.chartMode === "grouped") {
+      renderGroupedDom({ categoryChart: chartContainer, categoryLegend }, filteredSeries.groupedSeries, model, {
+        formatValue,
+      });
+    } else {
+      const legendModel = { ...model, categorySeries: filteredSeries.categorySeries };
+      renderBarsDom({ categoryChart: chartContainer, categoryLegend }, filteredSeries.habitSeries, legendModel, {
+        formatValue,
+      });
     }
   }
 

@@ -16,11 +16,13 @@ This document tracks significant changes, features, and fixes implemented throug
 - **TDD Utilities**: `time-utils` tests covering focus parsing, time formatting, and workday math.
 
 ### Changed
+- Refactored `energyMixPanel.js` to improve testability, robustness, and empty state handling.
 - Time summary and habit cards now consume a single source of truth for focus minutes, including manual overrides and active timers.
 - Goals/SMART UI tightened with linked habits and reflection hooks.
 - SMART goal form now sends the backend-compatible payload, surfaces clearer save errors, and the modal footprint is slightly smaller for easier use.
 
 ### Fixed
+- Fixed non-functional tabs on the Energy Mix Panel by correcting a data attribute mismatch between the HTML and JavaScript.
 - Safely removed redundant `.js-category` element from habit cards, fixing a critical rendering failure on the Habit Board.
 - Eliminated double-counting of focus minutes across completions, timers, and overrides; ensured manual worked values propagate through all calculations.
 

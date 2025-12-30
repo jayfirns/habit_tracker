@@ -238,7 +238,7 @@
             <h3>Category Completions</h3>
           </div>
           <div class="chart-actions">
-            <div class="pill subtle" id="chart-total-pill">0 logged</div>
+            <div class="pill subtle chart-total-pill" id="chart-total-pill">0 logged</div>
             <div class="chart-toggle" id="energy-value-toggle" role="group" aria-label="Metric">
               <button class="pill subtle active" type="button" data-value-mode="duration" aria-pressed="true">
                 Duration
@@ -255,10 +255,10 @@
           <button class="tab" type="button" role="tab" aria-selected="false" data-chart-mode="grouped">Grouped</button>
         </div>
         <div class="pie-wrap">
-          <div id="category-chart" class="pie-chart"></div>
+          <div id="category-chart" class="pie-chart chart-container"></div>
           <div class="chart-center">
-            <div class="badge__value" id="chart-center-value">0</div>
-            <div class="meta" id="chart-center-label">minutes</div>
+            <div class="badge__value chart-center__value" id="chart-center-value">0</div>
+            <div class="meta chart-center__label" id="chart-center-label">minutes</div>
           </div>
         </div>
         <div class="chart-legend" id="category-legend"></div>
