@@ -21,7 +21,9 @@
               <p class="eyebrow">Alignment</p>
               <h2>Today’s Focus</h2>
             </div>
-            <div class="pill subtle" id="period-label"></div>
+            <button class="pill subtle period-cta" type="button" id="period-cta" title="Set or review goals">
+              <span id="period-label"></span>
+            </button>
           </div>
           <div class="dashboard-grid">
             <div>
@@ -95,7 +97,6 @@
 
     <section class="hero hero__actions-bar">
       <div class="hero__actions">
-        <button class="button ghost" id="open-goal">Set SMART Goal</button>
         <button class="button ghost" id="open-reflection">Reflect</button>
         <a class="button" href="/docs" target="_blank" rel="noreferrer">API Docs</a>
       </div>
@@ -135,6 +136,7 @@
           <div>
             <p class="eyebrow">SMART</p>
             <h3>New Goal</h3>
+            <p class="meta">Make it Specific, Measurable, Achievable, Relevant, and Time-bound.</p>
           </div>
           <button class="ghost small" type="button" id="close-goal">Close</button>
         </div>
@@ -164,8 +166,8 @@
             <input id="goal-tags" name="tags" type="text" placeholder="focus, q1" />
           </div>
           <div class="field full">
-            <label for="goal-habits">Link habits (comma-separated IDs)</label>
-            <input id="goal-habits" name="habit_ids" type="text" placeholder="1,2,3" />
+            <label for="goal-habits">Link habits</label>
+            <select id="goal-habits" name="habit_ids" multiple></select>
           </div>
           <button type="submit" class="button full">Save goal</button>
         </form>

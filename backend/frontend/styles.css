@@ -62,6 +62,10 @@ a {
   padding-bottom: 32px;
 }
 
+.period-cta {
+  cursor: pointer;
+}
+
 .hero__badge {
   background: linear-gradient(135deg, var(--accent), #ff9773);
   padding: 14px 16px;

@@ -17,7 +17,7 @@ const periodPrompt = document.querySelector("#period-prompt");
 const periodActions = document.querySelector("#period-actions");
 const habitCount = document.querySelector("#habit-count");
 const streakSummaryCard = document.querySelector("#streak-summary-card");
-const openGoalBtn = document.querySelector("#open-goal");
+const periodCta = document.querySelector("#period-cta");
 const closeGoalBtn = document.querySelector("#close-goal");
 const goalOverlay = document.querySelector("#goal-overlay");
 const goalForm = document.querySelector("#goal-form");
@@ -61,6 +61,7 @@ async function loadHabits() {
   try {
     const data = await api(HABITS_URL);
     state.habits = data;
+    populateHabitOptions();
     renderHabits();
     renderCompletions();
     renderDashboard();
@@ -354,7 +355,7 @@ function closeOverlay(el) {
   el.hidden = true;
 }
 
-openGoalBtn?.addEventListener("click", () => openOverlay(goalOverlay));
+periodCta?.addEventListener("click", () => openOverlay(goalOverlay));
 closeGoalBtn?.addEventListener("click", () => closeOverlay(goalOverlay));
 goalOverlay?.addEventListener("click", (e) => {
   if (e.target === goalOverlay) closeOverlay(goalOverlay);
@@ -367,7 +368,9 @@ goalForm?.addEventListener("submit", async (event) => {
   const outcome = goalForm.querySelector("#goal-outcome").value.trim();
   const due_date = goalForm.querySelector("#goal-due").value || null;
   const tags = parseTags(goalForm.querySelector("#goal-tags").value);
-  const habit_ids = parseIds(goalForm.querySelector("#goal-habits").value);
+  const habit_ids = Array.from(goalForm.querySelector("#goal-habits").selectedOptions).map((o) =>
+    parseInt(o.value, 10),
+  );
   if (!title) {
     setStatus("Goal title required", true);
     return;
@@ -433,4 +436,16 @@ function parseIds(raw) {
     .filter(Boolean)
     .map((v) => parseInt(v, 10))
     .filter((n) => !Number.isNaN(n));
+}
+
+function populateHabitOptions() {
+  const select = document.querySelector("#goal-habits");
+  if (!select) return;
+  select.innerHTML = "";
+  state.habits.forEach((habit) => {
+    const opt = document.createElement("option");
+    opt.value = habit.id;
+    opt.textContent = `${habit.name} (${habit.category})`;
+    select.appendChild(opt);
+  });
 }
