@@ -8,6 +8,7 @@ This document outlines the high-level action plan for migrating the "My Personal
 -   **API First**: The backend API will be developed with a clear contract before extensive frontend development.
 -   **Privacy by Design**: User data privacy will be a paramount consideration in all design and implementation choices.
 -   **Containerization**: The application components will be designed for deployment within Docker containers from the outset.
+-   **Continuous Improvement**: Project setup, dependencies, and configurations will be continuously refined for maintainability, security, and developer experience.
 
 ---
 
@@ -57,7 +58,7 @@ This document outlines the high-level action plan for migrating the "My Personal
 -   [x] Develop UI component to display the list of habits from `GET /habits`.
 -   [x] Create UI forms for `POST /habits` (Add Habit) and `PUT /habits/{id}` (Edit Habit). (Edit deferred; Add shipped.)
 -   [x] Implement UI for `POST /habits/{id}/complete` (Mark as Done), including note input.
--   [x] Apply basic, responsive styling.
+-   [x] Apply basic, responsive styling (now modularized with `base.css`, `components.css`, `themes.css`).
 -   [x] Create `Dockerfile` for the frontend service. (Frontend served from backend image; no separate build needed.)
 -   [x] Create or update `docker-compose.yml` to run both backend and frontend services.
 -   [ ] Write end-to-end tests for core user flows (TDD).

@@ -20,6 +20,14 @@ This document tracks significant changes, features, and fixes implemented throug
 ### Fixed
 - Eliminated double-counting of focus minutes across completions, timers, and overrides; ensured manual worked values propagate through all calculations.
 
+## 0.1.2 - 2025-12-30 (Frontend Modularization and Gitignore Updates)
+
+### Added
+-   **Frontend Styling Modularization**: Refactored frontend styles by replacing a single `styles.css` with modular `base.css`, `components.css`, and `themes.css`. Updated `app.js` and `index.html` to use these new styles.
+
+### Changed
+-   `.gitignore` updated to include `backend/venv/`, `__pycache__/`, `.pytest_cache/`, `*.db`, and `data/` to prevent tracking of virtual environment files, Python cache, database files, and local data directory.
+
 ## 0.1.1 - 2025-12-29 (Backend Core Initialization & Alembic Configuration Attempts)
 
 ### Added
