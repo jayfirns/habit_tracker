@@ -100,10 +100,17 @@ a {
 
 .theme-picker .ghost,
 .goal-actions .ghost,
-.hero__actions .ghost {
+.hero__actions .ghost,
+.icon-button {
   background: var(--pill);
   border: 1px solid var(--border);
   color: var(--text);
+}
+
+.icon-button {
+  font-size: 18px;
+  padding: 8px 10px;
+  line-height: 1;
 }
 
 .pill-row {
