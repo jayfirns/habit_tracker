@@ -575,6 +575,20 @@ function autoPeriodLabel(dateObj) {
   return `${year}-Q${quarter}`;
 }
 
+async function deleteGoal(goalId) {
+  const ok = confirm("Delete this goal? Linked habits will remain.");
+  if (!ok) return;
+  try {
+    await api(`${API_BASE}/goals/${goalId}`, { method: "DELETE" });
+    setStatus("Goal deleted");
+    await loadGoals();
+    await loadHabits();
+  } catch (err) {
+    console.error(err);
+    setStatus("Failed to delete goal", true);
+  }
+}
+
 function initThemePicker() {
   const palettes = {
     default: {
