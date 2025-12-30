@@ -11,10 +11,17 @@ const habitTemplate = document.querySelector("#habit-template");
 const editOverlay = document.querySelector("#edit-overlay");
 const editForm = document.querySelector("#edit-form");
 const closeEditBtn = document.querySelector("#close-edit");
+const activeTag = document.querySelector("#active-tag");
+const periodLabel = document.querySelector("#period-label");
+const periodPrompt = document.querySelector("#period-prompt");
+const periodActions = document.querySelector("#period-actions");
+const habitCount = document.querySelector("#habit-count");
+const streakSummaryCard = document.querySelector("#streak-summary-card");
 
 const state = {
   habits: [],
   editingId: null,
+  filterTag: null,
 };
 
 // Ensure overlay is hidden on load
@@ -48,6 +55,7 @@ async function loadHabits() {
     state.habits = data;
     renderHabits();
     renderCompletions();
+    renderDashboard();
     setStatus("Synced");
   } catch (err) {
     console.error(err);
@@ -70,7 +78,18 @@ function renderHabits() {
   habitsContainer.innerHTML = "";
   let totalStreak = 0;
 
-  state.habits.forEach((habit) => {
+  const habits = state.filterTag
+    ? state.habits.filter((h) => (h.tags || []).includes(state.filterTag))
+    : state.habits;
+
+  if (state.filterTag) {
+    activeTag.hidden = false;
+    activeTag.textContent = `Filter: #${state.filterTag}`;
+  } else {
+    activeTag.hidden = true;
+  }
+
+  habits.forEach((habit) => {
     totalStreak += habit.streak || 0;
     const node = habitTemplate.content.firstElementChild.cloneNode(true);
     node.dataset.id = habit.id;
@@ -80,6 +99,23 @@ function renderHabits() {
     node.querySelector(".js-streak").textContent = habit.streak ?? 0;
     node.querySelector(".js-completions").textContent = `${habit.completions.length} completions`;
     node.querySelector(".js-id").textContent = `ID ${habit.id}`;
+
+    const tagRow = document.createElement("div");
+    tagRow.className = "tag-row";
+    (habit.tags || []).forEach((tag) => {
+        const chip = document.createElement("span");
+        chip.className = "pill";
+        chip.textContent = `#${tag}`;
+        chip.addEventListener("click", () => setTagFilter(tag));
+        tagRow.appendChild(chip);
+    });
+    if (!habit.tags || habit.tags.length === 0) {
+      const chip = document.createElement("span");
+      chip.className = "pill subtle";
+      chip.textContent = "No tags";
+      tagRow.appendChild(chip);
+    }
+    node.querySelector(".habit-card__meta").after(tagRow);
 
     const dateInput = node.querySelector(".complete-date");
     const noteInput = node.querySelector(".complete-note");
@@ -132,6 +168,8 @@ function renderCompletions() {
 async function createHabit(formData) {
   const name = formData.get("name").trim();
   const category = formData.get("category").trim();
+    const tagsRaw = formData.get("tags") || "";
+  const tags = parseTags(tagsRaw);
   if (!name || !category) {
     setStatus("Name and category are required", true);
     return;
@@ -140,7 +178,7 @@ async function createHabit(formData) {
   setStatus("Creating...");
   await api(HABITS_URL, {
     method: "POST",
-    body: JSON.stringify({ name, category }),
+    body: JSON.stringify({ name, category, tags }),
   });
   setStatus("Created");
   form.reset();
@@ -186,6 +224,7 @@ function openEdit(habit) {
   document.querySelector("#edit-id").value = habit.id;
   document.querySelector("#edit-name").value = habit.name;
   document.querySelector("#edit-category").value = habit.category;
+  document.querySelector("#edit-tags").value = (habit.tags || []).join(", ");
   editOverlay.hidden = false;
 }
 
@@ -204,6 +243,7 @@ editForm.addEventListener("submit", async (event) => {
   if (!state.editingId) return;
   const name = document.querySelector("#edit-name").value.trim();
   const category = document.querySelector("#edit-category").value.trim();
+  const tags = parseTags(document.querySelector("#edit-tags").value);
   if (!name || !category) {
     setStatus("Name and category are required", true);
     return;
@@ -213,7 +253,7 @@ editForm.addEventListener("submit", async (event) => {
   try {
     await api(`${HABITS_URL}/${state.editingId}`, {
       method: "PUT",
-      body: JSON.stringify({ name, category }),
+      body: JSON.stringify({ name, category, tags }),
     });
     setStatus("Updated");
     closeEdit();
@@ -223,5 +263,44 @@ editForm.addEventListener("submit", async (event) => {
     setStatus("Failed to update habit", true);
   }
 });
+
+function parseTags(raw) {
+  return raw
+    .split(",")
+    .map((t) => t.trim())
+    .filter(Boolean);
+}
+
+function setTagFilter(tag) {
+  if (state.filterTag === tag) {
+    state.filterTag = null;
+  } else {
+    state.filterTag = tag;
+  }
+  loadHabits();
+}
+
+function renderDashboard() {
+  const now = new Date();
+  const month = now.toLocaleString("default", { month: "long" });
+  const quarter = Math.floor(now.getMonth() / 3) + 1;
+  periodLabel.textContent = `Q${quarter} · ${month}`;
+
+  const actions = [
+    "Review top 3 habits for this quarter.",
+    "Add or adjust tags to align with focus areas.",
+    "Log a completion with a note reflecting intent.",
+  ];
+  periodActions.innerHTML = "";
+  actions.forEach((item) => {
+    const li = document.createElement("li");
+    li.textContent = item;
+    periodActions.appendChild(li);
+  });
+  periodPrompt.textContent = `How do your habits today support your Q${quarter} goals?`;
+
+  habitCount.textContent = state.habits.length;
+  streakSummaryCard.textContent = `${state.habits.reduce((sum, h) => sum + (h.streak || 0), 0)} streak days total`;
+}
 
 loadHabits();

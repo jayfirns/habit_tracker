@@ -41,7 +41,7 @@ def db_session(db_engine):
     session.close()
 
 def test_create_habit(db_session):
-    habit = Habit(name="Read Book", category="Personal Growth")
+    habit = Habit(name="Read Book", category="Personal Growth", tags=["reading"])
     db_session.add(habit)
     db_session.commit()
     db_session.refresh(habit)
@@ -51,6 +51,7 @@ def test_create_habit(db_session):
     assert habit.category == "Personal Growth"
     assert habit.streak == 0
     assert habit.last_completed is None
+    assert habit.tags == ["reading"]
 
 def test_add_completion_to_habit(db_session):
     habit = Habit(name="Exercise", category="Health")

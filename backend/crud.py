@@ -25,11 +25,13 @@ def get_habit(db: Session, habit_id: int) -> Optional[models.Habit]:
 
 
 def create_habit(db: Session, habit_in: schemas.HabitCreate) -> models.Habit:
+    tags = [t.strip() for t in (habit_in.tags or []) if t.strip()]
     habit = models.Habit(
         name=habit_in.name.strip(),
         category=habit_in.category.strip(),
         streak=0,
         last_completed=None,
+        tags=tags,
     )
     db.add(habit)
     db.commit()
@@ -48,6 +50,8 @@ def update_habit(
         habit.name = habit_in.name.strip()
     if habit_in.category is not None:
         habit.category = habit_in.category.strip()
+    if habit_in.tags is not None:
+        habit.tags = [t.strip() for t in habit_in.tags if t.strip()]
 
     db.add(habit)
     db.commit()

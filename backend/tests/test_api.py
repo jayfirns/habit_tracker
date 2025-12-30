@@ -43,16 +43,18 @@ def db_session():
 
 
 def test_create_and_list_habits(db_session):
-    created = create_habit(schemas.HabitCreate(name="Exercise", category="Health"), db_session)
+    created = create_habit(schemas.HabitCreate(name="Exercise", category="Health", tags=["focus", "health"]), db_session)
     assert created.name == "Exercise"
     assert created.category == "Health"
     assert created.streak == 0
     assert created.last_completed is None
+    assert created.tags == ["focus", "health"]
 
     habits = list_habits(db_session)
     assert len(habits) == 1
     assert habits[0].name == "Exercise"
     assert habits[0].completions == []
+    assert habits[0].tags == ["focus", "health"]
 
 
 def test_get_habit_by_id(db_session):
@@ -69,11 +71,12 @@ def test_update_habit(db_session):
 
     updated = update_habit(
         habit.id,
-        schemas.HabitUpdate(name="Read Fiction", category="Leisure"),
+        schemas.HabitUpdate(name="Read Fiction", category="Leisure", tags=["reading"]),
         db_session,
     )
     assert updated.name == "Read Fiction"
     assert updated.category == "Leisure"
+    assert updated.tags == ["reading"]
 
 
 def test_delete_habit_removes_it_from_listing(db_session):

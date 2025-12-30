@@ -44,6 +44,10 @@
             <label for="name">Name</label>
             <input id="name" name="name" type="text" placeholder="Daily write, Walk, Meditate" required />
           </div>
+          <div class="field">
+            <label for="tags">Tags (comma-separated)</label>
+            <input id="tags" name="tags" type="text" placeholder="focus, health, deep-work" />
+          </div>
           <button type="submit" class="button full">Add Habit</button>
         </form>
       </section>
@@ -54,7 +58,10 @@
             <p class="eyebrow">Track</p>
             <h2>Habit Board</h2>
           </div>
-          <button class="ghost small" id="refresh">Refresh</button>
+          <div class="habit-filters">
+            <div class="pill subtle" id="active-tag" hidden></div>
+            <button class="ghost small" id="refresh">Refresh</button>
+          </div>
         </div>
         <div id="habits" class="habits-grid"></div>
       </section>
@@ -69,6 +76,27 @@
         <div id="completions" class="timeline"></div>
       </section>
     </main>
+
+    <section class="panel wide dashboard" id="dashboard">
+      <div class="panel__header">
+        <div>
+          <p class="eyebrow">Alignment</p>
+          <h2>Today’s Focus</h2>
+        </div>
+        <div class="pill subtle" id="period-label"></div>
+      </div>
+      <div class="dashboard-grid">
+        <div>
+          <p class="meta" id="period-prompt"></p>
+          <ul class="meta" id="period-actions"></ul>
+        </div>
+        <div class="badge card" id="summary-card">
+          <div class="badge__value" id="habit-count">0</div>
+          <div class="badge__label">Habits tracked</div>
+          <div class="meta" id="streak-summary-card">Streak total</div>
+        </div>
+      </div>
+    </section>
 
     <div class="overlay" id="edit-overlay" hidden>
       <div class="overlay__content">
@@ -87,6 +115,10 @@
           <div class="field">
             <label for="edit-name">Name</label>
             <input id="edit-name" name="name" type="text" required />
+          </div>
+          <div class="field">
+            <label for="edit-tags">Tags (comma-separated)</label>
+            <input id="edit-tags" name="tags" type="text" />
           </div>
           <input type="hidden" id="edit-id" />
           <button type="submit" class="button full">Save changes</button>

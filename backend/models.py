@@ -1,4 +1,4 @@
-from sqlalchemy import Column, ForeignKey, Integer, String
+from sqlalchemy import JSON, Column, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
 from database import Base  # Absolute import for standalone execution
@@ -11,6 +11,7 @@ class Habit(Base):
     category = Column(String, index=True, nullable=False)
     streak = Column(Integer, default=0)
     last_completed = Column(String)  # Stored as ISO format date string
+    tags = Column(JSON, default=list)
 
     completions = relationship(
         "Completion",
