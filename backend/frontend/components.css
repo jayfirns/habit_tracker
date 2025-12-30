@@ -110,6 +110,50 @@
   overflow: hidden;
 }
 
+.chart-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.chart-toggle {
+  display: inline-flex;
+  gap: 6px;
+}
+
+.chart-toggle .pill {
+  cursor: pointer;
+}
+
+.chart-toggle .pill.active {
+  background: var(--panel);
+  border-color: var(--accent);
+  color: var(--text);
+}
+
+.chart-tabs {
+  display: inline-flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+
+.tab {
+  padding: 6px 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--bg1) 90%, transparent);
+  color: var(--muted);
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.tab.active {
+  background: color-mix(in srgb, var(--accent) 25%, var(--panel) 75%);
+  border-color: var(--accent);
+  color: var(--text);
+}
+
 .pie-wrap {
   position: relative;
   display: grid;
@@ -122,9 +166,73 @@
   height: 220px;
 }
 
+.pie-wrap .bar-stack {
+  width: 100%;
+  justify-self: stretch;
+  align-self: stretch;
+}
+
+.bar-stack {
+  display: grid;
+  gap: 10px;
+  width: 100%;
+}
+
+.bar-row {
+  display: grid;
+  grid-template-columns: minmax(120px, 1fr) 1fr auto;
+  gap: 10px;
+  align-items: center;
+}
+
+.bar-row__label {
+  font-weight: 600;
+}
+
+.bar-row__bar {
+  width: 100%;
+  background: color-mix(in srgb, var(--bg1) 85%, transparent);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+.bar-row__fill {
+  display: block;
+  height: 12px;
+  border-radius: var(--radius-sm);
+  background: linear-gradient(90deg, var(--accent), var(--accent2));
+}
+
+.bar-row__value {
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+}
+
+.bar-group {
+  display: grid;
+  gap: 6px;
+  padding: 8px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--bg1) 85%, transparent);
+}
+
+.bar-group__title {
+  font-weight: 700;
+}
+
 .chart-center {
   position: absolute;
   text-align: center;
+}
+
+.chart-center.chart-center--inline {
+  position: static;
+  display: inline-flex;
+  gap: 6px;
+  align-items: baseline;
+  justify-self: start;
 }
 
 .legend-item {

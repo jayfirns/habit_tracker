@@ -231,19 +231,34 @@
 
       <div id="goal-manager-slot"></div>
 
-      <section class="card chart-card wide">
+      <section class="card chart-card wide" id="energy-mix-panel">
         <div class="panel__header">
           <div>
             <p class="eyebrow">Energy mix</p>
             <h3>Category Completions</h3>
           </div>
-          <div class="pill subtle" id="chart-total-pill">0 logged</div>
+          <div class="chart-actions">
+            <div class="pill subtle" id="chart-total-pill">0 logged</div>
+            <div class="chart-toggle" id="energy-value-toggle" role="group" aria-label="Metric">
+              <button class="pill subtle active" type="button" data-value-mode="duration" aria-pressed="true">
+                Duration
+              </button>
+              <button class="pill subtle" type="button" data-value-mode="frequency" aria-pressed="false">
+                Frequency
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="chart-tabs" id="energy-tabs" role="tablist" aria-label="Energy mix modes">
+          <button class="tab active" type="button" role="tab" aria-selected="true" data-chart-mode="pie">Categories</button>
+          <button class="tab" type="button" role="tab" aria-selected="false" data-chart-mode="habit">Habits</button>
+          <button class="tab" type="button" role="tab" aria-selected="false" data-chart-mode="grouped">Grouped</button>
         </div>
         <div class="pie-wrap">
           <div id="category-chart" class="pie-chart"></div>
           <div class="chart-center">
             <div class="badge__value" id="chart-center-value">0</div>
-            <div class="meta">completions</div>
+            <div class="meta" id="chart-center-label">minutes</div>
           </div>
         </div>
         <div class="chart-legend" id="category-legend"></div>

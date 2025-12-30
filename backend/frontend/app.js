@@ -55,8 +55,11 @@ const goalScopeHighlightEl = document.querySelector("#goal-scope-highlight");
 const goalNextStepEl = document.querySelector("#goal-next-step");
 const chartTotalPill = document.querySelector("#chart-total-pill");
 const chartCenterValue = document.querySelector("#chart-center-value");
+const chartCenterLabel = document.querySelector("#chart-center-label");
 const categoryChart = document.querySelector("#category-chart");
 const categoryLegend = document.querySelector("#category-legend");
+const energyTabs = document.querySelector("#energy-tabs");
+const energyValueToggle = document.querySelector("#energy-value-toggle");
 const goalHabitPicker = document.querySelector("#goal-habit-picker");
 const goalHabitChips = document.querySelector("#goal-habit-chips");
 const goalDashboardSection = document.querySelector("#goal-dashboard");
@@ -115,8 +118,11 @@ const dashboardView = createDashboardView(
     goalNextStepEl,
     chartTotalPill,
     chartCenterValue,
+    chartCenterLabel,
     categoryChart,
     categoryLegend,
+    energyTabs,
+    energyValueToggle,
     timeSummaryList,
     timeWorkdayPill,
     timeSummaryPercent,
