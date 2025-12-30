@@ -7,6 +7,7 @@ This document tracks significant changes, features, and fixes implemented throug
 ## Unreleased - Time Glide, Focus Tracking, SMART Enhancements
 
 ### Added
+- **Docs**: Added detailed dependency analysis for `.js-category` to `DESIGN_GLOSSARY.md`.
 - **Workday Time Glide**: Gradient bar with planned vs. worked minutes, clock-out, and manual worked override so summaries stay honest to the day.
 - **Focused Time**: Habit-level stopwatch with live counter, manual adjustment per habit, and focus parsing from completion notes to keep daily totals accurate.
 - **Dashboards**: SMART pulse dashboard, Energy Mix pie chart, and a 5-column daily time summary (planned, worked, % plan, focused, % focused).

@@ -1,3 +1,14 @@
+## Audit: `.js-category` Dependencies (read-only, no changes applied)
+
+- **JavaScript**
+  - backend/frontend/ui/habitsView.js:61 – `querySelector(".js-category").textContent = habit.category || "Uncategorized";` clones habit template nodes and writes category label into the `.js-category` element; write access to `textContent` plus DOM selection via `querySelector`.
+- **HTML / Templates**
+  - backend/frontend/index.html:456 – `<p class="eyebrow js-category"></p>` inside `#habit-template`; defines the category eyebrow element rendered per habit card; displayed content populated by JS.
+- **CSS**
+  - No CSS rules, animations, or selectors target `.js-category`.
+- **Tests**
+  - No test fixtures, snapshots, or assertions reference `.js-category`.
+
 ## Glossary Legend
 
 - **Eyebrow**: Uppercase accent label (11px, letter-spacing 0.08em, color `--accent2`), sits above headings for context.
