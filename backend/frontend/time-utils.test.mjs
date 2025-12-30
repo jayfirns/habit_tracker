@@ -22,7 +22,11 @@ test("formats minutes dropping zero minutes", () => {
 
 test("computes workday minutes with clockout", () => {
   const now = new Date("2024-01-01T10:00:00");
-  const workday = { start: "09:00", hours: 1, clockedOutAt: new Date("2024-01-01T09:38:00").toISOString() };
+  const workday = {
+    start: "09:00",
+    hours: 1,
+    clockedOutAt: new Date("2024-01-01T09:38:00").toISOString(),
+  };
   const { usedMinutes, totalMinutes } = computeWorkdayMinutes(workday, now);
   assert.equal(totalMinutes, 60);
   assert.equal(usedMinutes, 38);

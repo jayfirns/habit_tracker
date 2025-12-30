@@ -10,7 +10,12 @@
     <header class="hero">
       <div class="hero__text">
         <div class="options-menu">
-          <button class="ghost small icon-button" id="options-toggle" type="button" aria-label="Options">
+          <button
+            class="ghost small icon-button"
+            id="options-toggle"
+            type="button"
+            aria-label="Options"
+          >
             &#9776;
           </button>
           <div class="options-panel" id="options-panel" hidden>
@@ -25,8 +30,8 @@
         <p class="eyebrow">FocusOS</p>
         <h1>Stay on track with a clear habit dashboard</h1>
         <p class="lede">
-          Add habits, log completions with notes, and watch streaks grow—all local, no
-          cloud required.
+          Add habits, log completions with notes, and watch streaks grow—all local, no cloud
+          required.
         </p>
         <section class="panel day-timer">
           <div class="panel__header">
@@ -44,12 +49,22 @@
                 <input type="number" id="workday-hours" min="1" max="16" step="0.5" value="8" />
               </label>
               <button class="ghost small" id="workday-save" type="button">Set</button>
-              <button class="button ghost small" id="workday-clockout" type="button">Clock out</button>
+              <button class="button ghost small" id="workday-clockout" type="button">
+                Clock out
+              </button>
               <label class="meta">
                 Worked (m)
-                <input type="number" id="workday-worked-override" min="0" step="1" placeholder="e.g. 38" />
+                <input
+                  type="number"
+                  id="workday-worked-override"
+                  min="0"
+                  step="1"
+                  placeholder="e.g. 38"
+                />
               </label>
-              <button class="ghost small" id="workday-apply-worked" type="button">Apply worked</button>
+              <button class="ghost small" id="workday-apply-worked" type="button">
+                Apply worked
+              </button>
             </div>
           </div>
           <div class="workday-bar">
@@ -64,10 +79,20 @@
               <h2>Today’s Focus</h2>
             </div>
             <div class="pill-row">
-              <button class="pill subtle period-cta" type="button" id="period-cta" title="Set or review goals">
+              <button
+                class="pill subtle period-cta"
+                type="button"
+                id="period-cta"
+                title="Set or review goals"
+              >
                 <span id="period-label"></span>
               </button>
-              <button class="pill subtle period-cta" type="button" id="reflection-cta" title="Reflect">
+              <button
+                class="pill subtle period-cta"
+                type="button"
+                id="reflection-cta"
+                title="Reflect"
+              >
                 <span id="reflection-label">Reflection</span>
               </button>
             </div>
@@ -125,7 +150,9 @@
               <p class="meta" id="goal-due-label">No deadlines</p>
             </div>
           </div>
-          <div class="smart-note" id="goal-next-step">Use SMART to define one measurable outcome this week.</div>
+          <div class="smart-note" id="goal-next-step">
+            Use SMART to define one measurable outcome this week.
+          </div>
         </section>
         <section class="card chart-card">
           <div class="panel__header">
@@ -170,11 +197,23 @@
         <form id="habit-form" class="form">
           <div class="field">
             <label for="category">Category</label>
-            <input id="category" name="category" type="text" placeholder="Focus, Health, Growth" required />
+            <input
+              id="category"
+              name="category"
+              type="text"
+              placeholder="Focus, Health, Growth"
+              required
+            />
           </div>
           <div class="field">
             <label for="name">Name</label>
-            <input id="name" name="name" type="text" placeholder="Daily write, Walk, Meditate" required />
+            <input
+              id="name"
+              name="name"
+              type="text"
+              placeholder="Daily write, Walk, Meditate"
+              required
+            />
           </div>
           <div class="field">
             <label for="tags">Tags (comma-separated)</label>
@@ -323,7 +362,12 @@
           </div>
           <div class="field full">
             <label for="reflection-responses">Notes</label>
-            <textarea id="reflection-responses" name="responses" rows="4" placeholder="What worked, what to adjust"></textarea>
+            <textarea
+              id="reflection-responses"
+              name="responses"
+              rows="4"
+              placeholder="What worked, what to adjust"
+            ></textarea>
           </div>
           <button type="submit" class="button full">Save reflection</button>
         </form>
@@ -343,22 +387,22 @@
             <span class="chevron">▾</span>
           </div>
         </div>
-          <div class="habit-body">
-            <div class="habit-card__meta">
-              <span class="pill js-completions"></span>
-              <span class="pill subtle js-id"></span>
-            </div>
-            <div class="tag-row js-tag-row"></div>
-            <div class="complete-inline">
-              <label>
-                <span class="meta">Date</span>
-                <input class="complete-date" type="date" />
-              </label>
-              <button class="button small js-complete">Mark done</button>
-              <label>
-                <span class="meta">Optional completion note</span>
-                <input class="complete-note" type="text" placeholder="Optional note" />
-              </label>
+        <div class="habit-body">
+          <div class="habit-card__meta">
+            <span class="pill js-completions"></span>
+            <span class="pill subtle js-id"></span>
+          </div>
+          <div class="tag-row js-tag-row"></div>
+          <div class="complete-inline">
+            <label>
+              <span class="meta">Date</span>
+              <input class="complete-date" type="date" />
+            </label>
+            <button class="button small js-complete">Mark done</button>
+            <label>
+              <span class="meta">Optional completion note</span>
+              <input class="complete-note" type="text" placeholder="Optional note" />
+            </label>
           </div>
           <div class="habit-time">
             <div class="meta">Focus time: <strong class="js-time-today">0m today</strong></div>
@@ -368,10 +412,10 @@
               <button class="button ghost small js-adjust-time" type="button">Adjust</button>
             </div>
           </div>
-            <div class="habit-card__actions">
-              <button class="button ghost small js-edit">Edit</button>
-              <button class="button ghost small js-delete">Delete</button>
-            </div>
+          <div class="habit-card__actions">
+            <button class="button ghost small js-edit">Edit</button>
+            <button class="button ghost small js-delete">Delete</button>
+          </div>
         </div>
       </article>
     </template>

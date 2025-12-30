@@ -19,8 +19,14 @@
 
 body {
   margin: 0;
-  font-family: "Manrope", "Segoe UI", system-ui, -apple-system, sans-serif;
-  background: radial-gradient(circle at 20% 20%, #15223b, var(--bg)),
+  font-family:
+    "Manrope",
+    "Segoe UI",
+    system-ui,
+    -apple-system,
+    sans-serif;
+  background:
+    radial-gradient(circle at 20% 20%, #15223b, var(--bg)),
     radial-gradient(circle at 80% 0%, #132038, var(--bg));
   color: var(--text);
   min-height: 100vh;
@@ -465,7 +471,10 @@ input:focus {
   border-radius: 10px;
   font-weight: 700;
   cursor: pointer;
-  transition: transform 120ms ease, box-shadow 120ms ease, background 120ms ease;
+  transition:
+    transform 120ms ease,
+    box-shadow 120ms ease,
+    background 120ms ease;
   box-shadow: 0 15px 35px rgba(255, 111, 97, 0.3);
   text-decoration: none;
 }
@@ -576,7 +585,9 @@ input:focus {
 
 .habit-card.timer-active {
   border-color: var(--accent);
-  box-shadow: 0 0 0 1px rgba(255, 111, 97, 0.35), 0 10px 30px rgba(255, 111, 97, 0.2);
+  box-shadow:
+    0 0 0 1px rgba(255, 111, 97, 0.35),
+    0 10px 30px rgba(255, 111, 97, 0.2);
 }
 
 .habit-card__top-right {

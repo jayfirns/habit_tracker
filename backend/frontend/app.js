@@ -1,7 +1,11 @@
 import { parseFocusMinutes, formatMinutes, computeWorkdayMinutes } from "./time-utils.js";
+import { todayKey, todayValue, formatDate } from "./date-utils.js";
+import { loadJson, saveJson } from "./storage.js";
+import { makeApi } from "./api.js";
+import { renderHabitsView } from "./ui/habitsView.js";
+import { createDashboardView } from "./ui/dashboardView.js";
 
 const API_BASE = window.location.origin;
-const HABITS_URL = `${API_BASE}/habits`;
 
 const habitsContainer = document.querySelector("#habits");
 const completionsContainer = document.querySelector("#completions");
@@ -80,6 +84,42 @@ const state = {
   activeTimers: {},
 };
 
+const apiClient = makeApi(API_BASE);
+const dashboardView = createDashboardView(
+  {
+    periodLabel,
+    periodPrompt,
+    periodActions,
+    habitCount,
+    streakSummaryCard,
+    goalCountEl,
+    goalHighlightEl,
+    goalHabitsLinkedEl,
+    goalHabitCoverageEl,
+    goalDueCountEl,
+    goalDueLabelEl,
+    goalScopeHighlightEl,
+    goalNextStepEl,
+    chartTotalPill,
+    chartCenterValue,
+    categoryChart,
+    categoryLegend,
+    timeSummaryList,
+    timeWorkdayPill,
+    timeSummaryPercent,
+  },
+  {
+    formatDate,
+    formatMinutes,
+    computeWorkdayMinutes,
+    todayKey,
+    getHabitMinutes,
+    getTodayFocusedMinutes,
+    collectHabitsWithTodayCompletions,
+    latestCompletionNote,
+  },
+);
+
 // Ensure overlay is hidden on load
 if (editOverlay) {
   editOverlay.hidden = true;
@@ -90,19 +130,10 @@ const setStatus = (text, isError = false) => {
   statusEl.style.color = isError ? "#ffb4a2" : "var(--muted)";
 };
 
-function todayKey() {
-  return new Date().toISOString().slice(0, 10);
-}
-
 function loadWorkdayConfig() {
-  const saved = localStorage.getItem("focusos-workday");
+  const saved = loadJson("focusos-workday", null);
   if (saved) {
-    try {
-      const parsed = JSON.parse(saved);
-      state.workday = { ...state.workday, ...parsed };
-    } catch (e) {
-      console.warn("Failed to parse workday config", e);
-    }
+    state.workday = { ...state.workday, ...saved };
   }
   if (workdayStartInput) workdayStartInput.value = state.workday.start;
   if (workdayHoursInput) workdayHoursInput.value = state.workday.hours;
@@ -113,18 +144,11 @@ function loadWorkdayConfig() {
 
 function saveWorkdayConfig() {
   state.workday.setAt = new Date().toISOString();
-  localStorage.setItem("focusos-workday", JSON.stringify(state.workday));
+  saveJson("focusos-workday", state.workday);
 }
 
 function loadTimeLogs() {
-  const saved = localStorage.getItem("focusos-time-logs");
-  if (saved) {
-    try {
-      state.timeLogs = JSON.parse(saved);
-    } catch (e) {
-      console.warn("Failed to parse time logs", e);
-    }
-  }
+  state.timeLogs = loadJson("focusos-time-logs", {});
   const today = todayKey();
   const todayLogs = state.timeLogs?.[today] || {};
   state.timeLogs = { [today]: todayLogs };
@@ -132,57 +156,29 @@ function loadTimeLogs() {
 }
 
 function loadManualLogs() {
-  const saved = localStorage.getItem("focusos-manual-logs");
-  if (saved) {
-    try {
-      state.manualLogs = JSON.parse(saved);
-    } catch (e) {
-      console.warn("Failed to parse manual logs", e);
-    }
-  }
+  state.manualLogs = loadJson("focusos-manual-logs", {});
 }
 
 function saveManualLogs() {
-  localStorage.setItem("focusos-manual-logs", JSON.stringify(state.manualLogs));
+  saveJson("focusos-manual-logs", state.manualLogs);
 }
 
 function saveTimeLogs() {
-  localStorage.setItem("focusos-time-logs", JSON.stringify(state.timeLogs));
+  saveJson("focusos-time-logs", state.timeLogs);
 }
 
 function loadActiveTimers() {
-  const saved = localStorage.getItem("focusos-active-timers");
-  if (saved) {
-    try {
-      state.activeTimers = JSON.parse(saved);
-    } catch (e) {
-      console.warn("Failed to parse active timers", e);
-    }
-  }
+  state.activeTimers = loadJson("focusos-active-timers", {});
 }
 
 function saveActiveTimers() {
-  localStorage.setItem("focusos-active-timers", JSON.stringify(state.activeTimers));
-}
-
-async function api(path, options = {}) {
-  const response = await fetch(path, {
-    headers: {
-      "Content-Type": "application/json",
-    },
-    ...options,
-  });
-  if (!response.ok) {
-    const message = await response.text();
-    throw new Error(message || `Request failed (${response.status})`);
-  }
-  return response.status === 204 ? null : response.json();
+  saveJson("focusos-active-timers", state.activeTimers);
 }
 
 async function loadHabits() {
   setStatus("Loading...");
   try {
-    const data = await api(HABITS_URL);
+    const data = await apiClient.listHabits();
     state.habits = data;
     rebuildTimeLogsFromCompletions();
     populateHabitOptions();
@@ -198,10 +194,10 @@ async function loadHabits() {
 
 async function loadGoals() {
   try {
-    const goals = await api(`${API_BASE}/goals`);
+    const goals = await apiClient.listGoals();
     state.goals = goals;
     renderGoals();
-    renderGoalInsights();
+    renderDashboard();
   } catch (err) {
     console.error("Failed to load goals", err);
   }
@@ -209,23 +205,12 @@ async function loadGoals() {
 
 async function loadReflections() {
   try {
-    const data = await api(`${API_BASE}/reflections`);
+    const data = await apiClient.listReflections();
     state.reflections = data;
-    renderGoalInsights();
+    renderDashboard();
   } catch (err) {
     console.error("Failed to load reflections", err);
   }
-}
-
-function todayValue() {
-  return new Date().toISOString().slice(0, 10);
-}
-
-function formatDate(iso) {
-  if (!iso) return "—";
-  const d = new Date(iso);
-  if (Number.isNaN(d.getTime())) return iso;
-  return d.toLocaleDateString();
 }
 
 function updateWorkdayProgress() {
@@ -246,93 +231,24 @@ function updateWorkdayProgress() {
 }
 
 function renderHabits() {
-  habitsContainer.innerHTML = "";
-  let totalStreak = 0;
-  habitCardRefs.clear();
-
-  const habits = state.filterTag
-    ? state.habits.filter((h) => (h.tags || []).includes(state.filterTag))
-    : state.habits;
-
-  if (state.filterTag) {
-    activeTag.hidden = false;
-    activeTag.textContent = `Filter: #${state.filterTag}`;
-  } else {
-    activeTag.hidden = true;
-  }
-
-  // Group by category
-  const byCategory = habits.reduce((acc, habit) => {
-    acc[habit.category] = acc[habit.category] || [];
-    acc[habit.category].push(habit);
-    return acc;
-  }, {});
-
-  Object.entries(byCategory).forEach(([category, items]) => {
-    const block = document.createElement("section");
-    block.className = "category-block";
-    const heading = document.createElement("h2");
-    heading.className = "category-title";
-    heading.textContent = category;
-    block.appendChild(heading);
-
-    const grid = document.createElement("div");
-    grid.className = "habits-grid";
-    items.forEach((habit) => {
-      totalStreak += habit.streak || 0;
-      const node = habitTemplate.content.firstElementChild.cloneNode(true);
-      node.dataset.id = habit.id;
-      habitCardRefs.set(habit.id, node);
-      node.querySelector(".js-name").textContent = habit.name;
-      node.querySelector(".js-category").textContent = habit.name;
-      node.querySelector(".js-name").textContent = "";
-      node.querySelector(".js-last").textContent = `Last: ${formatDate(habit.last_completed)}`;
-      node.querySelector(".js-streak").textContent = habit.streak ?? 0;
-      node.querySelector(".js-completions").textContent = `${habit.completions.length} completions`;
-      node.querySelector(".js-id").textContent = `ID ${habit.id}`;
-      refreshHabitTimeDisplay(habit.id, node);
-
-      const tagRow = node.querySelector(".js-tag-row");
-      (habit.tags || []).forEach((tag) => {
-        const chip = document.createElement("span");
-        chip.className = "pill";
-        chip.textContent = `#${tag}`;
-        chip.addEventListener("click", () => setTagFilter(tag));
-        tagRow.appendChild(chip);
-      });
-      if (!habit.tags || habit.tags.length === 0) {
-        const chip = document.createElement("span");
-        chip.className = "pill subtle";
-        chip.textContent = "No tags";
-        tagRow.appendChild(chip);
-      }
-
-      const dateInput = node.querySelector(".complete-date");
-      const noteInput = node.querySelector(".complete-note");
-      dateInput.value = todayValue();
-
-      node.querySelector(".js-complete").addEventListener("click", () =>
-        completeHabit(habit.id, {
-          note: noteInput.value,
-          date: dateInput.value,
-        }),
-      );
-      node.querySelector(".js-adjust-time").addEventListener("click", () => adjustHabitMinutes(habit.id));
-      node.querySelector(".js-timer-toggle").addEventListener("click", () => toggleHabitTimer(habit.id));
-      node.querySelector(".js-delete").addEventListener("click", () => deleteHabit(habit.id));
-      node.querySelector(".js-edit").addEventListener("click", () => openEdit(habit));
-      node.querySelector(".js-toggle").addEventListener("click", () => {
-        node.classList.toggle("collapsed");
-      });
-
-      grid.appendChild(node);
-    });
-
-    block.appendChild(grid);
-    habitsContainer.appendChild(block);
+  renderHabitsView({
+    container: habitsContainer,
+    template: habitTemplate,
+    activeTagEl: activeTag,
+    streakSummaryEl: streakSummary,
+    habits: state.habits,
+    filterTag: state.filterTag,
+    formatDate,
+    todayValue,
+    onFilterTag: setTagFilter,
+    onComplete: completeHabit,
+    onAdjustTime: adjustHabitMinutes,
+    onToggleTimer: toggleHabitTimer,
+    onDelete: deleteHabit,
+    onEdit: openEdit,
+    refreshHabitTimeDisplay,
+    habitCardRefs,
   });
-
-  streakSummary.textContent = totalStreak;
 }
 
 function renderCompletions() {
@@ -375,10 +291,7 @@ async function createHabit(formData) {
   }
 
   setStatus("Creating...");
-  await api(HABITS_URL, {
-    method: "POST",
-    body: JSON.stringify({ name, category, tags }),
-  });
+  await apiClient.createHabit({ name, category, tags });
   setStatus("Created");
   form.reset();
   await loadHabits();
@@ -392,10 +305,7 @@ async function completeHabit(id, { note, date }) {
   if (noteWithTime) payload.note = noteWithTime;
   if (date) payload.date = date;
   setStatus("Completing...");
-  await api(`${HABITS_URL}/${id}/complete`, {
-    method: "POST",
-    body: JSON.stringify(payload),
-  });
+  await apiClient.completeHabit(id, payload);
   setStatus("Logged");
   await loadHabits();
 }
@@ -404,7 +314,7 @@ async function deleteHabit(id) {
   const ok = confirm("Delete this habit? This will remove its completions.");
   if (!ok) return;
   setStatus("Deleting...");
-  await api(`${HABITS_URL}/${id}`, { method: "DELETE" });
+  await apiClient.deleteHabit(id);
   setStatus("Deleted");
   await loadHabits();
 }
@@ -453,10 +363,7 @@ editForm.addEventListener("submit", async (event) => {
 
   setStatus("Saving...");
   try {
-    await api(`${HABITS_URL}/${state.editingId}`, {
-      method: "PUT",
-      body: JSON.stringify({ name, category, tags }),
-    });
+    await apiClient.updateHabit(state.editingId, { name, category, tags });
     setStatus("Updated");
     closeEdit();
     await loadHabits();
@@ -483,124 +390,24 @@ function setTagFilter(tag) {
 }
 
 function renderDashboard() {
-  const now = new Date();
-  const month = now.toLocaleString("default", { month: "long" });
-  const quarter = Math.floor(now.getMonth() / 3) + 1;
-  periodLabel.textContent = `Q${quarter} · ${month}`;
-
-  const actions = [
-    "Review top 3 habits for this quarter.",
-    "Add or adjust tags to align with focus areas.",
-    "Log a completion with a note reflecting intent.",
-  ];
-  periodActions.innerHTML = "";
-  actions.forEach((item) => {
-    const li = document.createElement("li");
-    li.textContent = item;
-    periodActions.appendChild(li);
+  dashboardView.renderDashboard({
+    now: new Date(),
+    habits: state.habits,
+    goals: state.goals,
+    reflections: state.reflections,
+    workday: state.workday,
+    timeLogs: state.timeLogs,
+    activeTimers: state.activeTimers,
   });
-  periodPrompt.textContent = `How do your habits today support your Q${quarter} goals?`;
-
-  habitCount.textContent = state.habits.length;
-  streakSummaryCard.textContent = `${state.habits.reduce((sum, h) => sum + (h.streak || 0), 0)} streak days total`;
-  renderGoalInsights();
-  renderCategoryChart();
-  renderTimeSummary();
 }
 
-function renderGoalInsights() {
-  if (!goalCountEl) return;
-  const goals = state.goals || [];
-  const habits = state.habits || [];
-  const today = new Date();
-  const activeGoals = goals.filter((g) => (g.status || "active").toLowerCase() !== "complete");
-  const completedGoals = goals.length - activeGoals.length;
-  goalCountEl.textContent = activeGoals.length;
-
-  const scopeCounts = activeGoals.reduce((acc, goal) => {
-    acc[goal.scope] = (acc[goal.scope] || 0) + 1;
-    return acc;
-  }, {});
-  const topScope = Object.entries(scopeCounts).sort((a, b) => b[1] - a[1])[0];
-  if (goalScopeHighlightEl) {
-    goalScopeHighlightEl.textContent = topScope ? `${topScope[1]} ${topScope[0]} goals` : "Quarter focus";
-  }
-
-  const linkedHabitIds = new Set();
-  goals.forEach((goal) => (goal.habit_ids || []).forEach((id) => linkedHabitIds.add(id)));
-  if (goalHabitsLinkedEl) {
-    goalHabitsLinkedEl.textContent = linkedHabitIds.size;
-  }
-  const coverage = habits.length ? Math.round((linkedHabitIds.size / habits.length) * 100) : 0;
-  if (goalHabitCoverageEl) {
-    goalHabitCoverageEl.textContent = habits.length ? `${coverage}% coverage` : "No habits yet";
-  }
-
-  const dueSoon = activeGoals
-    .map((goal) => ({
-      ...goal,
-      dueDate: goal.due_date ? new Date(goal.due_date) : null,
-    }))
-    .filter((goal) => goal.dueDate && !Number.isNaN(goal.dueDate.getTime()))
-    .sort((a, b) => a.dueDate - b.dueDate);
-  const windowDate = new Date();
-  windowDate.setDate(windowDate.getDate() + 30);
-  const dueThisMonth = dueSoon.filter((goal) => goal.dueDate <= windowDate);
-  if (goalDueCountEl) {
-    goalDueCountEl.textContent = dueThisMonth.length;
-  }
-  if (goalDueLabelEl) {
-    if (dueThisMonth.length) {
-      const nearest = dueThisMonth[0];
-      const daysLeft = Math.max(0, Math.round((nearest.dueDate - today) / (1000 * 60 * 60 * 24)));
-      goalDueLabelEl.textContent = `${nearest.title} · ${formatDate(nearest.due_date)} (${daysLeft}d)`;
-    } else if (dueSoon.length) {
-      goalDueLabelEl.textContent = `${dueSoon.length} with dates · next ${formatDate(dueSoon[0].due_date)}`;
-    } else {
-      goalDueLabelEl.textContent = "No deadlines";
-    }
-  }
-
-  if (goalHighlightEl) {
-    if (activeGoals.length) {
-      const measurable = activeGoals.filter((goal) => goal.outcome).length;
-      goalHighlightEl.textContent = `${measurable}/${activeGoals.length} have measurable outcomes · ${completedGoals} completed`;
-    } else if (goals.length) {
-      goalHighlightEl.textContent = `${goals.length} archived or complete`;
-    } else {
-      goalHighlightEl.textContent = "Set your first target";
-    }
-  }
-
-  const latestReflection =
-    state.reflections
-      .slice()
-      .sort(
-        (a, b) =>
-          (new Date(b.submitted_at || b.period_label).getTime() || 0) -
-          (new Date(a.submitted_at || a.period_label).getTime() || 0),
-      )[0] || null;
-
-  if (goalNextStepEl) {
-    if (latestReflection) {
-      const detail = latestReflection.responses?.[0] || "Keep momentum.";
-      goalNextStepEl.textContent = `Last reflection ${latestReflection.period_label}: ${detail}`;
-    } else if (habits.length) {
-      const topHabit = habits.slice().sort((a, b) => (b.streak || 0) - (a.streak || 0))[0];
-      goalNextStepEl.textContent = `Link ${topHabit.name} to a goal to lock intent.`;
-    } else {
-      goalNextStepEl.textContent = "Use SMART to define one measurable outcome this week.";
-    }
-  }
-}
-
-function getHabitMinutes(habitId) {
-  const logs = state.timeLogs || {};
+function getHabitMinutes(habitId, timeLogs = state.timeLogs, activeTimers = state.activeTimers) {
+  const logs = timeLogs || {};
   const today = todayKey();
   let todayMinutes = 0;
   const todaysHabits = logs[today] || {};
   todayMinutes = todaysHabits?.[habitId] || 0;
-  const active = state.activeTimers?.[habitId];
+  const active = activeTimers?.[habitId];
   if (active?.start) {
     const elapsedMinutes = Math.max(0, Math.floor((Date.now() - active.start) / 60000));
     todayMinutes += elapsedMinutes;
@@ -686,7 +493,7 @@ function adjustHabitMinutes(habitId) {
   saveTimeLogs();
   const node = habitCardRefs.get(habitId);
   if (node) refreshHabitTimeDisplay(habitId, node);
-  renderTimeSummary();
+  renderDashboard();
 }
 
 function updateRunningTimersUI() {
@@ -710,27 +517,12 @@ function formatDuration(ms) {
   return parts.join(" ");
 }
 
-function getTodayTotalMinutes() {
-  const today = todayKey();
-  const logs = state.timeLogs[today] || {};
-  let total = 0;
-  const habitIds = new Set([
-    ...Object.keys(logs),
-    ...Object.keys(state.activeTimers || {}),
-    ...collectHabitsWithTodayCompletions(),
-  ]);
-  habitIds.forEach((habitId) => {
-    total += getHabitMinutes(Number(habitId)).todayMinutes;
-  });
-  return total;
-}
-
-function getTodayFocusedMinutes() {
+function getTodayFocusedMinutes(timeLogs = state.timeLogs, activeTimers = state.activeTimers) {
   const today = todayKey();
   let total = 0;
-  const logs = state.timeLogs[today] || {};
+  const logs = timeLogs[today] || {};
   Object.values(logs).forEach((m) => (total += m || 0));
-  Object.entries(state.activeTimers || {}).forEach(([habitId, timer]) => {
+  Object.entries(activeTimers || {}).forEach(([_habitId, timer]) => {
     if (timer?.start) {
       const elapsed = Math.max(0, Math.floor((Date.now() - timer.start) / 60000));
       total += elapsed;
@@ -739,10 +531,10 @@ function getTodayFocusedMinutes() {
   return total;
 }
 
-function collectHabitsWithTodayCompletions() {
+function collectHabitsWithTodayCompletions(habits = state.habits) {
   const today = todayKey();
   const ids = new Set();
-  state.habits.forEach((habit) => {
+  habits.forEach((habit) => {
     (habit.completions || []).forEach((c) => {
       if (c.date === today && parseFocusMinutes(c.note) > 0) {
         ids.add(String(habit.id));
@@ -773,184 +565,14 @@ function rebuildTimeLogsFromCompletions() {
   saveTimeLogs();
 }
 
-function latestCompletionNote(habitId, dateKey) {
-  const habit = state.habits.find((h) => h.id === habitId);
+function latestCompletionNote(habitId, dateKey, habits = state.habits) {
+  const habit = habits.find((h) => h.id === habitId);
   if (!habit) return null;
   const todayCompletions = (habit.completions || [])
     .filter((c) => c.date === dateKey)
     .sort((a, b) => (a.id || 0) - (b.id || 0));
   const last = todayCompletions[todayCompletions.length - 1];
   return last?.note || null;
-}
-
-function renderCategoryChart() {
-  if (!categoryChart || !categoryLegend) return;
-
-  const stats = state.habits.reduce((acc, habit) => {
-    const category = habit.category || "Uncategorized";
-    const completions = (habit.completions || []).length;
-    if (!acc[category]) {
-      acc[category] = { completions: 0, habits: 0 };
-    }
-    acc[category].completions += completions;
-    acc[category].habits += 1;
-    return acc;
-  }, {});
-  const entries = Object.entries(stats).sort((a, b) => b[1].completions - a[1].completions);
-  const totalCompletions = entries.reduce((sum, [, data]) => sum + data.completions, 0);
-
-  if (chartCenterValue) {
-    chartCenterValue.textContent = totalCompletions;
-  }
-  if (chartTotalPill) {
-    chartTotalPill.textContent = `${totalCompletions} logged`;
-  }
-
-  categoryChart.innerHTML = "";
-  categoryLegend.innerHTML = "";
-
-  if (!entries.length || totalCompletions === 0) {
-    categoryChart.innerHTML = `<p class="meta">Log completions to see your mix.</p>`;
-    categoryLegend.innerHTML = `<p class="meta">No completions yet. Add a note to your next one.</p>`;
-    return;
-  }
-
-  const svgNS = "http://www.w3.org/2000/svg";
-  const size = 220;
-  const r = 90;
-  const circumference = 2 * Math.PI * r;
-  const svg = document.createElementNS(svgNS, "svg");
-  svg.setAttribute("viewBox", `0 0 ${size} ${size}`);
-  svg.setAttribute("width", size);
-  svg.setAttribute("height", size);
-
-  const bgCircle = document.createElementNS(svgNS, "circle");
-  bgCircle.setAttribute("cx", size / 2);
-  bgCircle.setAttribute("cy", size / 2);
-  bgCircle.setAttribute("r", r);
-  bgCircle.setAttribute("fill", "none");
-  bgCircle.setAttribute("stroke", "rgba(255,255,255,0.05)");
-  bgCircle.setAttribute("stroke-width", "22");
-  svg.appendChild(bgCircle);
-
-  const palette = ["#ff6f61", "#36c2cf", "#8f7bff", "#ffd166", "#4ade80", "#f472b6", "#22d3ee", "#f97316"];
-  let offset = 0;
-
-  entries.forEach(([category, data], idx) => {
-    const share = data.completions / totalCompletions;
-    const segment = Math.max(share * circumference, 2);
-    const circle = document.createElementNS(svgNS, "circle");
-    circle.setAttribute("cx", size / 2);
-    circle.setAttribute("cy", size / 2);
-    circle.setAttribute("r", r);
-    circle.setAttribute("fill", "none");
-    circle.setAttribute("stroke", palette[idx % palette.length]);
-    circle.setAttribute("stroke-width", "22");
-    circle.setAttribute("stroke-dasharray", `${segment} ${circumference - segment}`);
-    circle.setAttribute("stroke-dashoffset", `${-offset}`);
-    circle.setAttribute("transform", `rotate(-90 ${size / 2} ${size / 2})`);
-    circle.setAttribute("stroke-linecap", "butt");
-    svg.appendChild(circle);
-    offset += segment;
-
-    const legend = document.createElement("div");
-    legend.className = "legend-item";
-    legend.innerHTML = `
-      <span class="legend-swatch" style="background:${palette[idx % palette.length]}"></span>
-      <div class="legend-text">
-        <span class="legend-title">${category}</span>
-        <span class="meta">${data.completions} completions · ${data.habits} habits</span>
-      </div>
-    `;
-    categoryLegend.appendChild(legend);
-  });
-
-  categoryChart.appendChild(svg);
-}
-
-function renderTimeSummary() {
-  if (!timeSummaryList) return;
-  const today = todayKey();
-  const todayLogs = state.timeLogs[today] || {};
-  const { usedMinutes: computedWorked, totalMinutes: plannedMinutes } = computeWorkdayMinutes(
-    state.workday,
-    new Date(),
-  );
-  const actualMinutes =
-    state.workday.manualWorkedMinutes != null
-      ? Math.max(0, Math.floor(state.workday.manualWorkedMinutes))
-      : computedWorked;
-  const focusedMinutes = getTodayFocusedMinutes();
-  if (timeWorkdayPill) {
-    const label = state.workday.clockedOutAt ? "Clocked out" : "Planned";
-    timeWorkdayPill.textContent = `${label}: ${formatMinutes(plannedMinutes)}`;
-  }
-
-  const habitIds = new Set([
-    ...Object.keys(todayLogs),
-    ...Object.keys(state.activeTimers || {}),
-    ...collectHabitsWithTodayCompletions(),
-  ]);
-
-  const entries = Array.from(habitIds)
-    .map((habitId) => {
-      const minutes = getHabitMinutes(Number(habitId)).todayMinutes;
-      const habit = state.habits.find((h) => h.id === Number(habitId));
-      const note = latestCompletionNote(Number(habitId), today);
-      return {
-        habitId: Number(habitId),
-        minutes,
-        name: habit ? habit.name : `Habit ${habitId}`,
-        note,
-      };
-    })
-    .filter((e) => e.minutes > 0)
-    .sort((a, b) => b.minutes - a.minutes);
-
-  const percentOfPlan = plannedMinutes > 0 ? Math.round((actualMinutes / plannedMinutes) * 100) : 0;
-  const focusVsWorked = actualMinutes > 0 ? Math.round((focusedMinutes / actualMinutes) * 100) : 0;
-
-  if (entries.length === 0) {
-    timeSummaryList.innerHTML = `<p class="meta">No focus time logged yet today.</p>`;
-  } else {
-    const header = `
-      <div class="time-row header">
-        <div class="time-cell">Planned</div>
-        <div class="time-cell">Worked</div>
-        <div class="time-cell">% Plan</div>
-        <div class="time-cell">Focused</div>
-        <div class="time-cell">% Focused</div>
-      </div>`;
-    const totalRow = `
-      <div class="time-row">
-        <div class="time-cell meta">${formatMinutes(plannedMinutes)}</div>
-        <div class="time-cell meta">${formatMinutes(actualMinutes)}</div>
-        <div class="time-cell meta">${percentOfPlan}%</div>
-        <div class="time-cell meta">${formatMinutes(focusedMinutes)}</div>
-        <div class="time-cell meta">${focusVsWorked}% of worked</div>
-      </div>`;
-    const habitRows = entries
-      .map(
-        (entry) => `
-          <div class="time-row">
-            <div class="time-cell meta" style="grid-column: span 2;">${entry.name}</div>
-            <div class="time-cell meta">${formatMinutes(entry.minutes)}</div>
-            <div class="time-cell meta" style="grid-column: span 2;">${entry.note || "No note"}</div>
-          </div>`,
-      )
-      .join("");
-    const habitsHeader = `
-      <div class="time-row header">
-        <div class="time-cell" style="grid-column: span 2;">Task</div>
-        <div class="time-cell">Focused</div>
-        <div class="time-cell" style="grid-column: span 2;">Closure note</div>
-      </div>`;
-    timeSummaryList.innerHTML = `<div class="time-table">${header}${totalRow}${habitsHeader}${habitRows}</div>`;
-  }
-
-  if (timeSummaryPercent) {
-    timeSummaryPercent.textContent = "";
-  }
 }
 
 loadTimeLogs();
@@ -1002,7 +624,7 @@ workdaySaveBtn?.addEventListener("click", () => {
   state.workday.clockedOutAt = null;
   saveWorkdayConfig();
   updateWorkdayProgress();
-  renderTimeSummary();
+  renderDashboard();
 });
 
 workdayClockoutBtn?.addEventListener("click", () => {
@@ -1010,7 +632,7 @@ workdayClockoutBtn?.addEventListener("click", () => {
   state.workday.manualWorkedMinutes = null;
   saveWorkdayConfig();
   updateWorkdayProgress();
-  renderTimeSummary();
+  renderDashboard();
 });
 
 workdayApplyWorkedBtn?.addEventListener("click", () => {
@@ -1020,7 +642,7 @@ workdayApplyWorkedBtn?.addEventListener("click", () => {
     state.workday.clockedOutAt = null;
     saveWorkdayConfig();
     updateWorkdayProgress();
-    renderTimeSummary();
+    renderDashboard();
   }
 });
 
@@ -1049,16 +671,10 @@ goalForm?.addEventListener("submit", async (event) => {
   try {
     const payload = { title, scope, outcome, due_date, tags, habit_ids };
     if (state.editingGoalId) {
-      await api(`${API_BASE}/goals/${state.editingGoalId}`, {
-        method: "PUT",
-        body: JSON.stringify(payload),
-      });
+      await apiClient.updateGoal(state.editingGoalId, payload);
       setStatus("Goal updated");
     } else {
-      await api(`${API_BASE}/goals`, {
-        method: "POST",
-        body: JSON.stringify(payload),
-      });
+      await apiClient.createGoal(payload);
       setStatus("Goal saved");
     }
     closeOverlay(goalOverlay);
@@ -1086,24 +702,24 @@ reflectionForm?.addEventListener("submit", async (event) => {
   event.preventDefault();
   const reflection_type = reflectionForm.querySelector("#reflection-type").value;
   const period_label = reflectionForm.querySelector("#reflection-period").value.trim();
-  const responses = [reflectionForm.querySelector("#reflection-responses").value.trim()].filter(Boolean);
-  const goal_id = parseInt(reflectionForm.querySelector("#reflection-goal")?.value || "0", 10) || null;
+  const responses = [reflectionForm.querySelector("#reflection-responses").value.trim()].filter(
+    Boolean,
+  );
+  const goal_id =
+    parseInt(reflectionForm.querySelector("#reflection-goal")?.value || "0", 10) || null;
   const rating = reflectionForm.querySelector("#reflection-rating")?.value || null;
   if (!period_label) {
     setStatus("Period label required", true);
     return;
   }
   try {
-    await api(`${API_BASE}/reflections`, {
-      method: "POST",
-      body: JSON.stringify({
-        reflection_type,
-        period_label,
-        responses,
-        prompts: [],
-        goal_id,
-        rating,
-      }),
+    await apiClient.createReflection({
+      reflection_type,
+      period_label,
+      responses,
+      prompts: [],
+      goal_id,
+      rating,
     });
     setStatus("Reflection saved");
     closeOverlay(reflectionOverlay);
@@ -1113,15 +729,6 @@ reflectionForm?.addEventListener("submit", async (event) => {
     setStatus("Failed to save reflection", true);
   }
 });
-
-function parseIds(raw) {
-  return raw
-    .split(",")
-    .map((v) => v.trim())
-    .filter(Boolean)
-    .map((v) => parseInt(v, 10))
-    .filter((n) => !Number.isNaN(n));
-}
 
 function populateHabitOptions() {
   if (!goalHabitPicker) return;
@@ -1256,7 +863,7 @@ async function deleteGoal(goalId) {
   const ok = confirm("Delete this goal? Linked habits will remain.");
   if (!ok) return;
   try {
-    await api(`${API_BASE}/goals/${goalId}`, { method: "DELETE" });
+    await apiClient.deleteGoal(goalId);
     setStatus("Goal deleted");
     await loadGoals();
     await loadHabits();

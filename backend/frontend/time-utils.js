@@ -25,7 +25,9 @@ export function formatMinutes(totalMinutes) {
 
 export function computeWorkdayMinutes(workday, now = new Date()) {
   if (!workday) return { usedMinutes: 0, totalMinutes: 0 };
-  const [startHour, startMinute] = (workday.start || "09:00").split(":").map((v) => parseInt(v, 10));
+  const [startHour, startMinute] = (workday.start || "09:00")
+    .split(":")
+    .map((v) => parseInt(v, 10));
   const start = new Date(now);
   start.setHours(startHour || 9, startMinute || 0, 0, 0);
   const plannedMinutes = Math.max(0, Math.round((workday.hours || 0) * 60));
