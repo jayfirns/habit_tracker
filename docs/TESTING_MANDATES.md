@@ -18,6 +18,7 @@ Every new feature, refactor, or bug fix must be accompanied by tests addressing 
 
 UI Logic
 	•	Tab toggles, view switches, and user-driven DOM changes
+	•	This includes testing that user events (e.g., `click`, `submit`) are correctly wired to their handler functions and trigger the expected state changes.
 	•	Conditional rendering logic (e.g., chart modes, filters, popups)
 	•	Responsive behaviors (e.g., resizing, scroll thresholds)
 
@@ -102,12 +103,14 @@ If these answers aren’t evident in the test body, it’s not complete.
 	•	When functionality changes, related tests must be updated
 	•	Deleted features must have their tests removed — no zombie assertions
 	•	Tests that are consistently skipped/flaky must be fixed or quarantined and tracked
+	•	When refactoring, tests must not only confirm that the new implementation works but also assert that no unintended side effects or behavioral changes have been introduced. If a behavioral change is intentional, it must be documented and have its own corresponding tests.
 
 ⸻
 
 6️⃣ Encouraged Practices
 
 These are not required, but strongly supported:
+	•	Interaction Testing: For complex components, consider tests that simulate a full user journey (e.g., `click tab` -> `click toggle` -> `update data`) to validate how different states interact.
 	•	Snapshot testing for static layouts (e.g., legend rendering)
 	•	Visual diffing for canvas or SVG charts
 	•	Test utilities (e.g., renderWithDOM(), mockEnergyMixData()) to reduce boilerplate
