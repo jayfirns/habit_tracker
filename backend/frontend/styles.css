@@ -66,6 +66,39 @@ a {
   cursor: pointer;
 }
 
+.pill-row {
+  display: flex;
+  gap: 8px;
+}
+
+.goal-list {
+  display: grid;
+  gap: 8px;
+}
+
+.goal-list .pill {
+  background: var(--pill);
+}
+
+.goal-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+
+.goal-line .meta {
+  margin: 0;
+}
+
+.goal-actions {
+  display: flex;
+  gap: 6px;
+}
+
 .hero__badge {
   background: linear-gradient(135deg, var(--accent), #ff9773);
   padding: 14px 16px;
@@ -111,6 +144,7 @@ a {
   display: grid;
   grid-template-columns: 2fr 1fr;
   gap: 14px;
+  align-items: start;
 }
 
 .card {
@@ -118,6 +152,10 @@ a {
   border: 1px solid var(--border);
   border-radius: 14px;
   padding: 14px;
+}
+
+.goals-card {
+  grid-column: 1 / -1;
 }
 
 .panel.wide {

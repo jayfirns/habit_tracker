@@ -21,9 +21,14 @@
               <p class="eyebrow">Alignment</p>
               <h2>Today’s Focus</h2>
             </div>
-            <button class="pill subtle period-cta" type="button" id="period-cta" title="Set or review goals">
-              <span id="period-label"></span>
-            </button>
+            <div class="pill-row">
+              <button class="pill subtle period-cta" type="button" id="period-cta" title="Set or review goals">
+                <span id="period-label"></span>
+              </button>
+              <button class="pill subtle period-cta" type="button" id="reflection-cta" title="Reflect">
+                <span id="reflection-label">Reflection</span>
+              </button>
+            </div>
           </div>
           <div class="dashboard-grid">
             <div>
@@ -34,6 +39,16 @@
               <div class="badge__value" id="habit-count">0</div>
               <div class="badge__label">Habits tracked</div>
               <div class="meta" id="streak-summary-card">Streak total</div>
+            </div>
+            <div class="card goals-card">
+              <div class="panel__header">
+                <div>
+                  <p class="eyebrow">Goals</p>
+                  <h3>Active SMART Goals</h3>
+                </div>
+                <button class="ghost small" id="new-goal">New Goal</button>
+              </div>
+              <div id="goals-list" class="goal-list meta"></div>
             </div>
           </div>
         </section>
