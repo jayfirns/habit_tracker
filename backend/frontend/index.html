@@ -15,6 +15,26 @@
           Add habits, log completions with notes, and watch streaks grow—all local, no
           cloud required.
         </p>
+        <section class="panel wide dashboard" id="dashboard">
+          <div class="panel__header">
+            <div>
+              <p class="eyebrow">Alignment</p>
+              <h2>Today’s Focus</h2>
+            </div>
+            <div class="pill subtle" id="period-label"></div>
+          </div>
+          <div class="dashboard-grid">
+            <div>
+              <p class="meta" id="period-prompt"></p>
+              <ul class="meta" id="period-actions"></ul>
+            </div>
+            <div class="badge card" id="summary-card">
+              <div class="badge__value" id="habit-count">0</div>
+              <div class="badge__label">Habits tracked</div>
+              <div class="meta" id="streak-summary-card">Streak total</div>
+            </div>
+          </div>
+        </section>
       </div>
       <div class="hero__badge">
         <div class="badge__value" id="streak-summary">0</div>
@@ -77,27 +97,6 @@
       <div class="hero__actions">
         <a class="button" href="/docs" target="_blank" rel="noreferrer">API Docs</a>
         <a class="button ghost" href="/ui" aria-current="page">Frontend</a>
-      </div>
-    </section>
-
-    <section class="panel wide dashboard" id="dashboard">
-      <div class="panel__header">
-        <div>
-          <p class="eyebrow">Alignment</p>
-          <h2>Today’s Focus</h2>
-        </div>
-        <div class="pill subtle" id="period-label"></div>
-      </div>
-      <div class="dashboard-grid">
-        <div>
-          <p class="meta" id="period-prompt"></p>
-          <ul class="meta" id="period-actions"></ul>
-        </div>
-        <div class="badge card" id="summary-card">
-          <div class="badge__value" id="habit-count">0</div>
-          <div class="badge__label">Habits tracked</div>
-          <div class="meta" id="streak-summary-card">Streak total</div>
-        </div>
       </div>
     </section>
 
