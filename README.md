@@ -142,6 +142,7 @@ A FastAPI backend for the FocusOS web migration lives in `backend/`.
 - Build: `docker build -t focusos-backend ./backend`
 - Run: `docker run -p 8000:8000 focusos-backend`
 - Or with Compose (runs backend on :8000): `docker-compose up --build backend`
+- Data: SQLite lives in `backend/data/habit_tracker.db` (mounted into the container); your habits persist across rebuilds.
 
 
 ### Explanation of Key Sections
