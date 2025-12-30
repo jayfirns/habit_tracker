@@ -101,3 +101,47 @@ def list_completions(habit_id: int, db: Session = Depends(get_db)):
     if habit is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Habit not found")
     return crud.list_completions(db, habit_id)
+
+
+@app.get("/goals", response_model=list[schemas.GoalRead])
+def list_goals(db: Session = Depends(get_db)):
+    return crud.list_goals(db)
+
+
+@app.get("/goals/{goal_id}", response_model=schemas.GoalRead)
+def get_goal(goal_id: int, db: Session = Depends(get_db)):
+    goal = crud.get_goal(db, goal_id)
+    if goal is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Goal not found")
+    return goal
+
+
+@app.post("/goals", response_model=schemas.GoalRead, status_code=status.HTTP_201_CREATED)
+def create_goal(goal: schemas.GoalCreate, db: Session = Depends(get_db)):
+    return crud.create_goal(db, goal)
+
+
+@app.put("/goals/{goal_id}", response_model=schemas.GoalRead)
+def update_goal(goal_id: int, goal: schemas.GoalUpdate, db: Session = Depends(get_db)):
+    updated = crud.update_goal(db, goal_id, goal)
+    if updated is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Goal not found")
+    return updated
+
+
+@app.delete("/goals/{goal_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_goal(goal_id: int, db: Session = Depends(get_db)):
+    deleted = crud.delete_goal(db, goal_id)
+    if not deleted:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Goal not found")
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+
+@app.get("/reflections", response_model=list[schemas.ReflectionRead])
+def list_reflections(reflection_type: str | None = None, db: Session = Depends(get_db)):
+    return crud.list_reflections(db, reflection_type)
+
+
+@app.post("/reflections", response_model=schemas.ReflectionRead, status_code=status.HTTP_201_CREATED)
+def create_reflection(reflection: schemas.ReflectionCreate, db: Session = Depends(get_db)):
+    return crud.create_reflection(db, reflection)

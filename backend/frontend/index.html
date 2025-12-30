@@ -95,8 +95,9 @@
 
     <section class="hero hero__actions-bar">
       <div class="hero__actions">
+        <button class="button ghost" id="open-goal">Set SMART Goal</button>
+        <button class="button ghost" id="open-reflection">Reflect</button>
         <a class="button" href="/docs" target="_blank" rel="noreferrer">API Docs</a>
-        <a class="button ghost" href="/ui" aria-current="page">Frontend</a>
       </div>
     </section>
 
@@ -124,6 +125,80 @@
           </div>
           <input type="hidden" id="edit-id" />
           <button type="submit" class="button full">Save changes</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="overlay" id="goal-overlay" hidden>
+      <div class="overlay__content">
+        <div class="overlay__header">
+          <div>
+            <p class="eyebrow">SMART</p>
+            <h3>New Goal</h3>
+          </div>
+          <button class="ghost small" type="button" id="close-goal">Close</button>
+        </div>
+        <form id="goal-form" class="form overlay__form">
+          <div class="field">
+            <label for="goal-title">Title</label>
+            <input id="goal-title" name="title" type="text" required />
+          </div>
+          <div class="field">
+            <label for="goal-scope">Scope</label>
+            <select id="goal-scope" name="scope">
+              <option value="quarter">Quarter</option>
+              <option value="month">Month</option>
+              <option value="year">Year</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="goal-outcome">Outcome</label>
+            <input id="goal-outcome" name="outcome" type="text" placeholder="Measurable result" />
+          </div>
+          <div class="field">
+            <label for="goal-due">Due date</label>
+            <input id="goal-due" name="due_date" type="date" />
+          </div>
+          <div class="field">
+            <label for="goal-tags">Tags</label>
+            <input id="goal-tags" name="tags" type="text" placeholder="focus, q1" />
+          </div>
+          <div class="field full">
+            <label for="goal-habits">Link habits (comma-separated IDs)</label>
+            <input id="goal-habits" name="habit_ids" type="text" placeholder="1,2,3" />
+          </div>
+          <button type="submit" class="button full">Save goal</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="overlay" id="reflection-overlay" hidden>
+      <div class="overlay__content">
+        <div class="overlay__header">
+          <div>
+            <p class="eyebrow">Reflect</p>
+            <h3>Period Check-in</h3>
+          </div>
+          <button class="ghost small" type="button" id="close-reflection">Close</button>
+        </div>
+        <form id="reflection-form" class="form overlay__form">
+          <div class="field">
+            <label for="reflection-type">Type</label>
+            <select id="reflection-type" name="reflection_type">
+              <option value="month">Month</option>
+              <option value="quarter">Quarter</option>
+              <option value="year">Year</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="reflection-period">Period label</label>
+            <input id="reflection-period" name="period_label" type="text" placeholder="2025 Q1" />
+          </div>
+          <div class="field full">
+            <label for="reflection-responses">Notes</label>
+            <textarea id="reflection-responses" name="responses" rows="4" placeholder="What worked, what to adjust"></textarea>
+          </div>
+          <button type="submit" class="button full">Save reflection</button>
         </form>
       </div>
     </div>

@@ -115,3 +115,91 @@ def list_completions(db: Session, habit_id: int) -> List[models.Completion]:
         .order_by(models.Completion.date)
     )
     return db.scalars(statement).all()
+
+
+# Goal CRUD
+def list_goals(db: Session) -> List[models.Goal]:
+    stmt = select(models.Goal)
+    return db.scalars(stmt).all()
+
+
+def get_goal(db: Session, goal_id: int) -> Optional[models.Goal]:
+    return db.get(models.Goal, goal_id)
+
+
+def create_goal(db: Session, goal_in: schemas.GoalCreate) -> models.Goal:
+    tags = [t.strip() for t in (goal_in.tags or []) if t.strip()]
+    goal = models.Goal(
+        title=goal_in.title.strip(),
+        description=goal_in.description,
+        outcome=goal_in.outcome,
+        scope=goal_in.scope,
+        start_date=goal_in.start_date.isoformat() if goal_in.start_date else None,
+        due_date=goal_in.due_date.isoformat() if goal_in.due_date else None,
+        tags=tags,
+        status="active",
+    )
+
+    if goal_in.habit_ids:
+        goal.habits = db.scalars(select(models.Habit).where(models.Habit.id.in_(goal_in.habit_ids))).all()
+
+    db.add(goal)
+    db.commit()
+    db.refresh(goal)
+    return goal
+
+
+def update_goal(db: Session, goal_id: int, goal_in: schemas.GoalUpdate) -> Optional[models.Goal]:
+    goal = db.get(models.Goal, goal_id)
+    if goal is None:
+        return None
+
+    for field in ["title", "description", "outcome", "scope"]:
+        value = getattr(goal_in, field, None)
+        if value is not None:
+            setattr(goal, field, value.strip() if isinstance(value, str) else value)
+
+    if goal_in.start_date is not None:
+        goal.start_date = goal_in.start_date.isoformat() if goal_in.start_date else None
+    if goal_in.due_date is not None:
+        goal.due_date = goal_in.due_date.isoformat() if goal_in.due_date else None
+    if goal_in.tags is not None:
+        goal.tags = [t.strip() for t in goal_in.tags if t.strip()]
+    if goal_in.habit_ids is not None:
+        goal.habits = db.scalars(select(models.Habit).where(models.Habit.id.in_(goal_in.habit_ids))).all()
+
+    db.add(goal)
+    db.commit()
+    db.refresh(goal)
+    return goal
+
+
+def delete_goal(db: Session, goal_id: int) -> bool:
+    goal = db.get(models.Goal, goal_id)
+    if goal is None:
+        return False
+    db.delete(goal)
+    db.commit()
+    return True
+
+
+# Reflections
+def list_reflections(db: Session, reflection_type: Optional[str] = None) -> List[models.Reflection]:
+    stmt = select(models.Reflection)
+    if reflection_type:
+        stmt = stmt.where(models.Reflection.reflection_type == reflection_type)
+    return db.scalars(stmt).all()
+
+
+def create_reflection(db: Session, reflection_in: schemas.ReflectionCreate) -> models.Reflection:
+    reflection = models.Reflection(
+        reflection_type=reflection_in.reflection_type,
+        period_label=reflection_in.period_label,
+        prompts=reflection_in.prompts,
+        responses=reflection_in.responses,
+        submitted_at=reflection_in.submitted_at.isoformat() if reflection_in.submitted_at else None,
+    )
+    db.add(reflection)
+    db.commit()
+    db.refresh(reflection)
+    return reflection

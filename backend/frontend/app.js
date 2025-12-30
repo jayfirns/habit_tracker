@@ -17,6 +17,14 @@ const periodPrompt = document.querySelector("#period-prompt");
 const periodActions = document.querySelector("#period-actions");
 const habitCount = document.querySelector("#habit-count");
 const streakSummaryCard = document.querySelector("#streak-summary-card");
+const openGoalBtn = document.querySelector("#open-goal");
+const closeGoalBtn = document.querySelector("#close-goal");
+const goalOverlay = document.querySelector("#goal-overlay");
+const goalForm = document.querySelector("#goal-form");
+const openReflectionBtn = document.querySelector("#open-reflection");
+const closeReflectionBtn = document.querySelector("#close-reflection");
+const reflectionOverlay = document.querySelector("#reflection-overlay");
+const reflectionForm = document.querySelector("#reflection-form");
 
 const state = {
   habits: [],
@@ -60,6 +68,15 @@ async function loadHabits() {
   } catch (err) {
     console.error(err);
     setStatus("Failed to load habits", true);
+  }
+}
+
+async function loadGoals() {
+  try {
+    const goals = await api(`${API_BASE}/goals`);
+    state.goals = goals;
+  } catch (err) {
+    console.error("Failed to load goals", err);
   }
 }
 
@@ -327,3 +344,93 @@ function renderDashboard() {
 }
 
 loadHabits();
+loadGoals();
+
+function openOverlay(el) {
+  el.hidden = false;
+}
+
+function closeOverlay(el) {
+  el.hidden = true;
+}
+
+openGoalBtn?.addEventListener("click", () => openOverlay(goalOverlay));
+closeGoalBtn?.addEventListener("click", () => closeOverlay(goalOverlay));
+goalOverlay?.addEventListener("click", (e) => {
+  if (e.target === goalOverlay) closeOverlay(goalOverlay);
+});
+
+goalForm?.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const title = goalForm.querySelector("#goal-title").value.trim();
+  const scope = goalForm.querySelector("#goal-scope").value;
+  const outcome = goalForm.querySelector("#goal-outcome").value.trim();
+  const due_date = goalForm.querySelector("#goal-due").value || null;
+  const tags = parseTags(goalForm.querySelector("#goal-tags").value);
+  const habit_ids = parseIds(goalForm.querySelector("#goal-habits").value);
+  if (!title) {
+    setStatus("Goal title required", true);
+    return;
+  }
+  try {
+    await api(`${API_BASE}/goals`, {
+      method: "POST",
+      body: JSON.stringify({ title, scope, outcome, due_date, tags, habit_ids }),
+    });
+    setStatus("Goal saved");
+    closeOverlay(goalOverlay);
+    goalForm.reset();
+    await loadGoals();
+    await loadHabits();
+  } catch (err) {
+    console.error(err);
+    setStatus("Failed to save goal", true);
+  }
+});
+
+openReflectionBtn?.addEventListener("click", () => {
+  const now = new Date();
+  reflectionForm.querySelector("#reflection-period").value = autoPeriodLabel(now);
+  openOverlay(reflectionOverlay);
+});
+closeReflectionBtn?.addEventListener("click", () => closeOverlay(reflectionOverlay));
+reflectionOverlay?.addEventListener("click", (e) => {
+  if (e.target === reflectionOverlay) closeOverlay(reflectionOverlay);
+});
+
+reflectionForm?.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const reflection_type = reflectionForm.querySelector("#reflection-type").value;
+  const period_label = reflectionForm.querySelector("#reflection-period").value.trim();
+  const responses = [reflectionForm.querySelector("#reflection-responses").value.trim()].filter(Boolean);
+  if (!period_label) {
+    setStatus("Period label required", true);
+    return;
+  }
+  try {
+    await api(`${API_BASE}/reflections`, {
+      method: "POST",
+      body: JSON.stringify({
+        reflection_type,
+        period_label,
+        responses,
+        prompts: [],
+      }),
+    });
+    setStatus("Reflection saved");
+    closeOverlay(reflectionOverlay);
+    reflectionForm.reset();
+  } catch (err) {
+    console.error(err);
+    setStatus("Failed to save reflection", true);
+  }
+});
+
+function parseIds(raw) {
+  return raw
+    .split(",")
+    .map((v) => v.trim())
+    .filter(Boolean)
+    .map((v) => parseInt(v, 10))
+    .filter((n) => !Number.isNaN(n));
+}

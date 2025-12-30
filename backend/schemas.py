@@ -8,6 +8,7 @@ class HabitBase(BaseModel):
     name: str = Field(..., min_length=1)
     category: str = Field(..., min_length=1)
     tags: List[str] = Field(default_factory=list)
+    goal_ids: List[int] = Field(default_factory=list)
 
     @field_validator("name", "category")
     @classmethod
@@ -69,5 +70,56 @@ class HabitRead(HabitBase):
     streak: int
     last_completed: Optional[datetime.date] = None
     completions: List[CompletionRead] = Field(default_factory=list)
+    tags: List[str] = Field(default_factory=list)
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class GoalBase(BaseModel):
+    title: str = Field(..., min_length=1)
+    description: Optional[str] = None
+    outcome: Optional[str] = None
+    scope: str = Field(..., pattern="^(year|quarter|month)$")
+    start_date: Optional[datetime.date] = None
+    due_date: Optional[datetime.date] = None
+    tags: List[str] = Field(default_factory=list)
+    habit_ids: List[int] = Field(default_factory=list)
+
+
+class GoalCreate(GoalBase):
+    pass
+
+
+class GoalUpdate(BaseModel):
+    title: Optional[str] = None
+    description: Optional[str] = None
+    outcome: Optional[str] = None
+    scope: Optional[str] = Field(default=None, pattern="^(year|quarter|month)$")
+    start_date: Optional[datetime.date] = None
+    due_date: Optional[datetime.date] = None
+    tags: Optional[List[str]] = None
+    habit_ids: Optional[List[int]] = None
+
+
+class GoalRead(GoalBase):
+    id: int
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class ReflectionBase(BaseModel):
+    reflection_type: str = Field(..., pattern="^(month|quarter|year)$")
+    period_label: str
+    prompts: List[str] = Field(default_factory=list)
+    responses: List[str] = Field(default_factory=list)
+    submitted_at: Optional[datetime.datetime] = None
+
+
+class ReflectionCreate(ReflectionBase):
+    pass
+
+
+class ReflectionRead(ReflectionBase):
+    id: int
 
     model_config = ConfigDict(from_attributes=True)
