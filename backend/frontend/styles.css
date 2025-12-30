@@ -55,6 +55,11 @@ a {
   margin-top: 10px;
 }
 
+.hero__actions-bar {
+  justify-content: center;
+  padding-bottom: 32px;
+}
+
 .hero__badge {
   background: linear-gradient(135deg, var(--accent), #ff9773);
   padding: 20px 24px;
