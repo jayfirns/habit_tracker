@@ -213,6 +213,16 @@ input:focus {
   gap: 12px;
 }
 
+.category-block {
+  display: grid;
+  gap: 10px;
+}
+
+.category-title {
+  margin: 8px 0 0;
+  font-size: 18px;
+}
+
 .habit-card {
   border: 1px solid var(--border);
   border-radius: 14px;
@@ -227,6 +237,7 @@ input:focus {
   display: flex;
   justify-content: space-between;
   gap: 8px;
+  cursor: pointer;
 }
 
 .habit-card__meta {
@@ -240,6 +251,30 @@ input:focus {
 .habit-card__actions {
   display: flex;
   gap: 8px;
+}
+
+.habit-card__top-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.chevron {
+  color: var(--muted);
+  font-size: 18px;
+}
+
+.habit-body {
+  display: grid;
+  gap: 10px;
+}
+
+.habit-card.collapsed .habit-body {
+  display: none;
+}
+
+.habit-card.collapsed .chevron {
+  transform: rotate(-90deg);
 }
 
 .habit-filters {

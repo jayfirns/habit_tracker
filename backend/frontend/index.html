@@ -129,33 +129,39 @@
     </div>
 
     <template id="habit-template">
-      <article class="habit-card">
-        <div class="habit-card__top">
+      <article class="habit-card collapsed">
+        <div class="habit-card__top js-toggle">
           <div>
-            <p class="eyebrow js-category"></p>
-            <h3 class="js-name"></h3>
+            <p class="eyebrow js-name"></p>
+            <h3 class="js-category"></h3>
             <p class="meta js-last"></p>
           </div>
-          <div class="streak js-streak"></div>
+          <div class="habit-card__top-right">
+            <div class="streak js-streak"></div>
+            <span class="chevron">▾</span>
+          </div>
         </div>
-        <div class="habit-card__meta">
-          <span class="pill js-completions"></span>
-          <span class="pill subtle js-id"></span>
-        </div>
-        <div class="complete-inline">
-          <label>
-            <span class="meta">Date</span>
-            <input class="complete-date" type="date" />
-          </label>
-          <button class="button small js-complete">Mark done</button>
-          <label>
-            <span class="meta">Optional completion note</span>
-            <input class="complete-note" type="text" placeholder="Optional note" />
-          </label>
-        </div>
-        <div class="habit-card__actions">
-          <button class="button ghost small js-edit">Edit</button>
-          <button class="button ghost small js-delete">Delete</button>
+        <div class="habit-body">
+          <div class="habit-card__meta">
+            <span class="pill js-completions"></span>
+            <span class="pill subtle js-id"></span>
+          </div>
+          <div class="tag-row js-tag-row"></div>
+          <div class="complete-inline">
+            <label>
+              <span class="meta">Date</span>
+              <input class="complete-date" type="date" />
+            </label>
+            <button class="button small js-complete">Mark done</button>
+            <label>
+              <span class="meta">Optional completion note</span>
+              <input class="complete-note" type="text" placeholder="Optional note" />
+            </label>
+          </div>
+          <div class="habit-card__actions">
+            <button class="button ghost small js-edit">Edit</button>
+            <button class="button ghost small js-delete">Delete</button>
+          </div>
         </div>
       </article>
     </template>

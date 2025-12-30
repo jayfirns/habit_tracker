@@ -89,48 +89,70 @@ function renderHabits() {
     activeTag.hidden = true;
   }
 
-  habits.forEach((habit) => {
-    totalStreak += habit.streak || 0;
-    const node = habitTemplate.content.firstElementChild.cloneNode(true);
-    node.dataset.id = habit.id;
-    node.querySelector(".js-name").textContent = habit.name;
-    node.querySelector(".js-category").textContent = habit.category;
-    node.querySelector(".js-last").textContent = `Last: ${formatDate(habit.last_completed)}`;
-    node.querySelector(".js-streak").textContent = habit.streak ?? 0;
-    node.querySelector(".js-completions").textContent = `${habit.completions.length} completions`;
-    node.querySelector(".js-id").textContent = `ID ${habit.id}`;
+  // Group by category
+  const byCategory = habits.reduce((acc, habit) => {
+    acc[habit.category] = acc[habit.category] || [];
+    acc[habit.category].push(habit);
+    return acc;
+  }, {});
 
-    const tagRow = document.createElement("div");
-    tagRow.className = "tag-row";
-    (habit.tags || []).forEach((tag) => {
+  Object.entries(byCategory).forEach(([category, items]) => {
+    const block = document.createElement("section");
+    block.className = "category-block";
+    const heading = document.createElement("h2");
+    heading.className = "category-title";
+    heading.textContent = category;
+    block.appendChild(heading);
+
+    const grid = document.createElement("div");
+    grid.className = "habits-grid";
+    items.forEach((habit) => {
+      totalStreak += habit.streak || 0;
+      const node = habitTemplate.content.firstElementChild.cloneNode(true);
+      node.dataset.id = habit.id;
+      node.querySelector(".js-name").textContent = habit.name;
+      node.querySelector(".js-category").textContent = habit.category;
+      node.querySelector(".js-last").textContent = `Last: ${formatDate(habit.last_completed)}`;
+      node.querySelector(".js-streak").textContent = habit.streak ?? 0;
+      node.querySelector(".js-completions").textContent = `${habit.completions.length} completions`;
+      node.querySelector(".js-id").textContent = `ID ${habit.id}`;
+
+      const tagRow = node.querySelector(".js-tag-row");
+      (habit.tags || []).forEach((tag) => {
         const chip = document.createElement("span");
         chip.className = "pill";
         chip.textContent = `#${tag}`;
         chip.addEventListener("click", () => setTagFilter(tag));
         tagRow.appendChild(chip);
+      });
+      if (!habit.tags || habit.tags.length === 0) {
+        const chip = document.createElement("span");
+        chip.className = "pill subtle";
+        chip.textContent = "No tags";
+        tagRow.appendChild(chip);
+      }
+
+      const dateInput = node.querySelector(".complete-date");
+      const noteInput = node.querySelector(".complete-note");
+      dateInput.value = todayValue();
+
+      node.querySelector(".js-complete").addEventListener("click", () =>
+        completeHabit(habit.id, {
+          note: noteInput.value,
+          date: dateInput.value,
+        }),
+      );
+      node.querySelector(".js-delete").addEventListener("click", () => deleteHabit(habit.id));
+      node.querySelector(".js-edit").addEventListener("click", () => openEdit(habit));
+      node.querySelector(".js-toggle").addEventListener("click", () => {
+        node.classList.toggle("collapsed");
+      });
+
+      grid.appendChild(node);
     });
-    if (!habit.tags || habit.tags.length === 0) {
-      const chip = document.createElement("span");
-      chip.className = "pill subtle";
-      chip.textContent = "No tags";
-      tagRow.appendChild(chip);
-    }
-    node.querySelector(".habit-card__meta").after(tagRow);
 
-    const dateInput = node.querySelector(".complete-date");
-    const noteInput = node.querySelector(".complete-note");
-    dateInput.value = todayValue();
-
-    node.querySelector(".js-complete").addEventListener("click", () =>
-      completeHabit(habit.id, {
-        note: noteInput.value,
-        date: dateInput.value,
-      }),
-    );
-    node.querySelector(".js-delete").addEventListener("click", () => deleteHabit(habit.id));
-    node.querySelector(".js-edit").addEventListener("click", () => openEdit(habit));
-
-    habitsContainer.appendChild(node);
+    block.appendChild(grid);
+    habitsContainer.appendChild(block);
   });
 
   streakSummary.textContent = totalStreak;
