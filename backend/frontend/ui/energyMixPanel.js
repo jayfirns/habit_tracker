@@ -168,6 +168,178 @@ export function buildEnergyMixModel({
   };
 }
 
+export function renderLegendDom(
+  categoryLegend,
+  series,
+  model,
+  { formatValue = (value) => `${value}`, palette = PALETTE } = {},
+) {
+  if (!categoryLegend) return;
+  categoryLegend.innerHTML = "";
+  if (!series.length) {
+    categoryLegend.innerHTML = `<p class="meta">No data yet. Log habits or use mock data to preview.</p>`;
+    return;
+  }
+  series.forEach((item, idx) => {
+    const legend = document.createElement("div");
+    legend.className = "legend-item";
+    legend.innerHTML = `
+        <span class="legend-swatch"></span>
+        <div class="legend-text">
+          <span class="legend-title">${item.label}</span>
+          <span class="meta">${formatValue(item.value)} ${
+            model.valueMode === "duration" ? "focus" : "sessions"
+          }</span>
+        </div>
+      `;
+    const swatch = legend.querySelector(".legend-swatch");
+    if (swatch) swatch.style.background = palette[idx % palette.length];
+    categoryLegend.appendChild(legend);
+  });
+}
+
+export function renderPieDom(
+  { categoryChart, categoryLegend },
+  series,
+  total,
+  model,
+  { formatValue = (value) => `${value}`, palette = PALETTE } = {},
+) {
+  if (!categoryChart) return;
+  categoryChart.innerHTML = "";
+  categoryChart.classList.remove("bar-stack");
+  categoryChart.classList.add("pie-chart");
+
+  if (!series.length || total === 0) {
+    categoryChart.innerHTML = `<p class="meta">Log completions or focus time to see your mix.</p>`;
+    renderLegendDom(categoryLegend, [], model, { formatValue, palette });
+    return;
+  }
+
+  const svgNS = "http://www.w3.org/2000/svg";
+  const size = 220;
+  const r = 90;
+  const circumference = 2 * Math.PI * r;
+  const svg = document.createElementNS(svgNS, "svg");
+  svg.setAttribute("viewBox", `0 0 ${size} ${size}`);
+  svg.setAttribute("width", size);
+  svg.setAttribute("height", size);
+
+  const bgCircle = document.createElementNS(svgNS, "circle");
+  bgCircle.setAttribute("cx", size / 2);
+  bgCircle.setAttribute("cy", size / 2);
+  bgCircle.setAttribute("r", r);
+  bgCircle.setAttribute("fill", "none");
+  bgCircle.setAttribute("stroke", "rgba(255,255,255,0.05)");
+  bgCircle.setAttribute("stroke-width", "22");
+  svg.appendChild(bgCircle);
+
+  let offset = 0;
+
+  series.forEach((item, idx) => {
+    const share = item.value / Math.max(total, 1);
+    const segment = Math.max(share * circumference, 2);
+    const circle = document.createElementNS(svgNS, "circle");
+    circle.setAttribute("cx", size / 2);
+    circle.setAttribute("cy", size / 2);
+    circle.setAttribute("r", r);
+    circle.setAttribute("fill", "none");
+    circle.setAttribute("stroke", palette[idx % palette.length]);
+    circle.setAttribute("stroke-width", "22");
+    circle.setAttribute("stroke-dasharray", `${segment} ${circumference - segment}`);
+    circle.setAttribute("stroke-dashoffset", `${-offset}`);
+    circle.setAttribute("transform", `rotate(-90 ${size / 2} ${size / 2})`);
+    circle.setAttribute("stroke-linecap", "butt");
+    svg.appendChild(circle);
+    offset += segment;
+  });
+
+  categoryChart.appendChild(svg);
+  renderLegendDom(categoryLegend, series, model, { formatValue, palette });
+}
+
+export function renderBarsDom(
+  { categoryChart, categoryLegend },
+  series,
+  model,
+  { formatValue = (value) => `${value}`, palette = PALETTE } = {},
+) {
+  if (!categoryChart) return;
+  categoryChart.innerHTML = "";
+  categoryChart.classList.add("bar-stack");
+  categoryChart.classList.remove("pie-chart");
+
+  if (!series.length) {
+    categoryChart.innerHTML = `<p class="meta">No chart data yet. Log some focus time to populate bars.</p>`;
+    renderLegendDom(categoryLegend, [], model, { formatValue, palette });
+    return;
+  }
+
+  const maxValue = Math.max(...series.map((item) => item.value), 1);
+  const fragment = document.createDocumentFragment();
+
+  series.forEach((item) => {
+    const row = document.createElement("div");
+    row.className = "bar-row";
+    const width = Math.max(6, Math.round((item.value / maxValue) * 100));
+    row.innerHTML = `
+        <div class="bar-row__label">${item.label}</div>
+        <div class="bar-row__bar">
+          <span class="bar-row__fill" style="width:${width}%"></span>
+        </div>
+        <div class="bar-row__value">${formatValue(item.value)}</div>
+      `;
+    fragment.appendChild(row);
+  });
+
+  categoryChart.appendChild(fragment);
+  renderLegendDom(categoryLegend, model.categorySeries, model, { formatValue, palette });
+}
+
+export function renderGroupedDom(
+  { categoryChart, categoryLegend },
+  groupedSeries,
+  model,
+  { formatValue = (value) => `${value}`, palette = PALETTE } = {},
+) {
+  if (!categoryChart) return;
+  categoryChart.innerHTML = "";
+  categoryChart.classList.add("bar-stack");
+  categoryChart.classList.remove("pie-chart");
+
+  if (!groupedSeries.length) {
+    categoryChart.innerHTML = `<p class="meta">Add habits with categories to compare them here.</p>`;
+    renderLegendDom(categoryLegend, [], model, { formatValue, palette });
+    return;
+  }
+
+  const maxValue = Math.max(...groupedSeries.map((group) => group.value), 1);
+  const fragment = document.createDocumentFragment();
+
+  groupedSeries.forEach((group) => {
+    const wrapper = document.createElement("div");
+    wrapper.className = "bar-group";
+    wrapper.innerHTML = `<div class="bar-group__title">${group.label}</div>`;
+    group.habits.forEach((habit) => {
+      const width = Math.max(6, Math.round((habit.value / maxValue) * 100));
+      const row = document.createElement("div");
+      row.className = "bar-row";
+      row.innerHTML = `
+          <div class="bar-row__label meta">${habit.label}</div>
+          <div class="bar-row__bar">
+            <span class="bar-row__fill" style="width:${width}%"></span>
+          </div>
+          <div class="bar-row__value">${formatValue(habit.value)}</div>
+        `;
+      wrapper.appendChild(row);
+    });
+    fragment.appendChild(wrapper);
+  });
+
+  categoryChart.appendChild(fragment);
+  renderLegendDom(categoryLegend, groupedSeries, model, { formatValue, palette });
+}
+
 export function createEnergyMixPanel(elements, helpers = {}) {
   const {
     chartTotalPill,
@@ -225,157 +397,6 @@ export function createEnergyMixPanel(elements, helpers = {}) {
     }
   }
 
-  function renderLegend(series, model) {
-    if (!categoryLegend) return;
-    categoryLegend.innerHTML = "";
-    if (!series.length) {
-      categoryLegend.innerHTML = `<p class="meta">No data yet. Log habits or use mock data to preview.</p>`;
-      return;
-    }
-    series.forEach((item, idx) => {
-      const legend = document.createElement("div");
-      legend.className = "legend-item";
-      legend.innerHTML = `
-        <span class="legend-swatch"></span>
-        <div class="legend-text">
-          <span class="legend-title">${item.label}</span>
-          <span class="meta">${formatValue(item.value)} ${
-        model.valueMode === "duration" ? "focus" : "sessions"
-      }</span>
-        </div>
-      `;
-      const swatch = legend.querySelector(".legend-swatch");
-      if (swatch) swatch.style.background = PALETTE[idx % PALETTE.length];
-      categoryLegend.appendChild(legend);
-    });
-  }
-
-  function renderPie(series, total, model) {
-    if (!categoryChart) return;
-    categoryChart.innerHTML = "";
-    categoryChart.classList.remove("bar-stack");
-    categoryChart.classList.add("pie-chart");
-
-    if (!series.length || total === 0) {
-      categoryChart.innerHTML = `<p class="meta">Log completions or focus time to see your mix.</p>`;
-      renderLegend([], model);
-      return;
-    }
-
-    const svgNS = "http://www.w3.org/2000/svg";
-    const size = 220;
-    const r = 90;
-    const circumference = 2 * Math.PI * r;
-    const svg = document.createElementNS(svgNS, "svg");
-    svg.setAttribute("viewBox", `0 0 ${size} ${size}`);
-    svg.setAttribute("width", size);
-    svg.setAttribute("height", size);
-
-    const bgCircle = document.createElementNS(svgNS, "circle");
-    bgCircle.setAttribute("cx", size / 2);
-    bgCircle.setAttribute("cy", size / 2);
-    bgCircle.setAttribute("r", r);
-    bgCircle.setAttribute("fill", "none");
-    bgCircle.setAttribute("stroke", "rgba(255,255,255,0.05)");
-    bgCircle.setAttribute("stroke-width", "22");
-    svg.appendChild(bgCircle);
-
-    let offset = 0;
-
-    series.forEach((item, idx) => {
-      const share = item.value / Math.max(total, 1);
-      const segment = Math.max(share * circumference, 2);
-      const circle = document.createElementNS(svgNS, "circle");
-      circle.setAttribute("cx", size / 2);
-      circle.setAttribute("cy", size / 2);
-      circle.setAttribute("r", r);
-      circle.setAttribute("fill", "none");
-      circle.setAttribute("stroke", PALETTE[idx % PALETTE.length]);
-      circle.setAttribute("stroke-width", "22");
-      circle.setAttribute("stroke-dasharray", `${segment} ${circumference - segment}`);
-      circle.setAttribute("stroke-dashoffset", `${-offset}`);
-      circle.setAttribute("transform", `rotate(-90 ${size / 2} ${size / 2})`);
-      circle.setAttribute("stroke-linecap", "butt");
-      svg.appendChild(circle);
-      offset += segment;
-    });
-
-    categoryChart.appendChild(svg);
-    renderLegend(series, model);
-  }
-
-  function renderBars(series, model) {
-    if (!categoryChart) return;
-    categoryChart.innerHTML = "";
-    categoryChart.classList.add("bar-stack");
-    categoryChart.classList.remove("pie-chart");
-
-    if (!series.length) {
-      categoryChart.innerHTML = `<p class="meta">No chart data yet. Log some focus time to populate bars.</p>`;
-      renderLegend([], model);
-      return;
-    }
-
-    const maxValue = Math.max(...series.map((item) => item.value), 1);
-    const fragment = document.createDocumentFragment();
-
-    series.forEach((item) => {
-      const row = document.createElement("div");
-      row.className = "bar-row";
-      const width = Math.max(6, Math.round((item.value / maxValue) * 100));
-      row.innerHTML = `
-        <div class="bar-row__label">${item.label}</div>
-        <div class="bar-row__bar">
-          <span class="bar-row__fill" style="width:${width}%"></span>
-        </div>
-        <div class="bar-row__value">${formatValue(item.value)}</div>
-      `;
-      fragment.appendChild(row);
-    });
-
-    categoryChart.appendChild(fragment);
-    renderLegend(model.categorySeries, model);
-  }
-
-  function renderGrouped(groupedSeries, model) {
-    if (!categoryChart) return;
-    categoryChart.innerHTML = "";
-    categoryChart.classList.add("bar-stack");
-    categoryChart.classList.remove("pie-chart");
-
-    if (!groupedSeries.length) {
-      categoryChart.innerHTML = `<p class="meta">Add habits with categories to compare them here.</p>`;
-      renderLegend([], model);
-      return;
-    }
-
-    const maxValue = Math.max(...groupedSeries.map((group) => group.value), 1);
-    const fragment = document.createDocumentFragment();
-
-    groupedSeries.forEach((group) => {
-      const wrapper = document.createElement("div");
-      wrapper.className = "bar-group";
-      wrapper.innerHTML = `<div class="bar-group__title">${group.label}</div>`;
-      group.habits.forEach((habit) => {
-        const width = Math.max(6, Math.round((habit.value / maxValue) * 100));
-        const row = document.createElement("div");
-        row.className = "bar-row";
-        row.innerHTML = `
-          <div class="bar-row__label meta">${habit.label}</div>
-          <div class="bar-row__bar">
-            <span class="bar-row__fill" style="width:${width}%"></span>
-          </div>
-          <div class="bar-row__value">${formatValue(habit.value)}</div>
-        `;
-        wrapper.appendChild(row);
-      });
-      fragment.appendChild(wrapper);
-    });
-
-    categoryChart.appendChild(fragment);
-    renderLegend(groupedSeries, model);
-  }
-
   function updateTotals(total, model) {
     if (centerNode) {
       centerNode.classList.toggle("chart-center--inline", model.chartMode !== "pie");
@@ -404,13 +425,28 @@ export function createEnergyMixPanel(elements, helpers = {}) {
     updateTotals(model.total, model);
 
     if (model.chartMode === "pie") {
-      renderPie(model.categorySeries, model.total, model);
+      renderPieDom({ categoryChart, categoryLegend }, model.categorySeries, model.total, model, {
+        formatValue,
+      });
     } else if (model.chartMode === "grouped") {
-      renderGrouped(model.groupedSeries, model);
+      renderGroupedDom({ categoryChart, categoryLegend }, model.groupedSeries, model, {
+        formatValue,
+      });
     } else {
-      renderBars(model.habitSeries, model);
+      renderBarsDom(
+        { categoryChart, categoryLegend },
+        model.habitSeries,
+        model,
+        {
+          formatValue,
+        },
+      );
     }
   }
 
-  return { render, setChartMode: (mode) => (state.chartMode = coerceChartMode(mode)), setValueMode: (mode) => (state.valueMode = coerceValueMode(mode)) };
+  return {
+    render,
+    setChartMode: (mode) => (state.chartMode = coerceChartMode(mode)),
+    setValueMode: (mode) => (state.valueMode = coerceValueMode(mode)),
+  };
 }
