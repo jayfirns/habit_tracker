@@ -1,2 +1,16 @@
 # Ignoring Python virtual environment directory
 backend/venv/
+
+# Ignoring Python cache directories
+__pycache__/
+backend/__pycache__/
+backend/alembic/__pycache__/
+backend/tests/__pycache__/
+
+# Ignoring Alembic configuration and database files
+alembic.ini
+backend/alembic.ini
+*.db
+backend/*.db
+data/
+backend/data/
