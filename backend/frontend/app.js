@@ -18,6 +18,7 @@ const periodActions = document.querySelector("#period-actions");
 const habitCount = document.querySelector("#habit-count");
 const streakSummaryCard = document.querySelector("#streak-summary-card");
 const periodCta = document.querySelector("#period-cta");
+const reflectionCta = document.querySelector("#reflection-cta");
 const closeGoalBtn = document.querySelector("#close-goal");
 const goalOverlay = document.querySelector("#goal-overlay");
 const goalForm = document.querySelector("#goal-form");
@@ -25,11 +26,16 @@ const openReflectionBtn = document.querySelector("#open-reflection");
 const closeReflectionBtn = document.querySelector("#close-reflection");
 const reflectionOverlay = document.querySelector("#reflection-overlay");
 const reflectionForm = document.querySelector("#reflection-form");
+const goalsList = document.querySelector("#goals-list");
+const newGoalBtn = document.querySelector("#new-goal");
 
 const state = {
   habits: [],
   editingId: null,
   filterTag: null,
+  goals: [],
+  reflections: [],
+  editingGoalId: null,
 };
 
 // Ensure overlay is hidden on load
@@ -76,8 +82,18 @@ async function loadGoals() {
   try {
     const goals = await api(`${API_BASE}/goals`);
     state.goals = goals;
+    renderGoals();
   } catch (err) {
     console.error("Failed to load goals", err);
+  }
+}
+
+async function loadReflections() {
+  try {
+    const data = await api(`${API_BASE}/reflections`);
+    state.reflections = data;
+  } catch (err) {
+    console.error("Failed to load reflections", err);
   }
 }
 
@@ -346,6 +362,7 @@ function renderDashboard() {
 
 loadHabits();
 loadGoals();
+loadReflections();
 
 function openOverlay(el) {
   el.hidden = false;
@@ -356,6 +373,15 @@ function closeOverlay(el) {
 }
 
 periodCta?.addEventListener("click", () => openOverlay(goalOverlay));
+reflectionCta?.addEventListener("click", () => {
+  reflectionForm.querySelector("#reflection-period").value = autoPeriodLabel(new Date());
+  openOverlay(reflectionOverlay);
+});
+newGoalBtn?.addEventListener("click", () => {
+  state.editingGoalId = null;
+  goalForm.reset();
+  openOverlay(goalOverlay);
+});
 closeGoalBtn?.addEventListener("click", () => closeOverlay(goalOverlay));
 goalOverlay?.addEventListener("click", (e) => {
   if (e.target === goalOverlay) closeOverlay(goalOverlay);
@@ -376,13 +402,23 @@ goalForm?.addEventListener("submit", async (event) => {
     return;
   }
   try {
-    await api(`${API_BASE}/goals`, {
-      method: "POST",
-      body: JSON.stringify({ title, scope, outcome, due_date, tags, habit_ids }),
-    });
-    setStatus("Goal saved");
+    const payload = { title, scope, outcome, due_date, tags, habit_ids };
+    if (state.editingGoalId) {
+      await api(`${API_BASE}/goals/${state.editingGoalId}`, {
+        method: "PUT",
+        body: JSON.stringify(payload),
+      });
+      setStatus("Goal updated");
+    } else {
+      await api(`${API_BASE}/goals`, {
+        method: "POST",
+        body: JSON.stringify(payload),
+      });
+      setStatus("Goal saved");
+    }
     closeOverlay(goalOverlay);
     goalForm.reset();
+    state.editingGoalId = null;
     await loadGoals();
     await loadHabits();
   } catch (err) {
@@ -406,6 +442,8 @@ reflectionForm?.addEventListener("submit", async (event) => {
   const reflection_type = reflectionForm.querySelector("#reflection-type").value;
   const period_label = reflectionForm.querySelector("#reflection-period").value.trim();
   const responses = [reflectionForm.querySelector("#reflection-responses").value.trim()].filter(Boolean);
+  const goal_id = parseInt(reflectionForm.querySelector("#reflection-goal")?.value || "0", 10) || null;
+  const rating = reflectionForm.querySelector("#reflection-rating")?.value || null;
   if (!period_label) {
     setStatus("Period label required", true);
     return;
@@ -418,6 +456,8 @@ reflectionForm?.addEventListener("submit", async (event) => {
         period_label,
         responses,
         prompts: [],
+        goal_id,
+        rating,
       }),
     });
     setStatus("Reflection saved");
@@ -448,4 +488,79 @@ function populateHabitOptions() {
     opt.textContent = `${habit.name} (${habit.category})`;
     select.appendChild(opt);
   });
+}
+
+function populateReflectionGoalOptions() {
+  const select = document.querySelector("#reflection-goal");
+  if (!select) return;
+  select.innerHTML = `<option value="">(Optional) Link to goal</option>`;
+  state.goals.forEach((goal) => {
+    const opt = document.createElement("option");
+    opt.value = goal.id;
+    opt.textContent = goal.title;
+    select.appendChild(opt);
+  });
+}
+
+function renderGoals() {
+  if (!goalsList) return;
+  goalsList.innerHTML = "";
+  populateHabitOptions();
+  populateReflectionGoalOptions();
+  if (state.goals.length === 0) {
+    goalsList.innerHTML = `<p class="meta">No goals yet. Tap the period pill to create one.</p>`;
+    return;
+  }
+  state.goals.forEach((goal) => {
+    const line = document.createElement("div");
+    line.className = "goal-line";
+    const left = document.createElement("div");
+    left.innerHTML = `<strong>${goal.title}</strong><div class="meta">${goal.scope} · ${goal.status || "active"}</div>`;
+    const actions = document.createElement("div");
+    actions.className = "goal-actions";
+    const editBtn = document.createElement("button");
+    editBtn.className = "ghost small";
+    editBtn.textContent = "Edit";
+    editBtn.addEventListener("click", () => openGoalForEdit(goal));
+    const reflectBtn = document.createElement("button");
+    reflectBtn.className = "ghost small";
+    reflectBtn.textContent = "Reflect";
+    reflectBtn.addEventListener("click", () => openReflectionForGoal(goal));
+    actions.appendChild(editBtn);
+    actions.appendChild(reflectBtn);
+    line.appendChild(left);
+    line.appendChild(actions);
+    goalsList.appendChild(line);
+  });
+}
+
+function openGoalForEdit(goal) {
+  state.editingGoalId = goal.id;
+  goalForm.querySelector("#goal-title").value = goal.title;
+  goalForm.querySelector("#goal-scope").value = goal.scope;
+  goalForm.querySelector("#goal-outcome").value = goal.outcome || "";
+  goalForm.querySelector("#goal-due").value = goal.due_date || "";
+  goalForm.querySelector("#goal-tags").value = (goal.tags || []).join(", ");
+  const select = goalForm.querySelector("#goal-habits");
+  const ids = goal.habit_ids || [];
+  Array.from(select.options).forEach((opt) => {
+    opt.selected = ids.includes(parseInt(opt.value, 10));
+  });
+  openOverlay(goalOverlay);
+}
+
+function openReflectionForGoal(goal) {
+  reflectionForm.querySelector("#reflection-period").value = autoPeriodLabel(new Date());
+  const goalSelect = reflectionForm.querySelector("#reflection-goal");
+  if (goalSelect) {
+    goalSelect.value = goal.id;
+  }
+  openOverlay(reflectionOverlay);
+}
+
+function autoPeriodLabel(dateObj) {
+  const month = dateObj.getMonth() + 1;
+  const year = dateObj.getFullYear();
+  const quarter = Math.floor((month - 1) / 3) + 1;
+  return `${year}-Q${quarter}`;
 }
