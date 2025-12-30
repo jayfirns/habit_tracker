@@ -3,6 +3,7 @@
 - Semantic ID: EnergyMixPanel
 - Location in app: Main layout after `#goal-manager-slot`, rendered as `<section class="card chart-card wide">` in `backend/frontend/index.html`.
 - Purpose: Visualize the distribution of habit completions by category, show total completions, and list category-level legend details.
+For detailed design, development notes, and enhancement matrix, see [EnergyMixPanel.md](docs/panels/EnergyMixPanel.md).
 
 | Element Name | Description | Example content | CSS class | Notes |
 | --- | --- | --- | --- | --- |

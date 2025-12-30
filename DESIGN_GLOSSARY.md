@@ -20,6 +20,8 @@
 
 # UI Design Glossary (New Habit & Habit Board)
 
+- **Detailed Panel Documentation**: For comprehensive design, goals, and enhancement matrices of individual UI panels (e.g., Energy Mix Panel, Goal Dashboard Panel), refer to the dedicated files in the `docs/panels/` directory, indexed by [UI_PANELS_DOCUMENTATION.md](UI_PANELS_DOCUMENTATION.md).
+
 | Element Name | Description | Text Example | Panel | Style Controlled By | Conforms? | Fix Recommendation |
 |--------------|-------------|--------------|-------|---------------------|-----------|---------------------|
 | PanelShell | Panel container; background `--panel` (#111f33 default theme), 1px border `--border` (#23344e), radius `--radius` 16px, padding 18/18/14, shadow `--shadow` (0 18px 40px rgba(0,0,0,0.35)) | — | [New Habit](UI_PANELS_DOCUMENTATION.md#newhabitpanel) | components.css → `.panel` (vars from themes.css) | ✅ | — |
