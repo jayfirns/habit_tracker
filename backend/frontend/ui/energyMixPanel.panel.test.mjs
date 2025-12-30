@@ -14,8 +14,9 @@ function setupPanel() {
       <div class="chart-toggle">
         <button class="pill" data-value-mode="duration"></button>
         <button class="pill" data-value-mode="frequency"></button>
-      </div>
+    </div>
       <div class="chart-container"></div>
+      <div class="chart-updated"></div>
       <div class="chart-center">
         <div class="chart-center__value"></div>
         <div class="chart-center__label"></div>
@@ -36,6 +37,7 @@ function setupPanel() {
   const categoryLegend = dom.window.document.querySelector(".chart-legend");
   const tabsContainer = dom.window.document.querySelector(".chart-tabs");
   const valueToggleContainer = dom.window.document.querySelector(".chart-toggle");
+  const chartUpdatedNote = dom.window.document.querySelector(".chart-updated");
 
   const panel = createEnergyMixPanel(
     {
@@ -47,6 +49,7 @@ function setupPanel() {
       categoryLegend,
       tabsContainer,
       valueToggleContainer,
+      chartUpdatedNote,
     },
     {
       formatMinutes: (v) => `${v}m`,
@@ -63,6 +66,7 @@ function setupPanel() {
     categoryLegend,
     tabsContainer,
     valueToggleContainer,
+    chartUpdatedNote,
   };
 }
 
@@ -124,9 +128,10 @@ test("test_update_energy_mix_data_with_empty_input_shows_empty_state", () => {
 });
 
 test("test_window_updateEnergyMixData_exposed_for_dev", () => {
-  const { panel, chartCenterValue } = setupPanel();
+  const { panel, chartCenterValue, chartContainer } = setupPanel();
 
   panel.render(initialData);
+  const firstStamp = chartContainer.getAttribute("data-last-updated");
 
   assert.equal(typeof globalThis.updateEnergyMixData, "function");
 
@@ -137,4 +142,6 @@ test("test_window_updateEnergyMixData_exposed_for_dev", () => {
   });
 
   assert.equal(chartCenterValue.textContent, "1");
+  const secondStamp = chartContainer.getAttribute("data-last-updated");
+  assert.notEqual(firstStamp, secondStamp);
 });

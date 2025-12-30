@@ -81,8 +81,7 @@ export function normalizeEntries({
       category: habit.category || "Uncategorized",
       durationMinutes: totals[String(habit.id)] || 0,
       frequency: (habit.completions || []).length,
-    }))
-    .filter((entry) => entry.durationMinutes > 0 || entry.frequency > 0);
+    }));
 
   if (entries.length || !mockEntries?.length) return entries;
 
@@ -295,7 +294,7 @@ export function renderBarsDom(
   });
 
   categoryChart.appendChild(fragment);
-  renderLegendDom(categoryLegend, model.categorySeries, model, { formatValue, palette });
+  renderLegendDom(categoryLegend, series, model, { formatValue, palette });
 }
 
 export function renderGroupedDom(
@@ -366,12 +365,15 @@ export function createEnergyMixPanel(elements = {}, helpers = {}) {
   const chartCenterContainer = resolve(elements.chartCenterContainer, [".chart-center"]);
   const tabsContainer = resolve(elements.tabsContainer, [".chart-tabs", "#energy-tabs"]);
   const valueToggleContainer = resolve(elements.valueToggleContainer, [".chart-toggle", "#energy-value-toggle"]);
+  const chartUpdatedNote = resolve(elements.chartUpdatedNote, [".chart-updated", "#chart-updated-note"]);
   const { formatMinutes = (value) => `${value}m` } = helpers;
 
   const state = {
     chartMode: "pie",
     valueMode: "duration",
     lastPayload: {},
+    lastUpdatedAt: null,
+    lastUpdatedTick: null,
   };
   const centerNode = chartCenterContainer || chartCenterLabel?.parentElement || chartCenterValue?.parentElement;
 
@@ -397,10 +399,6 @@ export function createEnergyMixPanel(elements = {}, helpers = {}) {
     return state.valueMode === "duration" ? formatMinutes(value) : `${value}`;
   }
 
-  function formatValueWithMode(value, valueMode) {
-    return valueMode === "duration" ? formatMinutes(value) : `${value}`;
-  }
-
   function updateControls(model) {
     if (tabsContainer) {
       tabsContainer.querySelectorAll("[data-chart-mode]").forEach((btn) => {
@@ -418,33 +416,20 @@ export function createEnergyMixPanel(elements = {}, helpers = {}) {
     }
   }
 
-  function updateTotals(total, model) {
+  function updateTotals(total, model, formatFn = formatValue) {
     if (centerNode) {
       centerNode.classList.toggle("chart-center--inline", model.chartMode !== "pie");
     }
     const suffix = model.valueMode === "duration" ? "logged" : "sessions";
     if (chartCenterValue) {
-      chartCenterValue.textContent = formatValueWithMode(total, model.valueMode);
+      chartCenterValue.textContent = formatFn(total);
     }
     if (chartCenterLabel) {
       chartCenterLabel.textContent = model.valueMode === "duration" ? "minutes" : "sessions";
     }
     if (chartTotalPill) {
-      chartTotalPill.textContent = `${formatValueWithMode(total, model.valueMode)} ${suffix}`;
+      chartTotalPill.textContent = `${formatFn(total)} ${suffix}`;
     }
-  }
-
-  function filterSeries(model) {
-    const categorySeries = model.categorySeries.filter((item) => item.value > 0);
-    const habitSeries = model.habitSeries.filter((item) => item.value > 0);
-    const groupedSeries = model.groupedSeries
-      .map((group) => {
-        const habits = group.habits.filter((habit) => habit.value > 0);
-        const value = habits.reduce((sum, habit) => sum + habit.value, 0);
-        return { ...group, habits, value };
-      })
-      .filter((group) => group.value > 0 && group.habits.length > 0);
-    return { categorySeries, habitSeries, groupedSeries };
   }
 
   function renderEmptyState(message = "No data available") {
@@ -458,16 +443,28 @@ export function createEnergyMixPanel(elements = {}, helpers = {}) {
     }
   }
 
-  function selectSeries(filtered, chartMode) {
-    if (chartMode === "pie") return filtered.categorySeries;
-    if (chartMode === "grouped") return filtered.groupedSeries;
-    return filtered.habitSeries;
-  }
-
-  function sumSeries(series, chartMode) {
-    return chartMode === "grouped"
-      ? series.reduce((sum, group) => sum + group.value, 0)
-      : series.reduce((sum, item) => sum + item.value, 0);
+  function updateLastUpdated() {
+    let tick = Date.now();
+    if (state.lastUpdatedTick && tick === state.lastUpdatedTick) tick += 1;
+    state.lastUpdatedTick = tick;
+    state.lastUpdatedAt = new Date(tick).toISOString();
+    if (chartUpdatedNote) {
+      chartUpdatedNote.textContent = `Updated ${new Date(tick).toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+      })}`;
+      chartUpdatedNote.setAttribute("data-last-updated", state.lastUpdatedAt);
+    }
+    if (chartContainer) chartContainer.setAttribute("data-last-updated", state.lastUpdatedAt);
+    if (chartTotalPill) chartTotalPill.setAttribute("data-last-updated", state.lastUpdatedAt);
+    const pulseTargets = [chartContainer, chartTotalPill];
+    pulseTargets.forEach((node) => {
+      if (!node) return;
+      node.classList.remove("chart-refresh-pulse");
+      void node.offsetWidth;
+      node.classList.add("chart-refresh-pulse");
+    });
   }
 
   function render(payload = {}) {
@@ -478,64 +475,48 @@ export function createEnergyMixPanel(elements = {}, helpers = {}) {
       valueMode: state.valueMode,
     };
     const model = buildEnergyMixModel(baseConfig);
-
-    const filteredSeries = filterSeries(model);
-    const activeSeries = selectSeries(filteredSeries, model.chartMode);
     let renderModel = model;
-    let renderFiltered = filteredSeries;
-    let renderSeries = activeSeries;
-    let renderTotal = sumSeries(renderSeries, model.chartMode);
 
     updateControls(model);
+    updateLastUpdated();
 
-    if (!renderSeries.length && state.valueMode !== "frequency") {
-      const fallbackModel = buildEnergyMixModel({ ...baseConfig, valueMode: "frequency" });
-      const fallbackFiltered = filterSeries(fallbackModel);
-      const fallbackSeries = selectSeries(fallbackFiltered, fallbackModel.chartMode);
-      if (fallbackSeries.length) {
-        renderModel = fallbackModel;
-        renderFiltered = fallbackFiltered;
-        renderSeries = fallbackSeries;
-        renderTotal = sumSeries(renderSeries, fallbackModel.chartMode);
-      }
-    }
-
-    updateTotals(renderTotal, renderModel);
-
-    if (!renderSeries.length) {
+    if (!model.hasData) {
       renderEmptyState("No data available");
       return;
     }
 
+    if (model.total === 0 && model.valueMode !== "frequency") {
+      renderModel = buildEnergyMixModel({ ...baseConfig, valueMode: "frequency" });
+    }
+
+    const renderFormat = (value) =>
+      renderModel.valueMode === "duration" ? formatMinutes(value) : `${value}`;
+
+    updateTotals(renderModel.total, renderModel, renderFormat);
+
     if (renderModel.chartMode === "pie") {
       renderPieDom(
         { categoryChart: chartContainer, categoryLegend },
-        renderFiltered.categorySeries,
-        renderTotal,
+        renderModel.categorySeries,
+        renderModel.total,
         renderModel,
         {
-          formatValue: (value) => formatValueWithMode(value, renderModel.valueMode),
+          formatValue: renderFormat,
         },
       );
     } else if (renderModel.chartMode === "grouped") {
       renderGroupedDom(
         { categoryChart: chartContainer, categoryLegend },
-        renderFiltered.groupedSeries,
+        renderModel.groupedSeries,
         renderModel,
         {
-          formatValue: (value) => formatValueWithMode(value, renderModel.valueMode),
+          formatValue: renderFormat,
         },
       );
     } else {
-      const legendModel = { ...renderModel, categorySeries: renderFiltered.categorySeries };
-      renderBarsDom(
-        { categoryChart: chartContainer, categoryLegend },
-        renderFiltered.habitSeries,
-        legendModel,
-        {
-          formatValue: (value) => formatValueWithMode(value, renderModel.valueMode),
-        },
-      );
+      renderBarsDom({ categoryChart: chartContainer, categoryLegend }, renderModel.habitSeries, renderModel, {
+        formatValue: renderFormat,
+      });
     }
   }
 
