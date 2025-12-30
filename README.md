@@ -1,8 +1,8 @@
 ### README.md
 
-# My Personal Habit Tracker
+# FocusOS (Habit Board)
 
-A simple and intuitive Habit Tracker application built using Python and Tkinter. This application helps users to track their habits, view their progress, and manage habit-related notes effectively. The application supports adding, editing, deleting habits, and scheduling notifications for daily habits.
+A local-first habit and goals board served by FastAPI with a lightweight HTML/CSS/JS frontend. Track habits, SMART goals, workday time, and focused minutes without the cloud. The legacy Tkinter app remains in the repo, but the primary experience is now the FocusOS web UI (`backend/frontend`).
 
 ## Table of Contents
 
@@ -16,50 +16,25 @@ A simple and intuitive Habit Tracker application built using Python and Tkinter.
 
 ## Features
 
-- **Habit Management**: Add, edit, delete, and track habits.
-- **Progress Visualization**: View habit progress through a calendar or a line chart.
-- **Notes Management**: Add, edit, and delete notes associated with each habit.
-- **Customizable Notifications**: Schedule daily notifications for habits.
-- **User Preferences**: Save window size, position, and column settings for a personalized experience.
-- **Configurable UI**: Easily customize the display of columns and window settings.
+- **Habit Management**: Add, edit, delete, and mark completions with notes; per-habit stopwatches and manual minute overrides.
+- **SMART Goals**: Create/assign habits to SMART goals, reflect, and edit from the dashboard.
+- **Workday Time Glide**: Plan a day, clock out early, or override worked minutes; see planned vs. worked and focused percentages.
+- **Analytics**: Today’s Focus, Energy Mix pie chart, and daily time summary (Planned | Worked | % Plan | Focused | % Focused).
+- **Theming & UX**: Multiple themes, responsive layout, and inline habit editing.
 
-## Installation
+## Running the web app (dev)
 
-1. **Clone the repository**:
+```bash
+cd backend
+python -m venv venv
+source venv/bin/activate  # Windows: venv\Scripts\activate
+pip install -e .[dev]
+uvicorn main:app --reload --port 8000
+```
 
-    ```bash
-    git clone https://github.com/yourusername/habit-tracker.git
-    cd habit-tracker
-    ```
+Open `http://localhost:8000/ui` for the frontend. API lives at `http://localhost:8000`.
 
-2. **Create a virtual environment** (optional but recommended):
-    On mac/linux:
-    ```zsh
-    python -m venv myenv
-    source myenv/bin/activate  
-    ```
-    On Windows: 
-    ```bash
-    myenv\Scripts\activate
-    ```
-
-3. **Install the required dependencies**:
-
-    ```bash
-    pip install -r requirements.txt
-    ```
-
-   Ensure that `requirements.txt` includes the necessary packages, such as:
-   - `tkinter` (usually included with Python)
-   - `sqlite3` (standard library in Python)
-   - `matplotlib`
-   - `logging`
-
-4. **Run the application**:
-
-    ```bash
-    python habit_tracker.py
-    ```
+Docker: `docker-compose up --build` will run the backend and serve the UI on :8000.
 
 ## Usage
 
@@ -112,14 +87,7 @@ The application uses Python's `logging` module to record various actions and sta
 
 ### Contributing
 
-Contributions are welcome! If you'd like to contribute:
-
-1. Fork the repository.
-2. Create a new branch (`git checkout -b feature/your-feature-name`).
-3. Make your changes.
-4. Commit your changes (`git commit -m 'Add new feature'`).
-5. Push to the branch (`git push origin feature/your-feature-name`).
-6. Open a pull request.
+PRs welcome—favor small, test-backed changes. Frontend is vanilla JS/CSS; backend uses FastAPI + SQLAlchemy. Add or update tests when changing behavior (see `backend/tests` and `backend/frontend/time-utils.test.mjs`).
 
 ### License
 
@@ -135,6 +103,15 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 Enjoy tracking your habits and achieving your goals!
 
+## FocusOS Backend (Docker Quickstart)
+
+A FastAPI backend for the FocusOS web migration lives in `backend/`.
+
+- Build: `docker build -t focusos-backend ./backend`
+- Run: `docker run -p 8000:8000 focusos-backend`
+- Or with Compose (runs backend on :8000): `docker-compose up --build backend`
+- Data: SQLite lives in `backend/data/habit_tracker.db` (mounted into the container); your habits persist across rebuilds.
+
 
 ### Explanation of Key Sections
 
@@ -146,4 +123,3 @@ Enjoy tracking your habits and achieving your goals!
 - **Contributing**: Offers guidance for users who want to contribute to the project.
 - **License**: States the type of license under which the software is distributed.
 - **Troubleshooting**: Provides common issues and solutions.
-
