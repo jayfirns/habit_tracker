@@ -1,0 +1,126 @@
+:root,
+:root[data-theme="default"] {
+  --bg0: #0f1b2c;
+  --bg1: #17253c;
+  --panel: #111f33;
+  --text: #e6edf7;
+  --muted: #a6b7d4;
+  --accent: #ff7a6e;
+  --accent2: #3cc9d6;
+  --border: #23344e;
+  --pill: #1e2d44;
+  --shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
+  --shadow-strong: 0 22px 60px rgba(0, 0, 0, 0.38);
+  --focus-ring: 0 0 0 1px color-mix(in srgb, var(--accent) 55%, transparent);
+  --radius: 16px;
+  --radius-sm: 12px;
+  --font-body: "Manrope", "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-display: "Manrope", "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+}
+
+[data-theme="cyberpunk"] {
+  --bg0: #04020c;
+  --bg1: #0e0620;
+  --panel: #140a2e;
+  --text: #f8f7ff;
+  --muted: #cba8ff;
+  --accent: #ff3fd8;
+  --accent2: #41f4ff;
+  --border: #2d1a48;
+  --pill: #1c1133;
+  --shadow: 0 24px 70px rgba(255, 63, 216, 0.18), 0 0 0 1px rgba(65, 244, 255, 0.15);
+  --shadow-strong: 0 28px 90px rgba(255, 63, 216, 0.25), 0 0 22px rgba(65, 244, 255, 0.2);
+  --focus-ring: 0 0 0 2px color-mix(in srgb, var(--accent) 70%, transparent),
+    0 0 0 12px color-mix(in srgb, var(--accent2) 15%, transparent);
+  --radius: 16px;
+  --radius-sm: 12px;
+  --font-body: "Inter", "Manrope", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-display: "Space Grotesk", "Inter", "Manrope", "Segoe UI", system-ui, -apple-system, sans-serif;
+}
+
+[data-theme="cyberpunk"] body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 15% 20%, color-mix(in srgb, var(--accent) 28%, transparent), transparent 40%),
+    radial-gradient(circle at 85% 10%, color-mix(in srgb, var(--accent2) 26%, transparent), transparent 38%),
+    repeating-linear-gradient(
+      0deg,
+      color-mix(in srgb, var(--accent2) 8%, transparent) 0,
+      color-mix(in srgb, var(--accent2) 8%, transparent) 1px,
+      transparent 1px,
+      transparent 18px
+    );
+  opacity: 0.45;
+  mix-blend-mode: screen;
+  z-index: 0;
+}
+
+[data-theme="cyberpunk"] .button {
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--accent2) 40%, transparent),
+    0 18px 50px color-mix(in srgb, var(--accent) 35%, transparent),
+    0 0 24px color-mix(in srgb, var(--accent2) 28%, transparent);
+}
+
+[data-theme="cyberpunk"] .timer-indicator.running::before {
+  box-shadow: 0 0 0 8px color-mix(in srgb, var(--accent2) 30%, transparent);
+}
+
+[data-theme="enterprise"] {
+  --bg0: #0d1723;
+  --bg1: #142335;
+  --panel: #102334;
+  --text: #f2f5f8;
+  --muted: #9fb2c6;
+  --accent: #2f80ed;
+  --accent2: #2aa176;
+  --border: #1b3147;
+  --pill: #152b3d;
+  --shadow: 0 12px 28px rgba(0, 0, 0, 0.2);
+  --shadow-strong: 0 16px 36px rgba(0, 0, 0, 0.24);
+  --focus-ring: 0 0 0 1px color-mix(in srgb, var(--accent) 55%, transparent);
+  --radius: 14px;
+  --radius-sm: 10px;
+  --font-body: "IBM Plex Sans", "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-display: "IBM Plex Sans", "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+}
+
+[data-theme="enterprise"] .button {
+  box-shadow: var(--shadow);
+}
+
+[data-theme="terminal"] {
+  --bg0: #050505;
+  --bg1: #0b0d0f;
+  --panel: #0c0f12;
+  --text: #d8e2d8;
+  --muted: #7b847b;
+  --accent: #6bff6b;
+  --accent2: #46d6c4;
+  --border: #1a1f22;
+  --pill: #0f1417;
+  --shadow: none;
+  --shadow-strong: none;
+  --focus-ring: 0 0 0 1px color-mix(in srgb, var(--accent) 70%, transparent);
+  --radius: 10px;
+  --radius-sm: 8px;
+  --font-body: "IBM Plex Mono", "JetBrains Mono", "SFMono-Regular", "Consolas", "Liberation Mono", monospace;
+  --font-display: "IBM Plex Mono", "JetBrains Mono", "SFMono-Regular", "Consolas", "Liberation Mono", monospace;
+}
+
+[data-theme="terminal"] .panel,
+[data-theme="terminal"] .card,
+[data-theme="terminal"] .insight-stat,
+[data-theme="terminal"] .timeline__row,
+[data-theme="terminal"] .habit-card {
+  box-shadow: none;
+  background: color-mix(in srgb, var(--panel) 85%, var(--bg0) 15%);
+}
+
+[data-theme="terminal"] .button {
+  border: 1px solid var(--border);
+  box-shadow: none;
+}

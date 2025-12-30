@@ -28,13 +28,21 @@ const reflectionCta = document.querySelector("#reflection-cta");
 const closeGoalBtn = document.querySelector("#close-goal");
 const goalOverlay = document.querySelector("#goal-overlay");
 const goalForm = document.querySelector("#goal-form");
+const goalSpecificTitleInput = document.querySelector("#goal-specific-title");
+const goalSpecificDescriptionInput = document.querySelector("#goal-specific-description");
+const goalMeasurableInput = document.querySelector("#goal-measurable");
+const goalAchievableInput = document.querySelector("#goal-achievable");
+const goalRelevantInput = document.querySelector("#goal-relevant");
+const goalDueInput = document.querySelector("#goal-due");
+const goalTagsInput = document.querySelector("#goal-tags");
+const goalFormError = document.querySelector("#goal-form-error");
 const openReflectionBtn = document.querySelector("#open-reflection");
 const closeReflectionBtn = document.querySelector("#close-reflection");
 const reflectionOverlay = document.querySelector("#reflection-overlay");
 const reflectionForm = document.querySelector("#reflection-form");
 const goalsList = document.querySelector("#goals-list");
 const newGoalBtn = document.querySelector("#new-goal");
-const themeButtons = document.querySelectorAll("[data-theme]");
+const themeButtons = document.querySelectorAll("button[data-theme]");
 const optionsToggle = document.querySelector("#options-toggle");
 const optionsPanel = document.querySelector("#options-panel");
 const goalCountEl = document.querySelector("#goal-count");
@@ -51,6 +59,10 @@ const categoryChart = document.querySelector("#category-chart");
 const categoryLegend = document.querySelector("#category-legend");
 const goalHabitPicker = document.querySelector("#goal-habit-picker");
 const goalHabitChips = document.querySelector("#goal-habit-chips");
+const goalDashboardSection = document.querySelector("#goal-dashboard");
+const goalHomeSlot = document.querySelector("#goal-home-slot");
+const goalManagerSlot = document.querySelector("#goal-manager-slot");
+const hero = document.querySelector(".hero");
 const workdayStartInput = document.querySelector("#workday-start");
 const workdayHoursInput = document.querySelector("#workday-hours");
 const workdaySaveBtn = document.querySelector("#workday-save");
@@ -71,6 +83,7 @@ const state = {
   goals: [],
   reflections: [],
   editingGoalId: null,
+  editingGoalScope: "quarter",
   goalHabitSelection: new Set(),
   timeLogs: {},
   manualLogs: {},
@@ -127,7 +140,7 @@ if (editOverlay) {
 
 const setStatus = (text, isError = false) => {
   statusEl.textContent = text;
-  statusEl.style.color = isError ? "#ffb4a2" : "var(--muted)";
+  statusEl.style.color = isError ? "var(--accent)" : "var(--muted)";
 };
 
 function loadWorkdayConfig() {
@@ -399,6 +412,31 @@ function renderDashboard() {
     timeLogs: state.timeLogs,
     activeTimers: state.activeTimers,
   });
+  updateGoalPriority(state.goals, state.reflections);
+}
+
+function updateGoalPriority(goals = [], reflections = []) {
+  if (!goalDashboardSection || !goalHomeSlot || !goalManagerSlot) return;
+  const quarterGoals = goals.filter((goal) => (goal.scope || "").toLowerCase() === "quarter");
+  const activeQuarterGoals = quarterGoals.filter(
+    (goal) => (goal.status || "active").toLowerCase() !== "complete",
+  );
+  const hasQuarterReflection = reflections.some(
+    (reflection) => (reflection.reflection_type || "").toLowerCase() === "quarter",
+  );
+  const needsPriority =
+    activeQuarterGoals.length > 0 || quarterGoals.length === 0 || !hasQuarterReflection;
+  const target = needsPriority ? goalHomeSlot : goalManagerSlot;
+  if (target && goalDashboardSection.parentElement !== target) {
+    target.appendChild(goalDashboardSection);
+  }
+  goalDashboardSection.classList.toggle("demoted", !needsPriority);
+  if (hero) {
+    hero.classList.toggle("hero--single", !needsPriority);
+  }
+  if (goalHomeSlot) {
+    goalHomeSlot.hidden = !needsPriority;
+  }
 }
 
 function getHabitMinutes(habitId, timeLogs = state.timeLogs, activeTimers = state.activeTimers) {
@@ -596,10 +634,23 @@ function closeOverlay(el) {
   el.hidden = true;
 }
 
+function setGoalFormError(message = "") {
+  if (!goalFormError) return;
+  if (message) {
+    goalFormError.textContent = message;
+    goalFormError.hidden = false;
+  } else {
+    goalFormError.textContent = "";
+    goalFormError.hidden = true;
+  }
+}
+
 periodCta?.addEventListener("click", () => {
   state.editingGoalId = null;
+  state.editingGoalScope = "quarter";
   goalForm.reset();
   resetGoalHabitSelection();
+  setGoalFormError();
   openOverlay(goalOverlay);
 });
 reflectionCta?.addEventListener("click", () => {
@@ -608,13 +659,21 @@ reflectionCta?.addEventListener("click", () => {
 });
 newGoalBtn?.addEventListener("click", () => {
   state.editingGoalId = null;
+  state.editingGoalScope = "quarter";
   goalForm.reset();
   resetGoalHabitSelection();
+  setGoalFormError();
   openOverlay(goalOverlay);
 });
-closeGoalBtn?.addEventListener("click", () => closeOverlay(goalOverlay));
+closeGoalBtn?.addEventListener("click", () => {
+  setGoalFormError();
+  closeOverlay(goalOverlay);
+});
 goalOverlay?.addEventListener("click", (e) => {
-  if (e.target === goalOverlay) closeOverlay(goalOverlay);
+  if (e.target === goalOverlay) {
+    setGoalFormError();
+    closeOverlay(goalOverlay);
+  }
 });
 
 workdaySaveBtn?.addEventListener("click", () => {
@@ -658,18 +717,42 @@ goalHabitPicker?.addEventListener("change", (event) => {
 
 goalForm?.addEventListener("submit", async (event) => {
   event.preventDefault();
-  const title = goalForm.querySelector("#goal-title").value.trim();
-  const scope = goalForm.querySelector("#goal-scope").value;
-  const outcome = goalForm.querySelector("#goal-outcome").value.trim();
-  const due_date = goalForm.querySelector("#goal-due").value || null;
-  const tags = parseTags(goalForm.querySelector("#goal-tags").value);
+  setGoalFormError();
+  const specific_title = goalSpecificTitleInput?.value.trim() || "";
+  const specific_description = goalSpecificDescriptionInput?.value.trim() || "";
+  const measurable = goalMeasurableInput?.value.trim() || "";
+  const achievable = goalAchievableInput?.value.trim() || "";
+  const relevant = goalRelevantInput?.value.trim() || "";
+  const due_date = goalDueInput?.value || null;
+  const tags = parseTags(goalTagsInput?.value || "");
   const habit_ids = getGoalHabitSelection();
-  if (!title) {
-    setStatus("Goal title required", true);
+  if (!specific_title) {
+    setGoalFormError("Add a clear, specific title before saving.");
+    return;
+  }
+  if (!measurable) {
+    setGoalFormError("Describe the measurable criteria so progress can be tracked.");
+    return;
+  }
+  if (!due_date) {
+    setGoalFormError("Choose a due date to keep this goal time-bound.");
     return;
   }
   try {
-    const payload = { title, scope, outcome, due_date, tags, habit_ids };
+    const descriptionParts = [
+      specific_description,
+      achievable ? `Achievable: ${achievable}` : null,
+      relevant ? `Relevant: ${relevant}` : null,
+    ].filter(Boolean);
+    const payload = {
+      title: specific_title,
+      description: descriptionParts.length ? descriptionParts.join("\n\n") : null,
+      outcome: measurable,
+      scope: state.editingGoalScope || "quarter",
+      due_date,
+      tags,
+      habit_ids,
+    };
     if (state.editingGoalId) {
       await apiClient.updateGoal(state.editingGoalId, payload);
       setStatus("Goal updated");
@@ -680,11 +763,15 @@ goalForm?.addEventListener("submit", async (event) => {
     closeOverlay(goalOverlay);
     goalForm.reset();
     state.editingGoalId = null;
+    state.editingGoalScope = "quarter";
+    setGoalFormError();
     await loadGoals();
     await loadHabits();
   } catch (err) {
     console.error(err);
+    const msg = err?.message || "Could not save goal. Please try again.";
     setStatus("Failed to save goal", true);
+    setGoalFormError(msg);
   }
 });
 
@@ -833,13 +920,22 @@ function renderGoals() {
 
 function openGoalForEdit(goal) {
   state.editingGoalId = goal.id;
-  goalForm.querySelector("#goal-title").value = goal.title;
-  goalForm.querySelector("#goal-scope").value = goal.scope;
-  goalForm.querySelector("#goal-outcome").value = goal.outcome || "";
-  goalForm.querySelector("#goal-due").value = goal.due_date || "";
-  goalForm.querySelector("#goal-tags").value = (goal.tags || []).join(", ");
+  state.editingGoalScope = goal.scope || "quarter";
+  if (goalSpecificTitleInput) goalSpecificTitleInput.value = goal.title || "";
+  if (goalSpecificDescriptionInput) {
+    goalSpecificDescriptionInput.value =
+      goal.specific_description || goal.description || "";
+  }
+  if (goalMeasurableInput) {
+    goalMeasurableInput.value = goal.measurable || goal.outcome || "";
+  }
+  if (goalAchievableInput) goalAchievableInput.value = goal.achievable || "";
+  if (goalRelevantInput) goalRelevantInput.value = goal.relevant || "";
+  if (goalDueInput) goalDueInput.value = goal.due_date || "";
+  if (goalTagsInput) goalTagsInput.value = (goal.tags || []).join(", ");
   const ids = goal.habit_ids || [];
   resetGoalHabitSelection(ids);
+  setGoalFormError();
   openOverlay(goalOverlay);
 }
 
@@ -874,44 +970,13 @@ async function deleteGoal(goalId) {
 }
 
 function initThemePicker() {
-  const palettes = {
-    default: {
-      "--bg": "#0f1b2c",
-      "--panel": "#111f33",
-      "--muted": "#a6b7d4",
-      "--text": "#e6edf7",
-      "--accent": "#ff6f61",
-      "--accent-2": "#36c2cf",
-      "--border": "#23344e",
-      "--pill": "#1e2d44",
-    },
-    cyberpunk: {
-      "--bg": "#0b0416",
-      "--panel": "#1a0f2e",
-      "--muted": "#e0b3ff",
-      "--text": "#f7f7ff",
-      "--accent": "#ff3fd8",
-      "--accent-2": "#42fff5",
-      "--border": "#351b52",
-      "--pill": "#221136",
-    },
-    enterprise: {
-      "--bg": "#0d1a26",
-      "--panel": "#11263a",
-      "--muted": "#9db3c9",
-      "--text": "#f0f4f8",
-      "--accent": "#2f80ed",
-      "--accent-2": "#27ae60",
-      "--border": "#1c3550",
-      "--pill": "#163049",
-    },
-  };
-
   const root = document.documentElement;
+  const supportedThemes = ["default", "cyberpunk", "enterprise", "terminal"];
+
   function applyTheme(name) {
-    const palette = palettes[name] || palettes.default;
-    Object.entries(palette).forEach(([k, v]) => root.style.setProperty(k, v));
-    localStorage.setItem("focusos-theme", name);
+    const theme = supportedThemes.includes(name) ? name : "default";
+    root.setAttribute("data-theme", theme);
+    localStorage.setItem("focusos-theme", theme);
   }
 
   const saved = localStorage.getItem("focusos-theme") || "default";

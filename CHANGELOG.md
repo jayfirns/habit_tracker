@@ -15,6 +15,7 @@ This document tracks significant changes, features, and fixes implemented throug
 ### Changed
 - Time summary and habit cards now consume a single source of truth for focus minutes, including manual overrides and active timers.
 - Goals/SMART UI tightened with linked habits and reflection hooks.
+- SMART goal form now sends the backend-compatible payload, surfaces clearer save errors, and the modal footprint is slightly smaller for easier use.
 
 ### Fixed
 - Eliminated double-counting of focus minutes across completions, timers, and overrides; ensured manual worked values propagate through all calculations.

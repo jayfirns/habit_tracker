@@ -1,130 +1,150 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="default">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>FocusOS Habit Board</title>
-    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="base.css" />
+    <link rel="stylesheet" href="components.css" />
+    <link rel="stylesheet" href="themes.css" />
   </head>
   <body>
     <header class="hero">
       <div class="hero__text">
-        <div class="options-menu">
-          <button
-            class="ghost small icon-button"
-            id="options-toggle"
-            type="button"
-            aria-label="Options"
-          >
-            &#9776;
-          </button>
-          <div class="options-panel" id="options-panel" hidden>
-            <p class="meta">Themes</p>
-            <div class="theme-picker" aria-label="Choose theme">
-              <button class="ghost small" type="button" data-theme="default">Default</button>
-              <button class="ghost small" type="button" data-theme="cyberpunk">Cyberpunk</button>
-              <button class="ghost small" type="button" data-theme="enterprise">Enterprise</button>
+        <div class="hero__topline">
+          <div class="hero__topline-left">
+            <div class="options-menu">
+              <button
+                class="ghost small icon-button"
+                id="options-toggle"
+                type="button"
+                aria-label="Options"
+              >
+                &#9776;
+              </button>
+              <div class="options-panel" id="options-panel" hidden>
+                <p class="meta">Themes</p>
+                <div class="theme-picker" aria-label="Choose theme">
+                  <button class="ghost small" type="button" data-theme="default">Default</button>
+                  <button class="ghost small" type="button" data-theme="cyberpunk">Cyberpunk</button>
+                  <button class="ghost small" type="button" data-theme="enterprise">Enterprise</button>
+                  <button class="ghost small" type="button" data-theme="terminal">Terminal</button>
+                </div>
+              </div>
             </div>
+            <p class="eyebrow">FocusOS</p>
+          </div>
+          <div class="hero__badge">
+            <div class="badge__value" id="streak-summary">0</div>
+            <div class="badge__label">Total streak days</div>
           </div>
         </div>
-        <p class="eyebrow">FocusOS</p>
         <h1>Stay on track with a clear habit dashboard</h1>
         <p class="lede">
           Add habits, log completions with notes, and watch streaks grow—all local, no cloud
           required.
         </p>
-        <section class="panel day-timer">
-          <div class="panel__header">
-            <div>
-              <p class="eyebrow">Workday</p>
-              <h3>Time Glide</h3>
-            </div>
-            <div class="day-controls">
-              <label class="meta">
-                Start
-                <input type="time" id="workday-start" value="09:00" />
-              </label>
-              <label class="meta">
-                Hours
-                <input type="number" id="workday-hours" min="1" max="16" step="0.5" value="8" />
-              </label>
-              <button class="ghost small" id="workday-save" type="button">Set</button>
-              <button class="button ghost small" id="workday-clockout" type="button">
-                Clock out
-              </button>
-              <label class="meta">
-                Worked (m)
-                <input
-                  type="number"
-                  id="workday-worked-override"
-                  min="0"
-                  step="1"
-                  placeholder="e.g. 38"
-                />
-              </label>
-              <button class="ghost small" id="workday-apply-worked" type="button">
-                Apply worked
-              </button>
-            </div>
-          </div>
-          <div class="workday-bar">
-            <div class="workday-progress" id="workday-progress"></div>
-            <div class="workday-label" id="workday-label">8h window · 0h used</div>
-          </div>
-        </section>
-        <section class="panel wide dashboard" id="dashboard">
-          <div class="panel__header">
-            <div>
-              <p class="eyebrow">Alignment</p>
-              <h2>Today’s Focus</h2>
-            </div>
-            <div class="pill-row">
-              <button
-                class="pill subtle period-cta"
-                type="button"
-                id="period-cta"
-                title="Set or review goals"
-              >
-                <span id="period-label"></span>
-              </button>
-              <button
-                class="pill subtle period-cta"
-                type="button"
-                id="reflection-cta"
-                title="Reflect"
-              >
-                <span id="reflection-label">Reflection</span>
-              </button>
-            </div>
-          </div>
-          <div class="dashboard-grid">
-            <div>
-              <p class="meta" id="period-prompt"></p>
-              <ul class="meta" id="period-actions"></ul>
-            </div>
-            <div class="badge card" id="summary-card">
-              <div class="badge__value" id="habit-count">0</div>
-              <div class="badge__label">Habits tracked</div>
-              <div class="meta" id="streak-summary-card">Streak total</div>
-            </div>
-            <div class="card goals-card">
-              <div class="panel__header">
-                <div>
-                  <p class="eyebrow">Goals</p>
-                  <h3>Active SMART Goals</h3>
-                </div>
-                <button class="ghost small" id="new-goal">New Goal</button>
+        <div class="hero__dashboard-row">
+          <section class="panel day-timer">
+            <div class="panel__header">
+              <div>
+                <p class="eyebrow">Workday</p>
+                <h3>Time Glide</h3>
               </div>
-              <div id="goals-list" class="goal-list meta"></div>
+              <div class="day-controls">
+                <label class="meta">
+                  Start
+                  <input type="time" id="workday-start" value="09:00" />
+                </label>
+                <label class="meta">
+                  Hours
+                  <input type="number" id="workday-hours" min="1" max="16" step="0.5" value="8" />
+                </label>
+                <button class="ghost small" id="workday-save" type="button">Set</button>
+                <button class="button ghost small" id="workday-clockout" type="button">
+                  Clock out
+                </button>
+                <label class="meta">
+                  Worked (m)
+                  <input
+                    type="number"
+                    id="workday-worked-override"
+                    min="0"
+                    step="1"
+                    placeholder="e.g. 38"
+                  />
+                </label>
+                <button class="ghost small" id="workday-apply-worked" type="button">
+                  Apply worked
+                </button>
+              </div>
             </div>
-          </div>
-        </section>
-      </div>
-      <div class="insights">
-        <div class="hero__badge">
-          <div class="badge__value" id="streak-summary">0</div>
-          <div class="badge__label">Total streak days</div>
+            <div class="workday-bar">
+              <div class="workday-progress" id="workday-progress"></div>
+              <div class="workday-label" id="workday-label">8h window · 0h used</div>
+            </div>
+          </section>
+          <section class="panel dashboard" id="dashboard">
+            <div class="panel__header">
+              <div>
+                <p class="eyebrow">Alignment</p>
+                <h2>Today’s Focus</h2>
+              </div>
+              <div class="pill-row">
+                <button
+                  class="pill subtle period-cta"
+                  type="button"
+                  id="period-cta"
+                  title="Set or review goals"
+                >
+                  <span id="period-label"></span>
+                </button>
+                <button
+                  class="pill subtle period-cta"
+                  type="button"
+                  id="reflection-cta"
+                  title="Reflect"
+                >
+                  <span id="reflection-label">Reflection</span>
+                </button>
+              </div>
+            </div>
+            <div class="dashboard-grid">
+              <div>
+                <p class="meta" id="period-prompt"></p>
+                <ul class="meta" id="period-actions"></ul>
+              </div>
+              <div class="badge card" id="summary-card">
+                <div class="badge__value" id="habit-count">0</div>
+                <div class="badge__label">Habits tracked</div>
+                <div class="meta" id="streak-summary-card">Streak total</div>
+              </div>
+              <div class="card time-summary">
+                <div class="panel__header">
+                  <div>
+                    <p class="eyebrow">Today</p>
+                    <h4>Time Summary</h4>
+                  </div>
+                  <span class="pill subtle" id="time-workday-pill">0m planned</span>
+                </div>
+                <div id="time-summary-list" class="time-summary-list meta"></div>
+                <div id="time-summary-percent" class="meta"></div>
+              </div>
+              <div class="card goals-card">
+                <div class="panel__header">
+                  <div>
+                    <p class="eyebrow">Goals</p>
+                    <h3>Active SMART Goals</h3>
+                  </div>
+                  <button class="ghost small" id="new-goal">New Goal</button>
+                </div>
+                <div id="goals-list" class="goal-list meta"></div>
+              </div>
+            </div>
+          </section>
         </div>
+      </div>
+      <div class="insights" id="goal-home-slot">
         <section class="panel insight-panel" id="goal-dashboard">
           <div class="panel__header">
             <div>
@@ -154,38 +174,10 @@
             Use SMART to define one measurable outcome this week.
           </div>
         </section>
-        <section class="card chart-card">
-          <div class="panel__header">
-            <div>
-              <p class="eyebrow">Energy mix</p>
-              <h3>Category Completions</h3>
-            </div>
-            <div class="pill subtle" id="chart-total-pill">0 logged</div>
-          </div>
-          <div class="pie-wrap">
-            <div id="category-chart" class="pie-chart"></div>
-            <div class="chart-center">
-              <div class="badge__value" id="chart-center-value">0</div>
-              <div class="meta">completions</div>
-            </div>
-          </div>
-          <div class="chart-legend" id="category-legend"></div>
-          <div class="time-summary">
-            <div class="panel__header">
-              <div>
-                <p class="eyebrow">Today</p>
-                <h4>Time Summary</h4>
-              </div>
-              <span class="pill subtle" id="time-workday-pill">0m planned</span>
-            </div>
-            <div id="time-summary-list" class="time-summary-list meta"></div>
-            <div id="time-summary-percent" class="meta"></div>
-          </div>
-        </section>
       </div>
     </header>
 
-    <main class="layout">
+    <main class="layout" id="main-layout">
       <section class="panel">
         <div class="panel__header">
           <div>
@@ -223,7 +215,7 @@
         </form>
       </section>
 
-      <section class="panel">
+      <section class="panel" id="habit-board-panel">
         <div class="panel__header">
           <div>
             <p class="eyebrow">Track</p>
@@ -235,6 +227,26 @@
           </div>
         </div>
         <div id="habits" class="habits-grid"></div>
+      </section>
+
+      <div id="goal-manager-slot"></div>
+
+      <section class="card chart-card wide">
+        <div class="panel__header">
+          <div>
+            <p class="eyebrow">Energy mix</p>
+            <h3>Category Completions</h3>
+          </div>
+          <div class="pill subtle" id="chart-total-pill">0 logged</div>
+        </div>
+        <div class="pie-wrap">
+          <div id="category-chart" class="pie-chart"></div>
+          <div class="chart-center">
+            <div class="badge__value" id="chart-center-value">0</div>
+            <div class="meta">completions</div>
+          </div>
+        </div>
+        <div class="chart-legend" id="category-legend"></div>
       </section>
 
       <section class="panel wide">
@@ -255,6 +267,7 @@
           <button class="ghost small" type="button" data-theme="default">Default</button>
           <button class="ghost small" type="button" data-theme="cyberpunk">Cyberpunk</button>
           <button class="ghost small" type="button" data-theme="enterprise">Enterprise</button>
+          <button class="ghost small" type="button" data-theme="terminal">Terminal</button>
         </div>
         <button class="button ghost" id="open-reflection">Reflect</button>
         <a class="button" href="/docs" target="_blank" rel="noreferrer">API Docs</a>
@@ -300,25 +313,86 @@
           <button class="ghost small" type="button" id="close-goal">Close</button>
         </div>
         <form id="goal-form" class="form overlay__form">
-          <div class="field">
-            <label for="goal-title">Title</label>
-            <input id="goal-title" name="title" type="text" required />
+          <div class="field full">
+            <label for="goal-specific-title">S — Specific</label>
+            <input
+              id="goal-specific-title"
+              name="specific_title"
+              type="text"
+              placeholder="Name the exact action or behavior"
+              aria-describedby="goal-specific-title-help"
+              required
+            />
+            <p class="meta helper-text" id="goal-specific-title-help">
+              State the concrete goal in a short phrase (e.g., “Write 500 words before 10am”).
+            </p>
+          </div>
+          <div class="field full">
+            <label for="goal-specific-description">Specific description</label>
+            <textarea
+              id="goal-specific-description"
+              name="specific_description"
+              rows="3"
+              placeholder="Where, when, and how you will do this"
+              aria-describedby="goal-specific-description-help"
+            ></textarea>
+            <p class="meta helper-text" id="goal-specific-description-help">
+              Describe the routine and constraints so it’s obvious what “doing the goal” looks like.
+            </p>
+          </div>
+          <div class="field full">
+            <label for="goal-measurable">M — Measurable</label>
+            <input
+              id="goal-measurable"
+              name="measurable"
+              type="text"
+              placeholder="Numbers, frequency, or completion condition"
+              aria-describedby="goal-measurable-help"
+              required
+            />
+            <p class="meta helper-text" id="goal-measurable-help">
+              Explain how you’ll track success—counts, minutes, sessions per week, or a clear done
+              condition.
+            </p>
+          </div>
+          <div class="field full">
+            <label for="goal-achievable">A — Achievable</label>
+            <input
+              id="goal-achievable"
+              name="achievable"
+              type="text"
+              placeholder="Why this fits your time, energy, or resources"
+              aria-describedby="goal-achievable-help"
+            />
+            <p class="meta helper-text" id="goal-achievable-help">
+              Share why this target is realistic given your current schedule, energy, and constraints.
+            </p>
+          </div>
+          <div class="field full">
+            <label for="goal-relevant">R — Relevant</label>
+            <input
+              id="goal-relevant"
+              name="relevant"
+              type="text"
+              placeholder="Why this matters"
+              aria-describedby="goal-relevant-help"
+            />
+            <p class="meta helper-text" id="goal-relevant-help">
+              Note why this goal matters in plain language—as if explaining it to a friend.
+            </p>
           </div>
           <div class="field">
-            <label for="goal-scope">Scope</label>
-            <select id="goal-scope" name="scope">
-              <option value="quarter">Quarter</option>
-              <option value="month">Month</option>
-              <option value="year">Year</option>
-            </select>
-          </div>
-          <div class="field">
-            <label for="goal-outcome">Outcome</label>
-            <input id="goal-outcome" name="outcome" type="text" placeholder="Measurable result" />
-          </div>
-          <div class="field">
-            <label for="goal-due">Due date</label>
-            <input id="goal-due" name="due_date" type="date" />
+            <label for="goal-due">T — Time-bound</label>
+            <input
+              id="goal-due"
+              name="due_date"
+              type="date"
+              aria-describedby="goal-due-help"
+              required
+            />
+            <p class="meta helper-text" id="goal-due-help">
+              Set a clear deadline so the dashboard can surface and evaluate this goal on time.
+            </p>
           </div>
           <div class="field">
             <label for="goal-tags">Tags</label>
@@ -333,6 +407,7 @@
               <div id="goal-habit-chips" class="chip-row meta"></div>
             </div>
           </div>
+          <p class="meta field-error" id="goal-form-error" role="status" aria-live="polite" hidden></p>
           <button type="submit" class="button full">Save goal</button>
         </form>
       </div>
