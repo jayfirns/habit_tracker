@@ -7,6 +7,7 @@ This document tracks significant changes, features, and fixes implemented throug
 ## Unreleased - Time Glide, Focus Tracking, SMART Enhancements
 
 ### Added
+- **Docs**: Added `TESTING_MANDATES.md` detailing project-wide testing standards and workflow.
 - **Tests**: Added `jsdom`-based unit tests for Energy Mix Panel UI rendering functions; refactored `energyMixPanel.js` for testability.
 - **Docs**: Added bidirectional links between `DESIGN_GLOSSARY.md` and `UI_PANELS_DOCUMENTATION.md`.
 - **Docs**: Added detailed dependency analysis for `.js-category` to `DESIGN_GLOSSARY.md`.
