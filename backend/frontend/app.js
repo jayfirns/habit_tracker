@@ -531,8 +531,13 @@ function renderGoals() {
     reflectBtn.className = "ghost small";
     reflectBtn.textContent = "Reflect";
     reflectBtn.addEventListener("click", () => openReflectionForGoal(goal));
+    const deleteBtn = document.createElement("button");
+    deleteBtn.className = "ghost small";
+    deleteBtn.textContent = "Delete";
+    deleteBtn.addEventListener("click", () => deleteGoal(goal.id));
     actions.appendChild(editBtn);
     actions.appendChild(reflectBtn);
+    actions.appendChild(deleteBtn);
     line.appendChild(left);
     line.appendChild(actions);
     goalsList.appendChild(line);
