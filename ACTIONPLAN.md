@@ -83,8 +83,8 @@ This document outlines the high-level action plan for migrating the "My Personal
     -   [ ] Write tests (TDD).
 -   [ ] **Enhanced Time Tracking & Accountability**:
     -   [ ] Add `TimeEntry` entity to Domain Model.
-    -   [ ] Implement API for manual start/stop and post-hoc attribution of time to habits/goals/subgoals.
-    -   [ ] Develop frontend UI for time tracking.
+    -   [x] Implement manual start/stop and post-hoc attribution of time to habits (front-end timers + overrides).
+    -   [x] Develop frontend UI for workday glide bar, focus summaries, and manual overrides.
     -   [ ] Implement backend logic to track goal time boundaries, completion percentages, and surface planned vs. actual effort/drift.
     -   [ ] Develop frontend UI for quarterly and EOY reflection prompts.
     -   [ ] Write tests (TDD).
@@ -95,7 +95,7 @@ This document outlines the high-level action plan for migrating the "My Personal
     -   [ ] Write tests (TDD).
 -   [ ] **SMART Goal Enforcement & Intentions**:
     -   [ ] Implement robust validation logic in the backend (Interaction & Intent Layer) for SMART goal criteria.
-    -   [ ] Develop frontend UI to guide users through SMART goal creation and intention setting.
+    -   [x] Develop frontend UI to guide users through SMART goal creation and intention setting, with linked habits.
     -   [ ] Implement backend and frontend logic for displaying contextual banners/inspirational messages based on goal dates.
     -   [ ] Write tests (TDD).
 -   [ ] **Privacy-First LLM Integration for Coaching**:

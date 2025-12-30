@@ -11,7 +11,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")
 
 import schemas  # noqa: E402
 from database import Base  # noqa: E402
-from main import create_goal, create_habit, list_goals  # noqa: E402
+from main import create_goal, create_habit, create_reflection, list_goals  # noqa: E402
 
 TEST_DATABASE_URL = "sqlite:///:memory:"
 
@@ -44,6 +44,7 @@ def test_create_goal_with_habit_link(db_session):
             due_date=date.today(),
             tags=["writing"],
             habit_ids=[habit.id],
+            status="active",
         ),
         db_session,
     )
@@ -52,6 +53,35 @@ def test_create_goal_with_habit_link(db_session):
     assert goal.scope == "quarter"
     assert goal.tags == ["writing"]
     assert goal.habits[0].id == habit.id
+    assert goal.status == "active"
 
     goals = list_goals(db_session)
     assert len(goals) == 1
+
+
+def test_reflection_with_goal_link(db_session):
+    habit = create_habit(schemas.HabitCreate(name="Plan", category="Work"), db_session)
+    goal = create_goal(
+        schemas.GoalCreate(
+            title="Plan Q1",
+            scope="quarter",
+            habit_ids=[habit.id],
+        ),
+        db_session,
+    )
+
+    reflection = create_reflection(
+        schemas.ReflectionCreate(
+            reflection_type="month",
+            period_label="2025-01",
+            responses=["On track"],
+            prompts=["Status"],
+            goal_id=goal.id,
+            rating="on_track",
+        ),
+        db_session,
+    )
+
+    assert reflection.id is not None
+    assert reflection.goal_id == goal.id
+    assert reflection.rating == "on_track"

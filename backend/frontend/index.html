@@ -28,6 +28,35 @@
           Add habits, log completions with notes, and watch streaks grow—all local, no
           cloud required.
         </p>
+        <section class="panel day-timer">
+          <div class="panel__header">
+            <div>
+              <p class="eyebrow">Workday</p>
+              <h3>Time Glide</h3>
+            </div>
+            <div class="day-controls">
+              <label class="meta">
+                Start
+                <input type="time" id="workday-start" value="09:00" />
+              </label>
+              <label class="meta">
+                Hours
+                <input type="number" id="workday-hours" min="1" max="16" step="0.5" value="8" />
+              </label>
+              <button class="ghost small" id="workday-save" type="button">Set</button>
+              <button class="button ghost small" id="workday-clockout" type="button">Clock out</button>
+              <label class="meta">
+                Worked (m)
+                <input type="number" id="workday-worked-override" min="0" step="1" placeholder="e.g. 38" />
+              </label>
+              <button class="ghost small" id="workday-apply-worked" type="button">Apply worked</button>
+            </div>
+          </div>
+          <div class="workday-bar">
+            <div class="workday-progress" id="workday-progress"></div>
+            <div class="workday-label" id="workday-label">8h window · 0h used</div>
+          </div>
+        </section>
         <section class="panel wide dashboard" id="dashboard">
           <div class="panel__header">
             <div>
@@ -66,9 +95,66 @@
           </div>
         </section>
       </div>
-      <div class="hero__badge">
-        <div class="badge__value" id="streak-summary">0</div>
-        <div class="badge__label">Total streak days</div>
+      <div class="insights">
+        <div class="hero__badge">
+          <div class="badge__value" id="streak-summary">0</div>
+          <div class="badge__label">Total streak days</div>
+        </div>
+        <section class="panel insight-panel" id="goal-dashboard">
+          <div class="panel__header">
+            <div>
+              <p class="eyebrow">SMART pulse</p>
+              <h3>Goal Dashboard</h3>
+            </div>
+            <div class="pill subtle" id="goal-scope-highlight">Quarter focus</div>
+          </div>
+          <div class="insight-grid">
+            <div class="insight-stat">
+              <div class="stat-label">Active goals</div>
+              <div class="stat-value" id="goal-count">0</div>
+              <p class="meta" id="goal-highlight">Set your first target</p>
+            </div>
+            <div class="insight-stat">
+              <div class="stat-label">Linked habits</div>
+              <div class="stat-value" id="goal-habits-linked">0</div>
+              <p class="meta" id="goal-habit-coverage">0% coverage</p>
+            </div>
+            <div class="insight-stat">
+              <div class="stat-label">Due soon</div>
+              <div class="stat-value" id="goal-due-count">0</div>
+              <p class="meta" id="goal-due-label">No deadlines</p>
+            </div>
+          </div>
+          <div class="smart-note" id="goal-next-step">Use SMART to define one measurable outcome this week.</div>
+        </section>
+        <section class="card chart-card">
+          <div class="panel__header">
+            <div>
+              <p class="eyebrow">Energy mix</p>
+              <h3>Category Completions</h3>
+            </div>
+            <div class="pill subtle" id="chart-total-pill">0 logged</div>
+          </div>
+          <div class="pie-wrap">
+            <div id="category-chart" class="pie-chart"></div>
+            <div class="chart-center">
+              <div class="badge__value" id="chart-center-value">0</div>
+              <div class="meta">completions</div>
+            </div>
+          </div>
+          <div class="chart-legend" id="category-legend"></div>
+          <div class="time-summary">
+            <div class="panel__header">
+              <div>
+                <p class="eyebrow">Today</p>
+                <h4>Time Summary</h4>
+              </div>
+              <span class="pill subtle" id="time-workday-pill">0m planned</span>
+            </div>
+            <div id="time-summary-list" class="time-summary-list meta"></div>
+            <div id="time-summary-percent" class="meta"></div>
+          </div>
+        </section>
       </div>
     </header>
 
@@ -200,8 +286,13 @@
             <input id="goal-tags" name="tags" type="text" placeholder="focus, q1" />
           </div>
           <div class="field full">
-            <label for="goal-habits">Link habits</label>
-            <select id="goal-habits" name="habit_ids" multiple></select>
+            <label for="goal-habit-picker">Link habits</label>
+            <div class="habit-picker">
+              <select id="goal-habit-picker">
+                <option value="">Select a habit to link</option>
+              </select>
+              <div id="goal-habit-chips" class="chip-row meta"></div>
+            </div>
           </div>
           <button type="submit" class="button full">Save goal</button>
         </form>
@@ -252,27 +343,35 @@
             <span class="chevron">▾</span>
           </div>
         </div>
-        <div class="habit-body">
-          <div class="habit-card__meta">
-            <span class="pill js-completions"></span>
-            <span class="pill subtle js-id"></span>
+          <div class="habit-body">
+            <div class="habit-card__meta">
+              <span class="pill js-completions"></span>
+              <span class="pill subtle js-id"></span>
+            </div>
+            <div class="tag-row js-tag-row"></div>
+            <div class="complete-inline">
+              <label>
+                <span class="meta">Date</span>
+                <input class="complete-date" type="date" />
+              </label>
+              <button class="button small js-complete">Mark done</button>
+              <label>
+                <span class="meta">Optional completion note</span>
+                <input class="complete-note" type="text" placeholder="Optional note" />
+              </label>
           </div>
-          <div class="tag-row js-tag-row"></div>
-          <div class="complete-inline">
-            <label>
-              <span class="meta">Date</span>
-              <input class="complete-date" type="date" />
-            </label>
-            <button class="button small js-complete">Mark done</button>
-            <label>
-              <span class="meta">Optional completion note</span>
-              <input class="complete-note" type="text" placeholder="Optional note" />
-            </label>
+          <div class="habit-time">
+            <div class="meta">Focus time: <strong class="js-time-today">0m today</strong></div>
+            <div class="time-actions">
+              <button class="button ghost small js-timer-toggle" type="button">Start timer</button>
+              <span class="pill subtle timer-indicator js-timer-indicator" hidden>Timer off</span>
+              <button class="button ghost small js-adjust-time" type="button">Adjust</button>
+            </div>
           </div>
-          <div class="habit-card__actions">
-            <button class="button ghost small js-edit">Edit</button>
-            <button class="button ghost small js-delete">Delete</button>
-          </div>
+            <div class="habit-card__actions">
+              <button class="button ghost small js-edit">Edit</button>
+              <button class="button ghost small js-delete">Delete</button>
+            </div>
         </div>
       </article>
     </template>

@@ -57,6 +57,10 @@ class Goal(Base):
 
     habits = relationship("Habit", secondary=habit_goal_table, back_populates="goals")
 
+    @property
+    def habit_ids(self):
+        return [habit.id for habit in self.habits] if self.habits else []
+
 
 class Reflection(Base):
     __tablename__ = "reflections"
@@ -67,3 +71,5 @@ class Reflection(Base):
     prompts = Column(JSON, default=list)
     responses = Column(JSON, default=list)
     submitted_at = Column(String)
+    goal_id = Column(Integer, ForeignKey("goals.id"), nullable=True)
+    rating = Column(String)  # on_track, blocked, ahead, complete

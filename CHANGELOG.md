@@ -4,6 +4,21 @@ This document tracks significant changes, features, and fixes implemented throug
 
 ---
 
+## Unreleased - Time Glide, Focus Tracking, SMART Enhancements
+
+### Added
+- **Workday Time Glide**: Gradient bar with planned vs. worked minutes, clock-out, and manual worked override so summaries stay honest to the day.
+- **Focused Time**: Habit-level stopwatch with live counter, manual adjustment per habit, and focus parsing from completion notes to keep daily totals accurate.
+- **Dashboards**: SMART pulse dashboard, Energy Mix pie chart, and a 5-column daily time summary (planned, worked, % plan, focused, % focused).
+- **TDD Utilities**: `time-utils` tests covering focus parsing, time formatting, and workday math.
+
+### Changed
+- Time summary and habit cards now consume a single source of truth for focus minutes, including manual overrides and active timers.
+- Goals/SMART UI tightened with linked habits and reflection hooks.
+
+### Fixed
+- Eliminated double-counting of focus minutes across completions, timers, and overrides; ensured manual worked values propagate through all calculations.
+
 ## 0.1.1 - 2025-12-29 (Backend Core Initialization & Alembic Configuration Attempts)
 
 ### Added

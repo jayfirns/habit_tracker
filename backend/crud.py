@@ -119,12 +119,13 @@ def list_completions(db: Session, habit_id: int) -> List[models.Completion]:
 
 # Goal CRUD
 def list_goals(db: Session) -> List[models.Goal]:
-    stmt = select(models.Goal)
+    stmt = select(models.Goal).options(selectinload(models.Goal.habits))
     return db.scalars(stmt).all()
 
 
 def get_goal(db: Session, goal_id: int) -> Optional[models.Goal]:
-    return db.get(models.Goal, goal_id)
+    stmt = select(models.Goal).where(models.Goal.id == goal_id).options(selectinload(models.Goal.habits))
+    return db.scalars(stmt).first()
 
 
 def create_goal(db: Session, goal_in: schemas.GoalCreate) -> models.Goal:
@@ -137,7 +138,7 @@ def create_goal(db: Session, goal_in: schemas.GoalCreate) -> models.Goal:
         start_date=goal_in.start_date.isoformat() if goal_in.start_date else None,
         due_date=goal_in.due_date.isoformat() if goal_in.due_date else None,
         tags=tags,
-        status="active",
+        status=goal_in.status or "active",
     )
 
     if goal_in.habit_ids:
@@ -167,6 +168,8 @@ def update_goal(db: Session, goal_id: int, goal_in: schemas.GoalUpdate) -> Optio
         goal.tags = [t.strip() for t in goal_in.tags if t.strip()]
     if goal_in.habit_ids is not None:
         goal.habits = db.scalars(select(models.Habit).where(models.Habit.id.in_(goal_in.habit_ids))).all()
+    if goal_in.status is not None:
+        goal.status = goal_in.status
 
     db.add(goal)
     db.commit()
@@ -198,6 +201,8 @@ def create_reflection(db: Session, reflection_in: schemas.ReflectionCreate) -> m
         prompts=reflection_in.prompts,
         responses=reflection_in.responses,
         submitted_at=reflection_in.submitted_at.isoformat() if reflection_in.submitted_at else None,
+        goal_id=reflection_in.goal_id,
+        rating=reflection_in.rating,
     )
     db.add(reflection)
     db.commit()

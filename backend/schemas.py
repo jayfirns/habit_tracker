@@ -84,6 +84,7 @@ class GoalBase(BaseModel):
     due_date: Optional[datetime.date] = None
     tags: List[str] = Field(default_factory=list)
     habit_ids: List[int] = Field(default_factory=list)
+    status: str = Field(default="active")
 
 
 class GoalCreate(GoalBase):
@@ -99,6 +100,7 @@ class GoalUpdate(BaseModel):
     due_date: Optional[datetime.date] = None
     tags: Optional[List[str]] = None
     habit_ids: Optional[List[int]] = None
+    status: Optional[str] = None
 
 
 class GoalRead(GoalBase):
@@ -113,6 +115,8 @@ class ReflectionBase(BaseModel):
     prompts: List[str] = Field(default_factory=list)
     responses: List[str] = Field(default_factory=list)
     submitted_at: Optional[datetime.datetime] = None
+    goal_id: Optional[int] = None
+    rating: Optional[str] = None
 
 
 class ReflectionCreate(ReflectionBase):

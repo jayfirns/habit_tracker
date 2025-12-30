@@ -1,3 +1,5 @@
+import { parseFocusMinutes, formatMinutes, computeWorkdayMinutes } from "./time-utils.js";
+
 const API_BASE = window.location.origin;
 const HABITS_URL = `${API_BASE}/habits`;
 
@@ -31,6 +33,32 @@ const newGoalBtn = document.querySelector("#new-goal");
 const themeButtons = document.querySelectorAll("[data-theme]");
 const optionsToggle = document.querySelector("#options-toggle");
 const optionsPanel = document.querySelector("#options-panel");
+const goalCountEl = document.querySelector("#goal-count");
+const goalHighlightEl = document.querySelector("#goal-highlight");
+const goalHabitsLinkedEl = document.querySelector("#goal-habits-linked");
+const goalHabitCoverageEl = document.querySelector("#goal-habit-coverage");
+const goalDueCountEl = document.querySelector("#goal-due-count");
+const goalDueLabelEl = document.querySelector("#goal-due-label");
+const goalScopeHighlightEl = document.querySelector("#goal-scope-highlight");
+const goalNextStepEl = document.querySelector("#goal-next-step");
+const chartTotalPill = document.querySelector("#chart-total-pill");
+const chartCenterValue = document.querySelector("#chart-center-value");
+const categoryChart = document.querySelector("#category-chart");
+const categoryLegend = document.querySelector("#category-legend");
+const goalHabitPicker = document.querySelector("#goal-habit-picker");
+const goalHabitChips = document.querySelector("#goal-habit-chips");
+const workdayStartInput = document.querySelector("#workday-start");
+const workdayHoursInput = document.querySelector("#workday-hours");
+const workdaySaveBtn = document.querySelector("#workday-save");
+const workdayClockoutBtn = document.querySelector("#workday-clockout");
+const workdayWorkedOverride = document.querySelector("#workday-worked-override");
+const workdayApplyWorkedBtn = document.querySelector("#workday-apply-worked");
+const workdayProgress = document.querySelector("#workday-progress");
+const workdayLabel = document.querySelector("#workday-label");
+const timeSummaryList = document.querySelector("#time-summary-list");
+const timeWorkdayPill = document.querySelector("#time-workday-pill");
+const timeSummaryPercent = document.querySelector("#time-summary-percent");
+const habitCardRefs = new Map();
 
 const state = {
   habits: [],
@@ -39,6 +67,17 @@ const state = {
   goals: [],
   reflections: [],
   editingGoalId: null,
+  goalHabitSelection: new Set(),
+  timeLogs: {},
+  manualLogs: {},
+  workday: {
+    start: "09:00",
+    hours: 8,
+    setAt: new Date().toISOString(),
+    clockedOutAt: null,
+    manualWorkedMinutes: null,
+  },
+  activeTimers: {},
 };
 
 // Ensure overlay is hidden on load
@@ -50,6 +89,81 @@ const setStatus = (text, isError = false) => {
   statusEl.textContent = text;
   statusEl.style.color = isError ? "#ffb4a2" : "var(--muted)";
 };
+
+function todayKey() {
+  return new Date().toISOString().slice(0, 10);
+}
+
+function loadWorkdayConfig() {
+  const saved = localStorage.getItem("focusos-workday");
+  if (saved) {
+    try {
+      const parsed = JSON.parse(saved);
+      state.workday = { ...state.workday, ...parsed };
+    } catch (e) {
+      console.warn("Failed to parse workday config", e);
+    }
+  }
+  if (workdayStartInput) workdayStartInput.value = state.workday.start;
+  if (workdayHoursInput) workdayHoursInput.value = state.workday.hours;
+  if (workdayWorkedOverride && state.workday.manualWorkedMinutes != null) {
+    workdayWorkedOverride.value = state.workday.manualWorkedMinutes;
+  }
+}
+
+function saveWorkdayConfig() {
+  state.workday.setAt = new Date().toISOString();
+  localStorage.setItem("focusos-workday", JSON.stringify(state.workday));
+}
+
+function loadTimeLogs() {
+  const saved = localStorage.getItem("focusos-time-logs");
+  if (saved) {
+    try {
+      state.timeLogs = JSON.parse(saved);
+    } catch (e) {
+      console.warn("Failed to parse time logs", e);
+    }
+  }
+  const today = todayKey();
+  const todayLogs = state.timeLogs?.[today] || {};
+  state.timeLogs = { [today]: todayLogs };
+  saveTimeLogs();
+}
+
+function loadManualLogs() {
+  const saved = localStorage.getItem("focusos-manual-logs");
+  if (saved) {
+    try {
+      state.manualLogs = JSON.parse(saved);
+    } catch (e) {
+      console.warn("Failed to parse manual logs", e);
+    }
+  }
+}
+
+function saveManualLogs() {
+  localStorage.setItem("focusos-manual-logs", JSON.stringify(state.manualLogs));
+}
+
+function saveTimeLogs() {
+  localStorage.setItem("focusos-time-logs", JSON.stringify(state.timeLogs));
+}
+
+function loadActiveTimers() {
+  const saved = localStorage.getItem("focusos-active-timers");
+  if (saved) {
+    try {
+      state.activeTimers = JSON.parse(saved);
+    } catch (e) {
+      console.warn("Failed to parse active timers", e);
+    }
+  }
+}
+
+function saveActiveTimers() {
+  localStorage.setItem("focusos-active-timers", JSON.stringify(state.activeTimers));
+}
 
 async function api(path, options = {}) {
   const response = await fetch(path, {
@@ -70,6 +184,7 @@ async function loadHabits() {
   try {
     const data = await api(HABITS_URL);
     state.habits = data;
+    rebuildTimeLogsFromCompletions();
     populateHabitOptions();
     renderHabits();
     renderCompletions();
@@ -86,6 +201,7 @@ async function loadGoals() {
     const goals = await api(`${API_BASE}/goals`);
     state.goals = goals;
     renderGoals();
+    renderGoalInsights();
   } catch (err) {
     console.error("Failed to load goals", err);
   }
@@ -95,6 +211,7 @@ async function loadReflections() {
   try {
     const data = await api(`${API_BASE}/reflections`);
     state.reflections = data;
+    renderGoalInsights();
   } catch (err) {
     console.error("Failed to load reflections", err);
   }
@@ -111,9 +228,27 @@ function formatDate(iso) {
   return d.toLocaleDateString();
 }
 
+function updateWorkdayProgress() {
+  if (!workdayProgress || !workdayLabel) return;
+  const now = new Date();
+  const { usedMinutes, totalMinutes } = computeWorkdayMinutes(state.workday, now);
+  const pct = totalMinutes > 0 ? Math.min(100, Math.max(0, (usedMinutes / totalMinutes) * 100)) : 0;
+  workdayProgress.style.width = `${pct}%`;
+
+  const remainingMinutes = Math.max(0, totalMinutes - usedMinutes);
+  workdayLabel.textContent = `${formatMinutes(remainingMinutes)} left · ${formatMinutes(usedMinutes)} used of ${formatMinutes(totalMinutes)}`;
+
+  const startColor = [74, 222, 128]; // green
+  const endColor = [239, 68, 68]; // red
+  const mix = pct / 100;
+  const color = startColor.map((c, idx) => Math.round(c + (endColor[idx] - c) * mix));
+  workdayProgress.style.background = `rgb(${color.join(",")})`;
+}
+
 function renderHabits() {
   habitsContainer.innerHTML = "";
   let totalStreak = 0;
+  habitCardRefs.clear();
 
   const habits = state.filterTag
     ? state.habits.filter((h) => (h.tags || []).includes(state.filterTag))
@@ -147,6 +282,7 @@ function renderHabits() {
       totalStreak += habit.streak || 0;
       const node = habitTemplate.content.firstElementChild.cloneNode(true);
       node.dataset.id = habit.id;
+      habitCardRefs.set(habit.id, node);
       node.querySelector(".js-name").textContent = habit.name;
       node.querySelector(".js-category").textContent = habit.name;
       node.querySelector(".js-name").textContent = "";
@@ -154,6 +290,7 @@ function renderHabits() {
       node.querySelector(".js-streak").textContent = habit.streak ?? 0;
       node.querySelector(".js-completions").textContent = `${habit.completions.length} completions`;
       node.querySelector(".js-id").textContent = `ID ${habit.id}`;
+      refreshHabitTimeDisplay(habit.id, node);
 
       const tagRow = node.querySelector(".js-tag-row");
       (habit.tags || []).forEach((tag) => {
@@ -180,6 +317,8 @@ function renderHabits() {
           date: dateInput.value,
         }),
       );
+      node.querySelector(".js-adjust-time").addEventListener("click", () => adjustHabitMinutes(habit.id));
+      node.querySelector(".js-timer-toggle").addEventListener("click", () => toggleHabitTimer(habit.id));
       node.querySelector(".js-delete").addEventListener("click", () => deleteHabit(habit.id));
       node.querySelector(".js-edit").addEventListener("click", () => openEdit(habit));
       node.querySelector(".js-toggle").addEventListener("click", () => {
@@ -228,7 +367,7 @@ function renderCompletions() {
 async function createHabit(formData) {
   const name = formData.get("name").trim();
   const category = formData.get("category").trim();
-    const tagsRaw = formData.get("tags") || "";
+  const tagsRaw = formData.get("tags") || "";
   const tags = parseTags(tagsRaw);
   if (!name || !category) {
     setStatus("Name and category are required", true);
@@ -246,8 +385,11 @@ async function createHabit(formData) {
 }
 
 async function completeHabit(id, { note, date }) {
+  const bankedMinutes = stopHabitTimer(id);
+  const timeLabel = bankedMinutes > 0 ? `${formatMinutes(bankedMinutes)} focus` : null;
+  const noteWithTime = timeLabel ? (note ? `${note} · ${timeLabel}` : timeLabel) : note;
   const payload = {};
-  if (note) payload.note = note;
+  if (noteWithTime) payload.note = noteWithTime;
   if (date) payload.date = date;
   setStatus("Completing...");
   await api(`${HABITS_URL}/${id}/complete`, {
@@ -361,13 +503,468 @@ function renderDashboard() {
 
   habitCount.textContent = state.habits.length;
   streakSummaryCard.textContent = `${state.habits.reduce((sum, h) => sum + (h.streak || 0), 0)} streak days total`;
+  renderGoalInsights();
+  renderCategoryChart();
+  renderTimeSummary();
 }
 
+function renderGoalInsights() {
+  if (!goalCountEl) return;
+  const goals = state.goals || [];
+  const habits = state.habits || [];
+  const today = new Date();
+  const activeGoals = goals.filter((g) => (g.status || "active").toLowerCase() !== "complete");
+  const completedGoals = goals.length - activeGoals.length;
+  goalCountEl.textContent = activeGoals.length;
+
+  const scopeCounts = activeGoals.reduce((acc, goal) => {
+    acc[goal.scope] = (acc[goal.scope] || 0) + 1;
+    return acc;
+  }, {});
+  const topScope = Object.entries(scopeCounts).sort((a, b) => b[1] - a[1])[0];
+  if (goalScopeHighlightEl) {
+    goalScopeHighlightEl.textContent = topScope ? `${topScope[1]} ${topScope[0]} goals` : "Quarter focus";
+  }
+
+  const linkedHabitIds = new Set();
+  goals.forEach((goal) => (goal.habit_ids || []).forEach((id) => linkedHabitIds.add(id)));
+  if (goalHabitsLinkedEl) {
+    goalHabitsLinkedEl.textContent = linkedHabitIds.size;
+  }
+  const coverage = habits.length ? Math.round((linkedHabitIds.size / habits.length) * 100) : 0;
+  if (goalHabitCoverageEl) {
+    goalHabitCoverageEl.textContent = habits.length ? `${coverage}% coverage` : "No habits yet";
+  }
+
+  const dueSoon = activeGoals
+    .map((goal) => ({
+      ...goal,
+      dueDate: goal.due_date ? new Date(goal.due_date) : null,
+    }))
+    .filter((goal) => goal.dueDate && !Number.isNaN(goal.dueDate.getTime()))
+    .sort((a, b) => a.dueDate - b.dueDate);
+  const windowDate = new Date();
+  windowDate.setDate(windowDate.getDate() + 30);
+  const dueThisMonth = dueSoon.filter((goal) => goal.dueDate <= windowDate);
+  if (goalDueCountEl) {
+    goalDueCountEl.textContent = dueThisMonth.length;
+  }
+  if (goalDueLabelEl) {
+    if (dueThisMonth.length) {
+      const nearest = dueThisMonth[0];
+      const daysLeft = Math.max(0, Math.round((nearest.dueDate - today) / (1000 * 60 * 60 * 24)));
+      goalDueLabelEl.textContent = `${nearest.title} · ${formatDate(nearest.due_date)} (${daysLeft}d)`;
+    } else if (dueSoon.length) {
+      goalDueLabelEl.textContent = `${dueSoon.length} with dates · next ${formatDate(dueSoon[0].due_date)}`;
+    } else {
+      goalDueLabelEl.textContent = "No deadlines";
+    }
+  }
+
+  if (goalHighlightEl) {
+    if (activeGoals.length) {
+      const measurable = activeGoals.filter((goal) => goal.outcome).length;
+      goalHighlightEl.textContent = `${measurable}/${activeGoals.length} have measurable outcomes · ${completedGoals} completed`;
+    } else if (goals.length) {
+      goalHighlightEl.textContent = `${goals.length} archived or complete`;
+    } else {
+      goalHighlightEl.textContent = "Set your first target";
+    }
+  }
+
+  const latestReflection =
+    state.reflections
+      .slice()
+      .sort(
+        (a, b) =>
+          (new Date(b.submitted_at || b.period_label).getTime() || 0) -
+          (new Date(a.submitted_at || a.period_label).getTime() || 0),
+      )[0] || null;
+
+  if (goalNextStepEl) {
+    if (latestReflection) {
+      const detail = latestReflection.responses?.[0] || "Keep momentum.";
+      goalNextStepEl.textContent = `Last reflection ${latestReflection.period_label}: ${detail}`;
+    } else if (habits.length) {
+      const topHabit = habits.slice().sort((a, b) => (b.streak || 0) - (a.streak || 0))[0];
+      goalNextStepEl.textContent = `Link ${topHabit.name} to a goal to lock intent.`;
+    } else {
+      goalNextStepEl.textContent = "Use SMART to define one measurable outcome this week.";
+    }
+  }
+}
+
+function getHabitMinutes(habitId) {
+  const logs = state.timeLogs || {};
+  const today = todayKey();
+  let todayMinutes = 0;
+  const todaysHabits = logs[today] || {};
+  todayMinutes = todaysHabits?.[habitId] || 0;
+  const active = state.activeTimers?.[habitId];
+  if (active?.start) {
+    const elapsedMinutes = Math.max(0, Math.floor((Date.now() - active.start) / 60000));
+    todayMinutes += elapsedMinutes;
+  }
+  return { todayMinutes };
+}
+
+function addHabitMinutes(habitId, minutes) {
+  const key = todayKey();
+  if (!state.timeLogs[key]) state.timeLogs[key] = {};
+  state.timeLogs[key][habitId] = (state.timeLogs[key][habitId] || 0) + minutes;
+  saveTimeLogs();
+}
+
+function toggleHabitTimer(habitId) {
+  const timer = state.activeTimers[habitId];
+  if (timer?.start) {
+    const minutes = Math.max(1, Math.round((Date.now() - timer.start) / 60000));
+    addHabitMinutes(habitId, minutes);
+    delete state.activeTimers[habitId];
+    saveActiveTimers();
+    const node = habitCardRefs.get(habitId);
+    if (node) refreshHabitTimeDisplay(habitId, node);
+    return;
+  }
+  state.activeTimers[habitId] = { start: Date.now() };
+  saveActiveTimers();
+  const node = habitCardRefs.get(habitId);
+  if (node) refreshHabitTimeDisplay(habitId, node);
+}
+
+function stopHabitTimer(habitId) {
+  const timer = state.activeTimers[habitId];
+  if (!timer?.start) return 0;
+  const minutes = Math.max(1, Math.round((Date.now() - timer.start) / 60000));
+  addHabitMinutes(habitId, minutes);
+  delete state.activeTimers[habitId];
+  saveActiveTimers();
+  const node = habitCardRefs.get(habitId);
+  if (node) refreshHabitTimeDisplay(habitId, node);
+  return minutes;
+}
+
+function refreshHabitTimeDisplay(habitId, node) {
+  if (!node) return;
+  const { todayMinutes } = getHabitMinutes(habitId);
+  const todayEl = node.querySelector(".js-time-today");
+  const indicator = node.querySelector(".js-timer-indicator");
+  const toggleBtn = node.querySelector(".js-timer-toggle");
+  if (todayEl) todayEl.textContent = `${formatMinutes(todayMinutes)} today`;
+  const active = state.activeTimers?.[habitId];
+  node.classList.toggle("timer-active", Boolean(active));
+  if (indicator) {
+    indicator.hidden = false;
+    if (active) {
+      const elapsedMs = Date.now() - active.start;
+      indicator.textContent = `Timer running · ${formatDuration(elapsedMs)}`;
+      indicator.classList.add("running");
+    } else {
+      indicator.textContent = "Timer off";
+      indicator.classList.remove("running");
+    }
+  }
+  if (toggleBtn) {
+    toggleBtn.textContent = state.activeTimers?.[habitId] ? "Stop timer" : "Start timer";
+    toggleBtn.classList.add("button", "ghost", "small");
+  }
+}
+
+function adjustHabitMinutes(habitId) {
+  const current = getHabitMinutes(habitId).todayMinutes;
+  const input = prompt("Set focus minutes for today", current.toString());
+  if (input === null) return;
+  const value = parseInt(input, 10);
+  if (Number.isNaN(value) || value < 0) return;
+  stopHabitTimer(habitId);
+  const today = todayKey();
+  if (!state.manualLogs[today]) state.manualLogs[today] = {};
+  state.manualLogs[today][habitId] = value;
+  saveManualLogs();
+  if (!state.timeLogs[today]) state.timeLogs[today] = {};
+  state.timeLogs[today][habitId] = value;
+  saveTimeLogs();
+  const node = habitCardRefs.get(habitId);
+  if (node) refreshHabitTimeDisplay(habitId, node);
+  renderTimeSummary();
+}
+
+function updateRunningTimersUI() {
+  if (!state.activeTimers) return;
+  habitCardRefs.forEach((node, habitId) => {
+    if (state.activeTimers[habitId]) {
+      refreshHabitTimeDisplay(habitId, node);
+    }
+  });
+}
+
+function formatDuration(ms) {
+  const totalSeconds = Math.max(0, Math.floor(ms / 1000));
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
+  const parts = [];
+  if (hours) parts.push(`${hours}h`);
+  parts.push(`${String(minutes).padStart(2, "0")}m`);
+  parts.push(`${String(seconds).padStart(2, "0")}s`);
+  return parts.join(" ");
+}
+
+function getTodayTotalMinutes() {
+  const today = todayKey();
+  const logs = state.timeLogs[today] || {};
+  let total = 0;
+  const habitIds = new Set([
+    ...Object.keys(logs),
+    ...Object.keys(state.activeTimers || {}),
+    ...collectHabitsWithTodayCompletions(),
+  ]);
+  habitIds.forEach((habitId) => {
+    total += getHabitMinutes(Number(habitId)).todayMinutes;
+  });
+  return total;
+}
+
+function getTodayFocusedMinutes() {
+  const today = todayKey();
+  let total = 0;
+  const logs = state.timeLogs[today] || {};
+  Object.values(logs).forEach((m) => (total += m || 0));
+  Object.entries(state.activeTimers || {}).forEach(([habitId, timer]) => {
+    if (timer?.start) {
+      const elapsed = Math.max(0, Math.floor((Date.now() - timer.start) / 60000));
+      total += elapsed;
+    }
+  });
+  return total;
+}
+
+function collectHabitsWithTodayCompletions() {
+  const today = todayKey();
+  const ids = new Set();
+  state.habits.forEach((habit) => {
+    (habit.completions || []).forEach((c) => {
+      if (c.date === today && parseFocusMinutes(c.note) > 0) {
+        ids.add(String(habit.id));
+      }
+    });
+  });
+  return ids;
+}
+
+function rebuildTimeLogsFromCompletions() {
+  const today = todayKey();
+  const logs = {};
+  state.habits.forEach((habit) => {
+    (habit.completions || []).forEach((c) => {
+      if (c.date === today) {
+        const minutes = parseFocusMinutes(c.note);
+        if (minutes > 0) {
+          logs[habit.id] = (logs[habit.id] || 0) + minutes;
+        }
+      }
+    });
+  });
+  const manual = state.manualLogs?.[today] || {};
+  Object.entries(manual).forEach(([habitId, minutes]) => {
+    logs[habitId] = minutes;
+  });
+  state.timeLogs[today] = logs;
+  saveTimeLogs();
+}
+
+function latestCompletionNote(habitId, dateKey) {
+  const habit = state.habits.find((h) => h.id === habitId);
+  if (!habit) return null;
+  const todayCompletions = (habit.completions || [])
+    .filter((c) => c.date === dateKey)
+    .sort((a, b) => (a.id || 0) - (b.id || 0));
+  const last = todayCompletions[todayCompletions.length - 1];
+  return last?.note || null;
+}
+
+function renderCategoryChart() {
+  if (!categoryChart || !categoryLegend) return;
+
+  const stats = state.habits.reduce((acc, habit) => {
+    const category = habit.category || "Uncategorized";
+    const completions = (habit.completions || []).length;
+    if (!acc[category]) {
+      acc[category] = { completions: 0, habits: 0 };
+    }
+    acc[category].completions += completions;
+    acc[category].habits += 1;
+    return acc;
+  }, {});
+  const entries = Object.entries(stats).sort((a, b) => b[1].completions - a[1].completions);
+  const totalCompletions = entries.reduce((sum, [, data]) => sum + data.completions, 0);
+
+  if (chartCenterValue) {
+    chartCenterValue.textContent = totalCompletions;
+  }
+  if (chartTotalPill) {
+    chartTotalPill.textContent = `${totalCompletions} logged`;
+  }
+
+  categoryChart.innerHTML = "";
+  categoryLegend.innerHTML = "";
+
+  if (!entries.length || totalCompletions === 0) {
+    categoryChart.innerHTML = `<p class="meta">Log completions to see your mix.</p>`;
+    categoryLegend.innerHTML = `<p class="meta">No completions yet. Add a note to your next one.</p>`;
+    return;
+  }
+
+  const svgNS = "http://www.w3.org/2000/svg";
+  const size = 220;
+  const r = 90;
+  const circumference = 2 * Math.PI * r;
+  const svg = document.createElementNS(svgNS, "svg");
+  svg.setAttribute("viewBox", `0 0 ${size} ${size}`);
+  svg.setAttribute("width", size);
+  svg.setAttribute("height", size);
+
+  const bgCircle = document.createElementNS(svgNS, "circle");
+  bgCircle.setAttribute("cx", size / 2);
+  bgCircle.setAttribute("cy", size / 2);
+  bgCircle.setAttribute("r", r);
+  bgCircle.setAttribute("fill", "none");
+  bgCircle.setAttribute("stroke", "rgba(255,255,255,0.05)");
+  bgCircle.setAttribute("stroke-width", "22");
+  svg.appendChild(bgCircle);
+
+  const palette = ["#ff6f61", "#36c2cf", "#8f7bff", "#ffd166", "#4ade80", "#f472b6", "#22d3ee", "#f97316"];
+  let offset = 0;
+
+  entries.forEach(([category, data], idx) => {
+    const share = data.completions / totalCompletions;
+    const segment = Math.max(share * circumference, 2);
+    const circle = document.createElementNS(svgNS, "circle");
+    circle.setAttribute("cx", size / 2);
+    circle.setAttribute("cy", size / 2);
+    circle.setAttribute("r", r);
+    circle.setAttribute("fill", "none");
+    circle.setAttribute("stroke", palette[idx % palette.length]);
+    circle.setAttribute("stroke-width", "22");
+    circle.setAttribute("stroke-dasharray", `${segment} ${circumference - segment}`);
+    circle.setAttribute("stroke-dashoffset", `${-offset}`);
+    circle.setAttribute("transform", `rotate(-90 ${size / 2} ${size / 2})`);
+    circle.setAttribute("stroke-linecap", "butt");
+    svg.appendChild(circle);
+    offset += segment;
+
+    const legend = document.createElement("div");
+    legend.className = "legend-item";
+    legend.innerHTML = `
+      <span class="legend-swatch" style="background:${palette[idx % palette.length]}"></span>
+      <div class="legend-text">
+        <span class="legend-title">${category}</span>
+        <span class="meta">${data.completions} completions · ${data.habits} habits</span>
+      </div>
+    `;
+    categoryLegend.appendChild(legend);
+  });
+
+  categoryChart.appendChild(svg);
+}
+
+function renderTimeSummary() {
+  if (!timeSummaryList) return;
+  const today = todayKey();
+  const todayLogs = state.timeLogs[today] || {};
+  const { usedMinutes: computedWorked, totalMinutes: plannedMinutes } = computeWorkdayMinutes(
+    state.workday,
+    new Date(),
+  );
+  const actualMinutes =
+    state.workday.manualWorkedMinutes != null
+      ? Math.max(0, Math.floor(state.workday.manualWorkedMinutes))
+      : computedWorked;
+  const focusedMinutes = getTodayFocusedMinutes();
+  if (timeWorkdayPill) {
+    const label = state.workday.clockedOutAt ? "Clocked out" : "Planned";
+    timeWorkdayPill.textContent = `${label}: ${formatMinutes(plannedMinutes)}`;
+  }
+
+  const habitIds = new Set([
+    ...Object.keys(todayLogs),
+    ...Object.keys(state.activeTimers || {}),
+    ...collectHabitsWithTodayCompletions(),
+  ]);
+
+  const entries = Array.from(habitIds)
+    .map((habitId) => {
+      const minutes = getHabitMinutes(Number(habitId)).todayMinutes;
+      const habit = state.habits.find((h) => h.id === Number(habitId));
+      const note = latestCompletionNote(Number(habitId), today);
+      return {
+        habitId: Number(habitId),
+        minutes,
+        name: habit ? habit.name : `Habit ${habitId}`,
+        note,
+      };
+    })
+    .filter((e) => e.minutes > 0)
+    .sort((a, b) => b.minutes - a.minutes);
+
+  const percentOfPlan = plannedMinutes > 0 ? Math.round((actualMinutes / plannedMinutes) * 100) : 0;
+  const focusVsWorked = actualMinutes > 0 ? Math.round((focusedMinutes / actualMinutes) * 100) : 0;
+
+  if (entries.length === 0) {
+    timeSummaryList.innerHTML = `<p class="meta">No focus time logged yet today.</p>`;
+  } else {
+    const header = `
+      <div class="time-row header">
+        <div class="time-cell">Planned</div>
+        <div class="time-cell">Worked</div>
+        <div class="time-cell">% Plan</div>
+        <div class="time-cell">Focused</div>
+        <div class="time-cell">% Focused</div>
+      </div>`;
+    const totalRow = `
+      <div class="time-row">
+        <div class="time-cell meta">${formatMinutes(plannedMinutes)}</div>
+        <div class="time-cell meta">${formatMinutes(actualMinutes)}</div>
+        <div class="time-cell meta">${percentOfPlan}%</div>
+        <div class="time-cell meta">${formatMinutes(focusedMinutes)}</div>
+        <div class="time-cell meta">${focusVsWorked}% of worked</div>
+      </div>`;
+    const habitRows = entries
+      .map(
+        (entry) => `
+          <div class="time-row">
+            <div class="time-cell meta" style="grid-column: span 2;">${entry.name}</div>
+            <div class="time-cell meta">${formatMinutes(entry.minutes)}</div>
+            <div class="time-cell meta" style="grid-column: span 2;">${entry.note || "No note"}</div>
+          </div>`,
+      )
+      .join("");
+    const habitsHeader = `
+      <div class="time-row header">
+        <div class="time-cell" style="grid-column: span 2;">Task</div>
+        <div class="time-cell">Focused</div>
+        <div class="time-cell" style="grid-column: span 2;">Closure note</div>
+      </div>`;
+    timeSummaryList.innerHTML = `<div class="time-table">${header}${totalRow}${habitsHeader}${habitRows}</div>`;
+  }
+
+  if (timeSummaryPercent) {
+    timeSummaryPercent.textContent = "";
+  }
+}
+
+loadTimeLogs();
+loadWorkdayConfig();
+loadManualLogs();
+loadActiveTimers();
 loadHabits();
 loadGoals();
 loadReflections();
 initThemePicker();
 initOptionsMenu();
+updateWorkdayProgress();
+setInterval(updateWorkdayProgress, 60000);
+setInterval(updateRunningTimersUI, 1000);
 
 function openOverlay(el) {
   el.hidden = false;
@@ -377,7 +974,12 @@ function closeOverlay(el) {
   el.hidden = true;
 }
 
-periodCta?.addEventListener("click", () => openOverlay(goalOverlay));
+periodCta?.addEventListener("click", () => {
+  state.editingGoalId = null;
+  goalForm.reset();
+  resetGoalHabitSelection();
+  openOverlay(goalOverlay);
+});
 reflectionCta?.addEventListener("click", () => {
   reflectionForm.querySelector("#reflection-period").value = autoPeriodLabel(new Date());
   openOverlay(reflectionOverlay);
@@ -385,11 +987,51 @@ reflectionCta?.addEventListener("click", () => {
 newGoalBtn?.addEventListener("click", () => {
   state.editingGoalId = null;
   goalForm.reset();
+  resetGoalHabitSelection();
   openOverlay(goalOverlay);
 });
 closeGoalBtn?.addEventListener("click", () => closeOverlay(goalOverlay));
 goalOverlay?.addEventListener("click", (e) => {
   if (e.target === goalOverlay) closeOverlay(goalOverlay);
+});
+
+workdaySaveBtn?.addEventListener("click", () => {
+  const startVal = workdayStartInput.value || "09:00";
+  const hoursVal = parseFloat(workdayHoursInput.value) || 8;
+  state.workday = { start: startVal, hours: Math.max(1, Math.min(16, hoursVal)) };
+  state.workday.clockedOutAt = null;
+  saveWorkdayConfig();
+  updateWorkdayProgress();
+  renderTimeSummary();
+});
+
+workdayClockoutBtn?.addEventListener("click", () => {
+  state.workday.clockedOutAt = new Date().toISOString();
+  state.workday.manualWorkedMinutes = null;
+  saveWorkdayConfig();
+  updateWorkdayProgress();
+  renderTimeSummary();
+});
+
+workdayApplyWorkedBtn?.addEventListener("click", () => {
+  const mins = parseInt(workdayWorkedOverride.value, 10);
+  if (!Number.isNaN(mins) && mins >= 0) {
+    state.workday.manualWorkedMinutes = mins;
+    state.workday.clockedOutAt = null;
+    saveWorkdayConfig();
+    updateWorkdayProgress();
+    renderTimeSummary();
+  }
+});
+
+goalHabitPicker?.addEventListener("change", (event) => {
+  const selectedId = parseInt(event.target.value, 10);
+  if (!Number.isNaN(selectedId)) {
+    state.goalHabitSelection.add(selectedId);
+    populateHabitOptions();
+    renderGoalHabitChips();
+  }
+  goalHabitPicker.value = "";
 });
 
 goalForm?.addEventListener("submit", async (event) => {
@@ -399,9 +1041,7 @@ goalForm?.addEventListener("submit", async (event) => {
   const outcome = goalForm.querySelector("#goal-outcome").value.trim();
   const due_date = goalForm.querySelector("#goal-due").value || null;
   const tags = parseTags(goalForm.querySelector("#goal-tags").value);
-  const habit_ids = Array.from(goalForm.querySelector("#goal-habits").selectedOptions).map((o) =>
-    parseInt(o.value, 10),
-  );
+  const habit_ids = getGoalHabitSelection();
   if (!title) {
     setStatus("Goal title required", true);
     return;
@@ -484,15 +1124,55 @@ function parseIds(raw) {
 }
 
 function populateHabitOptions() {
-  const select = document.querySelector("#goal-habits");
-  if (!select) return;
-  select.innerHTML = "";
+  if (!goalHabitPicker) return;
+  goalHabitPicker.innerHTML = `<option value="">Select a habit to link</option>`;
   state.habits.forEach((habit) => {
     const opt = document.createElement("option");
     opt.value = habit.id;
     opt.textContent = `${habit.name} (${habit.category})`;
-    select.appendChild(opt);
+    if (state.goalHabitSelection.has(habit.id)) {
+      opt.disabled = true;
+    }
+    goalHabitPicker.appendChild(opt);
   });
+}
+
+function renderGoalHabitChips() {
+  if (!goalHabitChips) return;
+  goalHabitChips.innerHTML = "";
+  if (state.goalHabitSelection.size === 0) {
+    goalHabitChips.innerHTML = `<span class="meta">No habits linked</span>`;
+    return;
+  }
+  const byId = Object.fromEntries(state.habits.map((h) => [h.id, h]));
+  Array.from(state.goalHabitSelection).forEach((id) => {
+    const habit = byId[id];
+    const chip = document.createElement("span");
+    chip.className = "chip";
+    chip.innerHTML = `
+      <span>${habit ? habit.name : `Habit ${id}`}</span>
+      <button type="button" class="chip-remove" data-id="${id}" aria-label="Remove linked habit">×</button>
+    `;
+    goalHabitChips.appendChild(chip);
+  });
+  goalHabitChips.querySelectorAll(".chip-remove").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const id = parseInt(btn.dataset.id, 10);
+      state.goalHabitSelection.delete(id);
+      populateHabitOptions();
+      renderGoalHabitChips();
+    });
+  });
+}
+
+function resetGoalHabitSelection(ids = []) {
+  state.goalHabitSelection = new Set(ids);
+  populateHabitOptions();
+  renderGoalHabitChips();
+}
+
+function getGoalHabitSelection() {
+  return Array.from(state.goalHabitSelection);
 }
 
 function populateReflectionGoalOptions() {
@@ -551,11 +1231,8 @@ function openGoalForEdit(goal) {
   goalForm.querySelector("#goal-outcome").value = goal.outcome || "";
   goalForm.querySelector("#goal-due").value = goal.due_date || "";
   goalForm.querySelector("#goal-tags").value = (goal.tags || []).join(", ");
-  const select = goalForm.querySelector("#goal-habits");
   const ids = goal.habit_ids || [];
-  Array.from(select.options).forEach((opt) => {
-    opt.selected = ids.includes(parseInt(opt.value, 10));
-  });
+  resetGoalHabitSelection(ids);
   openOverlay(goalOverlay);
 }
 
