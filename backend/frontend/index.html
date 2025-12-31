@@ -57,15 +57,14 @@
                   <input type="time" id="workday-start" value="09:00" />
                 </label>
                 <label class="meta">
-                  Hours
-                  <input type="number" id="workday-hours" min="1" max="16" step="0.5" value="8" />
+                  Planned hours
+                  <input type="number" id="workday-hours" min="1" max="16" step="0.5" value="" />
                 </label>
-                <button class="ghost small" id="workday-save" type="button">Set</button>
-                <button class="button ghost small" id="workday-clockout" type="button">
-                  Clock out
-                </button>
+                <button class="button ghost small" id="workday-save" type="button">Save plan</button>
+                <button class="button ghost small" id="workday-clockin" type="button">Clock in</button>
+                <button class="button ghost small" id="workday-clockout" type="button">Clock out</button>
                 <label class="meta">
-                  Worked (m)
+                  Adjusted worked time (m)
                   <input
                     type="number"
                     id="workday-worked-override"
@@ -74,8 +73,8 @@
                     placeholder="e.g. 38"
                   />
                 </label>
-                <button class="ghost small" id="workday-apply-worked" type="button">
-                  Apply worked
+                <button class="button ghost small" id="workday-apply-worked" type="button">
+                  Apply adjustment
                 </button>
               </div>
             </div>

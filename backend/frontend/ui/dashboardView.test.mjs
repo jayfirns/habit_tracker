@@ -90,7 +90,13 @@ test("renderDashboard updates milestone insights and prompt copy", () => {
       { id: 2, title: "Archive", scope: "quarter", status: "complete", habit_ids: [] },
     ],
     reflections: [],
-    workday: { start: "09:00", hours: 8, clockedOutAt: null, manualWorkedMinutes: null },
+    workday: {
+      plannedStart: "09:00",
+      plannedMinutes: 480,
+      clockInAt: null,
+      clockOutAt: null,
+      workedMinutesOverride: null,
+    },
     timeLogs: {},
     activeTimers: {},
   });

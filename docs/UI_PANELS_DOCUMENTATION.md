@@ -1,6 +1,6 @@
 ---
 created: 2025-12-30T20:19
-updated: 2025-12-31T00:24
+updated: 2025-12-31T00:53
 ---
 # EnergyMixPanel
 - Panel Title: Category Completions
@@ -60,7 +60,7 @@ For detailed design, development notes, and enhancement matrix, see [EnergyMixPa
 | PanelHeader ([glossary](DESIGN_GLOSSARY.md#ui-design-glossary-new-habit--habit-board)) | Header row with eyebrow/title and control cluster. | — | `panel__header` | Flex align center. |
 | Eyebrow ([glossary](DESIGN_GLOSSARY.md#glossary-legend)) | Context label. | Workday | `eyebrow` | Accent2 color. |
 | PanelTitle ([glossary](DESIGN_GLOSSARY.md#ui-design-glossary-new-habit--habit-board)) | Panel heading. | Time Glide | `<h3>` | Display font. |
-| WorkdayControls | Inline control row for start time, hours, apply buttons. | Start 09:00 / Hours 8 / Set / Clock out / Worked override | `day-controls` with inputs `#workday-start`, `#workday-hours`, `#workday-worked-override`; buttons `#workday-save`, `#workday-clockout`, `#workday-apply-worked` | Inputs use global input styling; ghost/small buttons use `.button.ghost.small` and inherit focus ring tokens. |
+| WorkdayControls | Inline control row for planned inputs and clock actions. | Start 09:00 / Planned hours 8 / Save plan / Clock in / Clock out / Adjusted worked time | `day-controls` with inputs `#workday-start`, `#workday-hours`, `#workday-worked-override`; buttons `#workday-save`, `#workday-clockin`, `#workday-clockout`, `#workday-apply-worked` | Inputs use global input styling; ghost/small buttons use `.button.ghost.small` and inherit focus ring tokens. |
 | WorkdayBar | Horizontal bar showing worked vs planned. | Gradient bar with inner fill | `workday-bar` containing `workday-progress` and `workday-label` | Progress fill width and color animate with usage; label overlays center. |
 
 - Interactions: Button clicks update workday state (`workday-save`, `clockout`, `apply-worked`) via listeners in `backend/frontend/app.js`, persisting to local storage and re-rendering dashboard/progress. Progress bar auto-updates every 60s (`setInterval(updateWorkdayProgress)`) and on workday changes; label shows remaining/used minutes computed in `computeWorkdayMinutes`.
@@ -80,7 +80,7 @@ For detailed design, development notes, and enhancement matrix, see [panels/Work
 | PanelHeader ([glossary](DESIGN_GLOSSARY.md#ui-design-glossary-new-habit--habit-board)) | Header row with eyebrow/title and control cluster. | — | `panel__header` | Flex align center. |
 | Eyebrow ([glossary](DESIGN_GLOSSARY.md#glossary-legend)) | Context label. | Workday | `eyebrow` | Accent2 color. |
 | PanelTitle ([glossary](DESIGN_GLOSSARY.md#ui-design-glossary-new-habit--habit-board)) | Panel heading. | Time Glide | `<h3>` | Display font. |
-| WorkdayControls | Inline control row for start time, hours, apply buttons. | Start 09:00 / Hours 8 / Set / Clock out / Worked override | `day-controls` with inputs `#workday-start`, `#workday-hours`, `#workday-worked-override`; buttons `#workday-save`, `#workday-clockout`, `#workday-apply-worked` | Inputs use global input styling; ghost/small buttons use `.button.ghost.small` and inherit focus ring tokens. |
+| WorkdayControls | Inline control row for planned inputs and clock actions. | Start 09:00 / Planned hours 8 / Save plan / Clock in / Clock out / Adjusted worked time | `day-controls` with inputs `#workday-start`, `#workday-hours`, `#workday-worked-override`; buttons `#workday-save`, `#workday-clockin`, `#workday-clockout`, `#workday-apply-worked` | Inputs use global input styling; ghost/small buttons use `.button.ghost.small` and inherit focus ring tokens. |
 | WorkdayBar | Horizontal bar showing worked vs planned. | Gradient bar with inner fill | `workday-bar` containing `workday-progress` and `workday-label` | Progress fill width and color animate with usage; label overlays center. |
 
 - Interactions: Button clicks update workday state (`workday-save`, `clockout`, `apply-worked`) via listeners in `backend/frontend/app.js`, persisting to local storage and re-rendering dashboard/progress. Progress bar auto-updates every 60s (`setInterval(updateWorkdayProgress)`) and on workday changes; label shows remaining/used minutes computed in `computeWorkdayMinutes`.

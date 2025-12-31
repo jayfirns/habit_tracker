@@ -1,41 +1,39 @@
 ---
 created: 2025-12-31T00:00
-updated: 2025-12-31T00:24
+updated: 2025-12-31T00:52
 ---
 # Workday Time Glide Panel
 
 ## Purpose
-This panel is designed to provide a comprehensive overview and control for the user's workday. It allows configuration of workday start time and total hours, visualizes the remaining versus used time through a dynamic progress bar, and enables manual adjustment of "worked" minutes to ensure accurate daily summaries. It helps users understand their daily focus allocation and manage their time effectively.
+This panel provides a simple, reliable daily time clock for a single workday. It supports two mutually exclusive modes: a **Planned Day** (expectation only) and an **Actual Clocked Day** (single clock in/out). Manual worked-time adjustments are allowed only after clock out and are explicitly labeled as overrides.
 
 ## Objectives
-- Configure workday start time (e.g., 09:00).
-- Set total planned workday hours (e.g., 8 hours).
-- Display a visual progress bar indicating time used vs. time remaining.
-- Allow manual override of worked minutes for the day.
-- Provide a "Clock out" function to finalize the workday's recorded time.
-- Persist workday configuration and logged time to local storage.
-- Dynamically update the progress bar and labels based on current time and user inputs.
+- Configure planned start time and planned duration (hours).
+- Clock in once and clock out once for the actual day.
+- Display planned time (when set) without tracking real-time usage.
+- Display worked time (authoritative) when clocked, with optional post-clock-out override.
+- Keep planned and actual modes fully separate in UI and math.
+- Persist workday state to local storage.
 
 ## Features
-- [x] Workday start time input
-- [x] Workday total hours input
-- [x] Manual worked minutes override input
-- [x] "Set" button to save workday configuration
-- [x] "Clock out" button
-- [x] Dynamic progress bar visualization
-- [x] Real-time display of used/remaining time
+- [x] Planned start time input
+- [x] Planned duration input (hours)
+- [x] "Save plan" button (clears any active clock state)
+- [x] "Clock in" button (single use, state locked)
+- [x] "Clock out" button (single use, state locked)
+- [x] Manual worked minutes override (post-clock-out only, labeled)
+- [x] Progress bar with mode-appropriate labeling
 - [x] Persistence of settings to local storage
 
 ## Enhancement Matrix
 
 | Feature | Description | TDD Spec | UI Prototype |
 | :------------------------------ | :------------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------ | :--------------------------------------------------------------------- |
-| Workday Configuration         | Inputs for start time and total hours, with a button to save these settings.                                             | ✅ Implemented                                                      | ✅ Complete                                                            |
-| Dynamic Progress Bar          | A visual bar that updates to show the proportion of the workday completed and remaining, using a gradient fill.            | ✅ Implemented                                                      | ✅ Complete                                                            |
-| Manual Worked Override        | An input field allowing users to manually enter or adjust the total "worked" minutes for the day.                       | ✅ Implemented                                                      | ✅ Complete                                                            |
-| Clock Out Functionality       | A button to finalize the workday's recorded time, potentially stopping timers and setting the day's total worked time. | ✅ Implemented                                                      | ✅ Complete                                                            |
-| Real-time Updates             | The panel's display (progress bar, time labels) updates automatically at regular intervals (e.g., every minute).         | ✅ Implemented                                                      | ✅ Complete                                                            |
-| Local Storage Persistence     | Workday start time, total hours, and manually worked minutes are saved and loaded from local storage across sessions.    | ✅ Implemented                                                      | ✅ Complete                                                            |
+| Planned Day Setup             | Inputs for planned start time and planned duration, with a button to save these settings (no real-time tracking).          | ✅ Implemented                                                      | ✅ Complete                                                            |
+| Actual Clocked Day            | Single clock in and clock out; state-locked buttons prevent stacking or repeats.                                           | ✅ Implemented                                                      | ✅ Complete                                                            |
+| Worked Override               | Manual worked minutes override allowed only after clock out; labeled as an adjustment.                                    | ✅ Implemented                                                      | ✅ Complete                                                            |
+| Progress Display              | Progress bar + label reflect the active mode (planned vs. clocked), no mixed summaries.                                   | ✅ Implemented                                                      | ✅ Complete                                                            |
+| Local Storage Persistence     | Workday plan, clock events, and overrides are saved and loaded from local storage across sessions.                         | ✅ Implemented                                                      | ✅ Complete                                                            |
 | Responsive Layout             | Ensures the panel adapts gracefully to various screen sizes.                                                             | 🚧 TODO (Requires broader frontend responsive design efforts)      | 🚧 TODO                                                                |
 | Visual Feedback for Actions   | Provide immediate visual cues (e.g., button state changes, brief messages) when configurations are saved or actions taken. | 🚧 TODO                                                             | 🚧 TODO                                                                |
 | Integration with Focus Summaries | Ensure manual overrides and clock-out times are accurately reflected in daily focus summaries and other relevant panels. | 🚧 TODO                                                             | 🚧 TODO                                                                |
@@ -46,29 +44,30 @@ The panel primarily interacts with client-side state and local storage. Key data
 
 ```json
 {
-  "workdayStartTime": "09:00",  // HH:MM format
-  "workdayTotalHours": 8,      // Integer, total planned hours
-  "workdayWorkedMinutes": 240, // Integer, manually overridden worked minutes
-  "workdayClockedOut": false   // Boolean, true if user has clocked out
+  "plannedStart": "09:00",          // HH:MM format
+  "plannedMinutes": 480,            // Integer, total planned minutes
+  "clockInAt": "2025-01-15T09:00:00.000Z",  // ISO timestamp (nullable)
+  "clockOutAt": "2025-01-15T17:00:00.000Z", // ISO timestamp (nullable)
+  "workedMinutesOverride": 420      // Integer, post-clock-out override (nullable)
 }
 ```
 
 Derived data (calculated client-side):
-- `workdayPlannedMinutes`: `workdayTotalHours * 60`
-- `workdayElapsedMinutes`: Minutes passed since `workdayStartTime` (capped by `workdayPlannedMinutes` or `now`).
-- `workdayRemainingMinutes`: `workdayPlannedMinutes - workdayElapsedMinutes` (or `workdayPlannedMinutes - workdayWorkedMinutes` if overridden).
-- `workdayPercentageComplete`: `(workdayElapsedMinutes / workdayPlannedMinutes) * 100`
+- `plannedEndTime`: `plannedStart + plannedMinutes`
+- `workedMinutes`: derived from `clockInAt` → `clockOutAt` when present
+- `remainingMinutes`: `plannedMinutes` in planned mode only
 
 ## Development Notes
 - The panel's UI elements and interactions are defined in `backend/frontend/index.html` (markup), styled by `backend/frontend/components.css` (`.day-controls`, `.workday-bar`, `.workday-progress`, `.workday-label`), and orchestrated by `backend/frontend/app.js` (workday state management, progress updates, event listeners).
-- Workday state (start time, total hours, worked minutes, clocked out status) is managed in `app.js` and persisted to local storage using `storage.js`.
+- Workday state is managed in `app.js` and persisted to local storage using `storage.js`.
+- Workday state transitions and UI state locking are centralized in `backend/frontend/workday-state.js`.
 - Progress bar updates are handled by a `setInterval` in `app.js` that calls `updateWorkdayProgress` and recalculates time values using `computeWorkdayMinutes`.
-- Event listeners for "Set", "Clock out", and "Apply Worked" buttons are also defined in `app.js`.
+- Event listeners for "Save plan", "Clock in", "Clock out", and "Apply adjustment" buttons are defined in `app.js`.
 - Design tokens from `backend/frontend/base.css` and `backend/frontend/themes.css` are used for styling, ensuring consistency with the overall application theme.
 - Accessibility considerations include clear labeling for input fields and buttons, and ensuring the progress bar conveys its status effectively for all users.
 
 ## Debug Notes
-- Ensure local storage keys for workday settings are consistent (`WORKDAY_START_KEY`, `WORKDAY_HOURS_KEY`, `WORKDAY_WORKED_OVERRIDE_KEY`, `WORKDAY_CLOCKED_OUT_KEY`).
-- Verify that `setInterval` for progress updates is cleared and re-established correctly to prevent memory leaks or stale updates when workday settings change.
-- Confirm that manual `workdayWorkedMinutes` overrides correctly influence all calculated time summaries across the dashboard and do not conflict with active timers.
+- Ensure local storage key `focusos-workday` remains consistent across sessions.
+- Confirm that manual worked overrides only apply after clock out and are labeled explicitly.
+- Verify that planned settings are ignored for calculations once clocking starts.
 - Check time zone handling if the application ever expands beyond local network use.

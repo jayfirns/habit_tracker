@@ -1,4 +1,5 @@
 import { parseFocusMinutes, formatMinutes, computeWorkdayMinutes } from "./time-utils.js";
+import { applyWorkdayEvent, getWorkdayUiState } from "./workday-state.js";
 import { todayKey, todayValue, formatDate } from "./date-utils.js";
 import { loadJson, saveJson } from "./storage.js";
 import { makeApi } from "./api.js";
@@ -72,6 +73,7 @@ const hero = document.querySelector(".hero");
 const workdayStartInput = document.querySelector("#workday-start");
 const workdayHoursInput = document.querySelector("#workday-hours");
 const workdaySaveBtn = document.querySelector("#workday-save");
+const workdayClockinBtn = document.querySelector("#workday-clockin");
 const workdayClockoutBtn = document.querySelector("#workday-clockout");
 const workdayWorkedOverride = document.querySelector("#workday-worked-override");
 const workdayApplyWorkedBtn = document.querySelector("#workday-apply-worked");
@@ -94,11 +96,11 @@ const state = {
   timeLogs: {},
   manualLogs: {},
   workday: {
-    start: "09:00",
-    hours: 8,
-    setAt: new Date().toISOString(),
-    clockedOutAt: null,
-    manualWorkedMinutes: null,
+    plannedStart: "09:00",
+    plannedMinutes: null,
+    clockInAt: null,
+    clockOutAt: null,
+    workedMinutesOverride: null,
   },
   activeTimers: {},
 };
@@ -152,20 +154,45 @@ const setStatus = (text, isError = false) => {
   statusEl.style.color = isError ? "var(--accent)" : "var(--muted)";
 };
 
+function normalizeWorkdayConfig(saved) {
+  const normalized = {
+    plannedStart: "09:00",
+    plannedMinutes: null,
+    clockInAt: null,
+    clockOutAt: null,
+    workedMinutesOverride: null,
+  };
+  if (!saved) return normalized;
+  if (saved.plannedStart) normalized.plannedStart = saved.plannedStart;
+  if (Number.isFinite(saved.plannedMinutes)) {
+    normalized.plannedMinutes = Math.floor(saved.plannedMinutes);
+  }
+  if (saved.clockInAt) normalized.clockInAt = saved.clockInAt;
+  if (saved.clockOutAt) normalized.clockOutAt = saved.clockOutAt;
+  if (saved.workedMinutesOverride != null) {
+    normalized.workedMinutesOverride = Math.floor(saved.workedMinutesOverride);
+  }
+  if (!saved.plannedStart && saved.start) normalized.plannedStart = saved.start;
+  if (normalized.plannedMinutes == null && Number.isFinite(saved.hours)) {
+    normalized.plannedMinutes = Math.floor(saved.hours * 60);
+  }
+  return normalized;
+}
+
 function loadWorkdayConfig() {
   const saved = loadJson("focusos-workday", null);
-  if (saved) {
-    state.workday = { ...state.workday, ...saved };
+  state.workday = { ...state.workday, ...normalizeWorkdayConfig(saved) };
+  if (workdayStartInput) workdayStartInput.value = state.workday.plannedStart || "09:00";
+  if (workdayHoursInput) {
+    workdayHoursInput.value =
+      state.workday.plannedMinutes != null ? String(state.workday.plannedMinutes / 60) : "";
   }
-  if (workdayStartInput) workdayStartInput.value = state.workday.start;
-  if (workdayHoursInput) workdayHoursInput.value = state.workday.hours;
-  if (workdayWorkedOverride && state.workday.manualWorkedMinutes != null) {
-    workdayWorkedOverride.value = state.workday.manualWorkedMinutes;
+  if (workdayWorkedOverride && state.workday.workedMinutesOverride != null) {
+    workdayWorkedOverride.value = state.workday.workedMinutesOverride;
   }
 }
 
 function saveWorkdayConfig() {
-  state.workday.setAt = new Date().toISOString();
   saveJson("focusos-workday", state.workday);
 }
 
@@ -238,18 +265,37 @@ async function loadReflections() {
 function updateWorkdayProgress() {
   if (!workdayProgress || !workdayLabel) return;
   const now = new Date();
-  const { usedMinutes, totalMinutes } = computeWorkdayMinutes(state.workday, now);
-  const pct = totalMinutes > 0 ? Math.min(100, Math.max(0, (usedMinutes / totalMinutes) * 100)) : 0;
+  const metrics = computeWorkdayMinutes(state.workday, now);
+  const uiState = getWorkdayUiState(state.workday);
+  let pct = 0;
+
+  if (metrics.mode === "clocked") {
+    pct = metrics.workedMinutes > 0 ? 100 : 0;
+  }
   workdayProgress.style.width = `${pct}%`;
 
-  const remainingMinutes = Math.max(0, totalMinutes - usedMinutes);
-  workdayLabel.textContent = `${formatMinutes(remainingMinutes)} left · ${formatMinutes(usedMinutes)} used of ${formatMinutes(totalMinutes)}`;
+  if (metrics.mode === "planned") {
+    workdayLabel.textContent = `Planned ${formatMinutes(metrics.plannedMinutes)} · ${formatMinutes(metrics.remainingMinutes)} remaining`;
+  } else if (metrics.mode === "clocked") {
+    const suffix = metrics.clockState === "running" ? " (running)" : "";
+    workdayLabel.textContent = `${uiState.workedLabel}: ${formatMinutes(metrics.workedMinutes)}${suffix}`;
+  } else {
+    workdayLabel.textContent = "No workday data yet";
+  }
 
   const startColor = [74, 222, 128]; // green
   const endColor = [239, 68, 68]; // red
   const mix = pct / 100;
   const color = startColor.map((c, idx) => Math.round(c + (endColor[idx] - c) * mix));
   workdayProgress.style.background = `rgb(${color.join(",")})`;
+
+  if (workdayStartInput) workdayStartInput.disabled = !uiState.canPlan;
+  if (workdayHoursInput) workdayHoursInput.disabled = !uiState.canPlan;
+  if (workdaySaveBtn) workdaySaveBtn.disabled = !uiState.canPlan;
+  if (workdayClockinBtn) workdayClockinBtn.disabled = !uiState.canClockIn;
+  if (workdayClockoutBtn) workdayClockoutBtn.disabled = !uiState.canClockOut;
+  if (workdayWorkedOverride) workdayWorkedOverride.disabled = !uiState.canOverride;
+  if (workdayApplyWorkedBtn) workdayApplyWorkedBtn.disabled = !uiState.canOverride;
 }
 
 function renderHabits() {
@@ -701,32 +747,58 @@ milestoneOverlay?.addEventListener("click", (e) => {
 });
 
 workdaySaveBtn?.addEventListener("click", () => {
-  const startVal = workdayStartInput.value || "09:00";
-  const hoursVal = parseFloat(workdayHoursInput.value) || 8;
-  state.workday = { start: startVal, hours: Math.max(1, Math.min(16, hoursVal)) };
-  state.workday.clockedOutAt = null;
+  const startVal = workdayStartInput?.value || "09:00";
+  const hoursVal = parseFloat(workdayHoursInput?.value);
+  const plannedMinutes =
+    Number.isFinite(hoursVal) && hoursVal > 0 ? Math.round(hoursVal * 60) : null;
+  const result = applyWorkdayEvent(state.workday, {
+    type: "plan",
+    plannedStart: startVal,
+    plannedMinutes,
+  });
+  if (result.ignored) return;
+  state.workday = result.workday;
+  saveWorkdayConfig();
+  updateWorkdayProgress();
+  renderDashboard();
+});
+
+workdayClockinBtn?.addEventListener("click", () => {
+  const result = applyWorkdayEvent(state.workday, {
+    type: "clock_in",
+    at: new Date().toISOString(),
+  });
+  if (result.ignored) return;
+  state.workday = result.workday;
   saveWorkdayConfig();
   updateWorkdayProgress();
   renderDashboard();
 });
 
 workdayClockoutBtn?.addEventListener("click", () => {
-  state.workday.clockedOutAt = new Date().toISOString();
-  state.workday.manualWorkedMinutes = null;
+  const result = applyWorkdayEvent(state.workday, {
+    type: "clock_out",
+    at: new Date().toISOString(),
+  });
+  if (result.ignored) return;
+  state.workday = result.workday;
   saveWorkdayConfig();
   updateWorkdayProgress();
   renderDashboard();
 });
 
 workdayApplyWorkedBtn?.addEventListener("click", () => {
-  const mins = parseInt(workdayWorkedOverride.value, 10);
-  if (!Number.isNaN(mins) && mins >= 0) {
-    state.workday.manualWorkedMinutes = mins;
-    state.workday.clockedOutAt = null;
-    saveWorkdayConfig();
-    updateWorkdayProgress();
-    renderDashboard();
-  }
+  const mins = parseInt(workdayWorkedOverride?.value, 10);
+  if (Number.isNaN(mins) || mins < 0) return;
+  const result = applyWorkdayEvent(state.workday, {
+    type: "override_worked",
+    minutes: mins,
+  });
+  if (result.ignored) return;
+  state.workday = result.workday;
+  saveWorkdayConfig();
+  updateWorkdayProgress();
+  renderDashboard();
 });
 
 milestoneHabitPicker?.addEventListener("change", (event) => {

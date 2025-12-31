@@ -24,26 +24,59 @@ export function formatMinutes(totalMinutes) {
 }
 
 export function computeWorkdayMinutes(workday, now = new Date()) {
-  if (!workday) return { usedMinutes: 0, totalMinutes: 0 };
-  const [startHour, startMinute] = (workday.start || "09:00")
-    .split(":")
-    .map((v) => parseInt(v, 10));
-  const start = new Date(now);
-  start.setHours(startHour || 9, startMinute || 0, 0, 0);
-  const plannedMinutes = Math.max(0, Math.round((workday.hours || 0) * 60));
-  const plannedEnd = new Date(start.getTime() + plannedMinutes * 60 * 1000);
-  const end = workday.clockedOutAt ? new Date(workday.clockedOutAt) : plannedEnd;
-  const spanMs = Math.max(end - start, 1);
-  const elapsedMs = Math.min(Math.max(now - start, 0), spanMs);
-  if (workday.manualWorkedMinutes != null) {
+  if (!workday) {
     return {
-      usedMinutes: Math.max(0, Math.floor(workday.manualWorkedMinutes)),
-      totalMinutes: plannedMinutes,
+      mode: "empty",
+      clockState: "idle",
+      plannedMinutes: 0,
+      workedMinutes: 0,
+      remainingMinutes: null,
     };
   }
+
+  const plannedMinutes =
+    Number.isFinite(workday.plannedMinutes) && workday.plannedMinutes > 0
+      ? Math.floor(workday.plannedMinutes)
+      : 0;
+  const hasClockIn = Boolean(workday.clockInAt);
+  const hasClockOut = Boolean(workday.clockOutAt);
+  const clockState = hasClockIn ? (hasClockOut ? "completed" : "running") : "idle";
+  const mode = clockState !== "idle" ? "clocked" : plannedMinutes > 0 ? "planned" : "empty";
+
+  if (mode === "planned") {
+    return {
+      mode,
+      clockState,
+      plannedMinutes,
+      workedMinutes: 0,
+      remainingMinutes: plannedMinutes,
+    };
+  }
+
+  if (mode === "clocked") {
+    const start = new Date(workday.clockInAt);
+    const end = hasClockOut ? new Date(workday.clockOutAt) : new Date(now);
+    const elapsedMs = Math.max(end - start, 0);
+    const derivedWorked = Math.max(0, Math.floor(elapsedMs / 60000));
+    const override =
+      hasClockOut && workday.workedMinutesOverride != null
+        ? Math.max(0, Math.floor(workday.workedMinutesOverride))
+        : null;
+    return {
+      mode,
+      clockState,
+      plannedMinutes,
+      workedMinutes: override != null ? override : derivedWorked,
+      remainingMinutes: null,
+    };
+  }
+
   return {
-    usedMinutes: Math.max(0, Math.floor(elapsedMs / 60000)),
-    totalMinutes: plannedMinutes,
+    mode,
+    clockState,
+    plannedMinutes: 0,
+    workedMinutes: 0,
+    remainingMinutes: null,
   };
 }
 

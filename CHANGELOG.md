@@ -1,6 +1,6 @@
 ---
 created: 2025-12-30T20:19
-updated: 2025-12-31T00:49
+updated: 2025-12-31T00:55
 ---
 # CHANGELOG.md - FocusOS Project Progress
 
@@ -57,6 +57,13 @@ This document tracks significant changes, features, and fixes implemented throug
 - **Tests**: Added comprehensive unit tests for `computeWorkdayMinutes` covering various clock states, planned time, and worked overrides.
 - **Tests**: Added dedicated unit tests for `workday-state.js` functions (`applyWorkdayEvent`, `getWorkdayUiState`) covering event handling, clock state logic, and UI control enablement/disablement.
 - **Tests**: Added `renderDashboard` tests to verify correct display of workday metrics in the `time-workday-pill` based on calculated mode.
+- **UI**: Added "Clock in" button and updated labels for workday controls (e.g., "Planned hours", "Save plan", "Adjusted worked time", "Apply adjustment").
+
+### Changed
+- **Frontend**: Refactored `app.js` to integrate `workday-state.js` for managing workday state, including `normalizeWorkdayConfig` for migration and `updateWorkdayProgress` for dynamic UI control enablement/disablement and progress bar labeling.
+- **Frontend**: `backend/frontend/time-utils.js`'s `computeWorkdayMinutes` refactored to align with the new "planned vs. clocked" state model.
+- **Frontend**: `backend/frontend/ui/dashboardView.js` updated to consume the new `computeWorkdayMinutes` output and dynamically render workday metrics.
+- **Docs**: `docs/ACTIONPLAN.md`, `docs/UI_PANELS_DOCUMENTATION.md`, and `docs/panels/WorkdayTimeGlidePanel.md` updated to reflect the new "planned vs. clocked" workday model, UI changes, and state management approach.
 
 ### Changed
 - **Docs**: Reorganized documentation files by moving several markdown files from the root directory into the `docs/` and `docs/frontend/` directories to improve repository structure.

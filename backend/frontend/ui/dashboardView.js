@@ -171,18 +171,18 @@ export function createDashboardView(elements, helpers) {
     if (!timeSummaryList) return;
     const today = todayKey();
     const todayLogs = timeLogs[today] || {};
-    const { usedMinutes: computedWorked, totalMinutes: plannedMinutes } = computeWorkdayMinutes(
-      workday,
-      new Date(),
-    );
-    const actualMinutes =
-      workday.manualWorkedMinutes != null
-        ? Math.max(0, Math.floor(workday.manualWorkedMinutes))
-        : computedWorked;
+    const metrics = computeWorkdayMinutes(workday, new Date());
+    const plannedMinutes = metrics.mode === "planned" ? metrics.plannedMinutes : 0;
+    const actualMinutes = metrics.mode === "clocked" ? metrics.workedMinutes : 0;
     const focusedMinutes = getTodayFocusedMinutes(timeLogs, activeTimers);
     if (timeWorkdayPill) {
-      const label = workday.clockedOutAt ? "Clocked out" : "Planned";
-      timeWorkdayPill.textContent = `${label}: ${formatMinutes(plannedMinutes)}`;
+      if (metrics.mode === "planned") {
+        timeWorkdayPill.textContent = `Planned: ${formatMinutes(metrics.plannedMinutes)}`;
+      } else if (metrics.mode === "clocked") {
+        timeWorkdayPill.textContent = `Worked: ${formatMinutes(metrics.workedMinutes)}`;
+      } else {
+        timeWorkdayPill.textContent = "";
+      }
     }
 
     const habitIds = new Set([
@@ -207,9 +207,11 @@ export function createDashboardView(elements, helpers) {
       .sort((a, b) => b.minutes - a.minutes);
 
     const percentOfPlan =
-      plannedMinutes > 0 ? Math.round((actualMinutes / plannedMinutes) * 100) : 0;
+      plannedMinutes > 0 && actualMinutes > 0
+        ? Math.round((actualMinutes / plannedMinutes) * 100)
+        : null;
     const focusVsWorked =
-      actualMinutes > 0 ? Math.round((focusedMinutes / actualMinutes) * 100) : 0;
+      actualMinutes > 0 ? Math.round((focusedMinutes / actualMinutes) * 100) : null;
 
     if (entries.length === 0) {
       timeSummaryList.innerHTML = `<p class="meta">No focus time logged yet today.</p>`;
@@ -222,13 +224,18 @@ export function createDashboardView(elements, helpers) {
           <div class="time-cell">Focused</div>
           <div class="time-cell">% Focused</div>
         </div>`;
+      const plannedLabel = plannedMinutes > 0 ? formatMinutes(plannedMinutes) : "—";
+      const workedLabel = actualMinutes > 0 ? formatMinutes(actualMinutes) : "—";
+      const percentLabel = percentOfPlan != null ? `${percentOfPlan}%` : "—";
+      const focusLabel = actualMinutes > 0 ? formatMinutes(focusedMinutes) : "—";
+      const focusPercentLabel = focusVsWorked != null ? `${focusVsWorked}% of worked` : "—";
       const totalRow = `
         <div class="time-row">
-          <div class="time-cell meta">${formatMinutes(plannedMinutes)}</div>
-          <div class="time-cell meta">${formatMinutes(actualMinutes)}</div>
-          <div class="time-cell meta">${percentOfPlan}%</div>
-          <div class="time-cell meta">${formatMinutes(focusedMinutes)}</div>
-          <div class="time-cell meta">${focusVsWorked}% of worked</div>
+          <div class="time-cell meta">${plannedLabel}</div>
+          <div class="time-cell meta">${workedLabel}</div>
+          <div class="time-cell meta">${percentLabel}</div>
+          <div class="time-cell meta">${focusLabel}</div>
+          <div class="time-cell meta">${focusPercentLabel}</div>
         </div>`;
       const habitRows = entries
         .map(

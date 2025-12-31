@@ -1,3 +1,7 @@
+---
+created: 2025-12-30T20:19
+updated: 2025-12-31T00:52
+---
 # ACTIONPLAN.md - FocusOS Web Migration Game Plan
 
 This document outlines the high-level action plan for migrating the "My Personal Habit Tracker" desktop application to "FocusOS," a local network web server application. This plan adheres to the architectural principles and functional/non-functional requirements detailed in `GEMINI.md`.
@@ -146,6 +150,7 @@ This document outlines the high-level action plan for migrating the "My Personal
     -   [ ] Add `TimeEntry` entity to Domain Model.
     -   [x] Implement manual start/stop and post-hoc attribution of time to habits (front-end timers + overrides).
     -   [x] Develop frontend UI for workday glide bar, focus summaries, and manual overrides.
+    -   [x] Refactor Workday Time Glide panel into planned vs actual clocked modes with TDD coverage (state locking, overrides, empty state).
 -   [ ] Implement backend logic to track milestone time boundaries, completion percentages, and surface planned vs. actual effort/drift.
     -   [ ] Develop frontend UI for quarterly and EOY reflection prompts.
     -   [ ] Write tests (TDD).
