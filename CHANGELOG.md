@@ -7,6 +7,15 @@ This document tracks significant changes, features, and fixes implemented throug
 ## Unreleased - Time Glide, Focus Tracking, SMART Enhancements
 
 ### Added
+- **Docs**: Created `LOGIC_RULES.md` to document system-level behavioral rules for deletion and modification of tasks and goals.
+- **Feature**: Implemented soft-delete for goals by setting their status to "archived", preserving goal history.
+- **Feature**: Enhanced habit deletion to purge all associated local data (time logs, manual logs, and active timers) from the frontend state.
+
+### Changed
+- **Docs**: Reorganized documentation files by moving several markdown files from the root directory into the `docs/` and `docs/frontend/` directories to improve repository structure.
+- **Tests**: Added tests for goal soft-deletion, modification of completed goals, and frontend state purging after habit deletion.
+
+### Added
 - **Docs**: Added `TESTING_MANDATES.md` detailing project-wide testing standards and workflow.
 - **Tests**: Added `jsdom`-based unit tests for Energy Mix Panel UI rendering functions; refactored `energyMixPanel.js` for testability.
 - **Docs**: Added bidirectional links between `DESIGN_GLOSSARY.md` and `UI_PANELS_DOCUMENTATION.md`.
