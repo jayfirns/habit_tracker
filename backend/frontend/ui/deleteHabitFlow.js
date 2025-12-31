@@ -9,6 +9,7 @@ export async function deleteHabitFlow({
   setStatus,
   purgeHabitState,
   state,
+  onAfterDelete,
   saveTimeLogs,
   saveManualLogs,
   saveActiveTimers,
@@ -24,6 +25,9 @@ export async function deleteHabitFlow({
   setStatus("Deleting...");
   await apiClient.deleteHabit(id);
   purgeHabitState(state, id);
+  if (typeof onAfterDelete === "function") {
+    onAfterDelete(id);
+  }
   saveTimeLogs();
   saveManualLogs();
   saveActiveTimers();

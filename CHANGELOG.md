@@ -8,14 +8,17 @@ This document tracks significant changes, features, and fixes implemented throug
 
 ### Added
 - **Frontend**: Created `deleteHabitFlow.js` to encapsulate the habit deletion logic, making it more robust and testable.
-- **Tests**: Added tests for the new `deleteHabitFlow.js` module.
-- **Tests**: Added tests to `habitState.test.mjs` to handle missing collections and string-keyed habit ids.
+- **Frontend**: Introduced `milestoneSelection.js` to manage habit selection state for milestones in the UI.
+- **Tests**: Added tests for the new `deleteHabitFlow.js` module (`deleteHabitFlow.test.mjs`).
+- **Tests**: Expanded tests in `habitState.test.mjs` to handle missing collections and string-keyed habit IDs.
 - **Tests**: Added tests to `habitsView.test.mjs` to ensure delete buttons are correctly wired for each habit.
-- **Tests**: Added backend API tests to ensure that deleting a habit does not delete the associated milestone, that it blocks the listing of completions for the deleted habit, and that it does not affect other habits.
+- **Tests**: Added backend API tests (`test_api.py`) to confirm that deleting a habit does not delete associated milestones, blocks completion listing for the deleted habit, and does not affect other habits.
+- **Tests**: Introduced tests for `milestoneSelection.js` (`milestoneSelection.test.mjs`) to validate milestone habit selection management.
 
 ### Changed
-- **Frontend**: Refactored `app.js` to use the new `deleteHabitFlow` function.
-- **Docs**: Updated `ACTIONPLAN.md` with more detailed information on known gaps and test execution.
+- **Backend**: Enhanced habit deletion in `crud.py` to explicitly clear habit-milestone associations, ensuring data integrity.
+- **Frontend**: Refactored `app.js` to use the new `deleteHabitFlow` function, integrating client-side state cleanup for milestone pickers via an `onAfterDelete` callback.
+- **Docs**: Updated `ACTIONPLAN.md` with more detailed information on known gaps and test execution, reflecting the resolution of habit deletion issues.
 
 ## Unreleased - Time Glide, Focus Tracking, SMART Enhancements
 

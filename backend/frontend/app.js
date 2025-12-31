@@ -6,6 +6,7 @@ import { renderHabitsView } from "./ui/habitsView.js";
 import { createDashboardView } from "./ui/dashboardView.js";
 import { DELETE_HABIT_CONFIRMATION, deleteHabitFlow } from "./ui/deleteHabitFlow.js";
 import { purgeHabitState } from "./ui/habitState.js";
+import { removeHabitFromMilestoneSelection } from "./ui/milestoneSelection.js";
 
 const API_BASE = window.location.origin;
 
@@ -340,6 +341,14 @@ async function deleteHabit(id) {
     setStatus,
     purgeHabitState,
     state,
+    onAfterDelete: (habitId) => {
+      removeHabitFromMilestoneSelection({
+        selection: state.milestoneHabitSelection,
+        habitId,
+        onRefreshOptions: populateHabitOptions,
+        onRefreshChips: renderMilestoneHabitChips,
+      });
+    },
     saveTimeLogs,
     saveManualLogs,
     saveActiveTimers,

@@ -1,7 +1,7 @@
 from datetime import date
 from typing import List, Optional, Tuple
 
-from sqlalchemy import or_, select
+from sqlalchemy import delete, or_, select
 from sqlalchemy.orm import Session, selectinload
 
 import models
@@ -63,6 +63,11 @@ def delete_habit(db: Session, habit_id: int) -> bool:
     habit = db.get(models.Habit, habit_id)
     if habit is None:
         return False
+    db.execute(
+        delete(models.habit_milestone_table).where(
+            models.habit_milestone_table.c.habit_id == habit_id
+        )
+    )
     db.delete(habit)
     db.commit()
     return True
