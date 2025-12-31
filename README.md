@@ -11,17 +11,15 @@ FastAPI backend with a lightweight HTML/JS frontend for local-first habit, miles
 
 ## Quickstart (dev)
 
+**For macOS/Linux users (Docker Compose recommended):**
+
 ```bash
-cd backend
-python -m venv venv
-source venv/bin/activate  # Windows: venv\Scripts\activate
-pip install -e .[dev]
-uvicorn main:app --reload --port 8000
+docker-compose up --build backend
 ```
 
+Then access:
 - API: http://localhost:8000
 - UI: http://localhost:8000/ui
-- Default DB: `backend/data/habit_tracker.db` (override with `DATABASE_URL`)
 
 ## Docker
 
