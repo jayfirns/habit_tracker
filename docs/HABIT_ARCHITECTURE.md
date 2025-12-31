@@ -1,6 +1,6 @@
 ---
 created: 2025-12-30T21:52
-updated: 2025-12-31T00:24
+updated: 2025-12-31T10:27
 ---
 # HABIT_ARCHITECTURE.md
 
@@ -61,6 +61,12 @@ The system does **not** treat legacy goals as primary entities. Rather, **habits
 - Used to analyze outcomes, emotions, or subjective states.
 - Helps connect intention to long-term outcomes.
 
+### 6. **Workday State (Supporting System Entity)**
+
+- A Workday State captures planned hours and actual clocked time for a single day.
+- Persisted as a single shared record to support cross-device time tracking.
+- Used by the Workday Time Glide panel for UI locking, progress, and summaries.
+
 ---
 
 ## Retired Terms
@@ -90,6 +96,7 @@ The system does **not** treat legacy goals as primary entities. Rather, **habits
 | `milestone`, `target`, `challenge` | ✅ supporting entities | Milestone is implemented; synonyms optional |
 | `goal` | ❌ legacy | Do not use |
 | `task`, `todo`, `action` | 🕓 not implemented | Do not imply existence via UI/labels |
+| `workday_state` | ✅ supporting entity | Single shared record for time clock |
 
 ---
 

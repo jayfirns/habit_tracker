@@ -1,6 +1,6 @@
 ---
 created: 2025-12-30T20:19
-updated: 2025-12-31T00:52
+updated: 2025-12-31T10:28
 ---
 # ACTIONPLAN.md - FocusOS Web Migration Game Plan
 
@@ -151,6 +151,8 @@ This document outlines the high-level action plan for migrating the "My Personal
     -   [x] Implement manual start/stop and post-hoc attribution of time to habits (front-end timers + overrides).
     -   [x] Develop frontend UI for workday glide bar, focus summaries, and manual overrides.
     -   [x] Refactor Workday Time Glide panel into planned vs actual clocked modes with TDD coverage (state locking, overrides, empty state).
+    -   [x] Persist Workday Time Glide state via backend `/workday` API for cross-device sync, with local fallback.
+    -   [x] Add backend + frontend tests validating workday persistence and UI state locking.
 -   [ ] Implement backend logic to track milestone time boundaries, completion percentages, and surface planned vs. actual effort/drift.
     -   [ ] Develop frontend UI for quarterly and EOY reflection prompts.
     -   [ ] Write tests (TDD).

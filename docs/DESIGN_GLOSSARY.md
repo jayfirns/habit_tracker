@@ -1,3 +1,7 @@
+---
+created: 2025-12-30T20:19
+updated: 2025-12-31T10:17
+---
 ## Audit: `.js-category` Dependencies (read-only, no changes applied)
 
 - **JavaScript**
@@ -17,6 +21,18 @@
 - **H1 / H2 / H3**: Heading levels using display/body font (base.css); h1 > h2 (~24px default) > h3 (~20px) for hierarchy, 6px vertical margins.
 - **Ghost Button**: Transparent/outlined button (`.button.ghost`); 1px border `--border`, inherits text color, no shadow; `.small` uses 8px × 12px padding and 13px font.
 - **Subtle**: Muted treatment (color `--muted` or color-mix reductions) for secondary/meta info; applies to text, pills (`.pill.subtle`), and labels.
+
+## Workday Time Glide Glossary
+
+- **Workday Panel**: The time clock panel labeled "Time Glide" in the hero row.
+- **Planned Hours Input**: Numeric input for planned work duration in hours (`#workday-hours`).
+- **Planned Start Input**: Time input for planned start (`#workday-start`).
+- **Clock In Button**: Action to start the clock (`#workday-clockin`).
+- **Clock Out Button**: Action to stop the clock (`#workday-clockout`).
+- **Worked Override Input**: Numeric input for post-clock-out adjustments (`#workday-worked-override`).
+- **Workday Bar**: The progress bar container (`.workday-bar`).
+- **Workday Progress**: The progress fill element (`.workday-progress`).
+- **Workday Label**: The text label describing plan/worked status (`.workday-label`).
 
 # UI Design Glossary (New Habit & Habit Board)
 

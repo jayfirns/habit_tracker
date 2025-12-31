@@ -1,3 +1,7 @@
+---
+created: 2025-12-30T20:19
+updated: 2025-12-31T10:17
+---
 # TESTING_MANDATES.md
 
 🧭 Purpose
@@ -40,6 +44,7 @@ Global Exposure
 Integration Boundaries
 	•	DOM tests must simulate user actions and assert effects (e.g., via jsdom)
 	•	Avoid testing internal logic unless it prevents regressions
+	•	Persisted state must be validated end-to-end when cross-device behavior is required (e.g., backend save/load plus UI state lock)
 
 ⸻
 

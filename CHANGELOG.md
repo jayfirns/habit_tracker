@@ -1,6 +1,6 @@
 ---
 created: 2025-12-30T20:19
-updated: 2025-12-31T10:15
+updated: 2025-12-31T10:31
 ---
 # CHANGELOG.md - FocusOS Project Progress
 
@@ -57,7 +57,10 @@ This document tracks significant changes, features, and fixes implemented throug
 - **Frontend**: Added `hasWorkdayData` and `serializeWorkdayForApi` utility functions.
 - **Tests**: Expanded `workday-panel.test.mjs` to mock `/workday` API calls, enabling comprehensive testing of frontend workday state logic.
 - **Tests**: Added new API tests (`test_get_workday_state_creates_default`, `test_update_workday_state_persists`) for the `WorkdayState` endpoints.
-- **Schema**: Defined `WorkdayState` Pydantic schemas (`WorkdayStateBase`, `WorkdayStateUpdate`, `WorkdayStateRead`) for API validation..
+- **Schema**: Defined `WorkdayState` Pydantic schemas (`WorkdayStateBase`, `WorkdayStateUpdate`, `WorkdayStateRead`) for API validation.
+- **Docs**: Updated `LOGIC_RULES.md` with "Workday Time Glide Rules" section, detailing backend persistence, modes, clocking, UI locking, and progress calculation.
+- **Docs**: Updated `panels/WorkdayTimeGlidePanel.md` to reflect backend persistence, local storage fallback, server payload structure, and refined development/debug notes.
+- **Docs**: Updated `HABIT_ARCHITECTURE.md` to include "Workday State" as a "Supporting System Entity" in its Concept Hierarchy and Naming Guidelines.
 
 ### Fixed
 - **Frontend**: Corrected progress bar calculation in `updateWorkdayProgress` to accurately reflect worked minutes against planned minutes.
@@ -90,9 +93,8 @@ This document tracks significant changes, features, and fixes implemented throug
 ### Fixed
 - Fixed non-functional tabs on the Energy Mix Panel by correcting a data attribute mismatch between the HTML and JavaScript.
 - Safely removed redundant `.js-category` element from habit cards, fixing a critical rendering failure on the Habit Board.
-### Changed
-- **Frontend**: Updated `normalizeWorkdayConfig` to correctly handle `snake_case` keys from the API for workday state.
-- **Frontend**: Changed calls to `saveWorkdayConfig` to `void saveWorkdayConfig()` to correctly handle the now-asynchronous function.
+- **Docs**: Updated `ACTIONPLAN.md` tasks for "Enhanced Time Tracking & Accountability" to mark Workday State persistence and testing as complete.
+- **Docs**: Updated `UI_PANELS_DOCUMENTATION.md` for 'TimeGlidePanel' to reflect new backend persistence via the '/workday' API.
 
 ## 0.1.2 - 2025-12-30 (Frontend Modularization and Gitignore Updates)
 

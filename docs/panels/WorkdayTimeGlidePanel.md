@@ -1,6 +1,6 @@
 ---
 created: 2025-12-31T00:00
-updated: 2025-12-31T00:52
+updated: 2025-12-31T10:28
 ---
 # Workday Time Glide Panel
 
@@ -13,7 +13,7 @@ This panel provides a simple, reliable daily time clock for a single workday. It
 - Display planned time (when set) without tracking real-time usage.
 - Display worked time (authoritative) when clocked, with optional post-clock-out override.
 - Keep planned and actual modes fully separate in UI and math.
-- Persist workday state to local storage.
+- Persist workday state to the backend for cross-device sync.
 
 ## Features
 - [x] Planned start time input
@@ -23,7 +23,8 @@ This panel provides a simple, reliable daily time clock for a single workday. It
 - [x] "Clock out" button (single use, state locked)
 - [x] Manual worked minutes override (post-clock-out only, labeled)
 - [x] Progress bar with mode-appropriate labeling
-- [x] Persistence of settings to local storage
+- [x] Persistence of settings via backend `/workday` API
+- [x] Local storage used as fallback cache when backend is unavailable
 
 ## Enhancement Matrix
 
@@ -52,6 +53,17 @@ The panel primarily interacts with client-side state and local storage. Key data
 }
 ```
 
+Server payload (snake_case):
+```json
+{
+  "planned_start": "09:00",
+  "planned_minutes": 480,
+  "clock_in_at": "2025-01-15T09:00:00.000Z",
+  "clock_out_at": "2025-01-15T17:00:00.000Z",
+  "worked_minutes_override": 420
+}
+```
+
 Derived data (calculated client-side):
 - `plannedEndTime`: `plannedStart + plannedMinutes`
 - `workedMinutes`: derived from `clockInAt` → `clockOutAt` when present
@@ -59,7 +71,8 @@ Derived data (calculated client-side):
 
 ## Development Notes
 - The panel's UI elements and interactions are defined in `backend/frontend/index.html` (markup), styled by `backend/frontend/components.css` (`.day-controls`, `.workday-bar`, `.workday-progress`, `.workday-label`), and orchestrated by `backend/frontend/app.js` (workday state management, progress updates, event listeners).
-- Workday state is managed in `app.js` and persisted to local storage using `storage.js`.
+- Workday state is managed in `app.js` and persisted to the backend via `backend/frontend/api.js`.
+- Local storage `focusos-workday` is used as a fallback cache when `/workday` is unavailable.
 - Workday state transitions and UI state locking are centralized in `backend/frontend/workday-state.js`.
 - Progress bar updates are handled by a `setInterval` in `app.js` that calls `updateWorkdayProgress` and recalculates time values using `computeWorkdayMinutes`.
 - Event listeners for "Save plan", "Clock in", "Clock out", and "Apply adjustment" buttons are defined in `app.js`.
@@ -67,7 +80,14 @@ Derived data (calculated client-side):
 - Accessibility considerations include clear labeling for input fields and buttons, and ensuring the progress bar conveys its status effectively for all users.
 
 ## Debug Notes
-- Ensure local storage key `focusos-workday` remains consistent across sessions.
+- Ensure `/workday` is reachable on every device using the same backend host.
+- Confirm local storage key `focusos-workday` only acts as a fallback cache.
 - Confirm that manual worked overrides only apply after clock out and are labeled explicitly.
 - Verify that planned settings are ignored for calculations once clocking starts.
 - Check time zone handling if the application ever expands beyond local network use.
+
+## Failure Modes & Recovery
+
+- **Locked inputs across devices**: If planned hours or clock buttons are disabled unexpectedly, check `/workday` for a stale `clock_in_at` or `clock_out_at`. Reset the state to idle via `PUT /workday` with all fields null.
+- **Cross-device mismatch**: If one device shows running and another does not, verify both devices point to the same backend host and refresh to load the latest `/workday` state.
+- **Offline fallback drift**: If the backend is unreachable, local storage may diverge. Once connectivity returns, refresh the UI to reconcile with `/workday`.
