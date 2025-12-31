@@ -118,5 +118,8 @@ This document outlines the high-level action plan for migrating the "My Personal
     -   [ ] Enhanced data integrity measures and deterministic behavior.
 -   [ ] **Comprehensive Testing**: Continuously expand unit, integration, and end-to-end testing throughout the phase.
 -   [ ] **Deployment Documentation**: Create comprehensive documentation for deploying FocusOS with Docker Compose on a Linux host.
+-   [ ] **Documentation**:
+    -   [ ] Review `docs/panels/EnergyMixPanel.md` to ensure it reflects current duration display behavior (blank center label, aria-label).
+    -   [ ] Create `CONTRIBUTING.md` to document the development workflow (feature branch -> commit -> push -> PR to `dev` -> PR to `main`), including `gh` CLI usage.
 -   [ ] **UI/Component Refinements**:
     -   [ ] Standardize Time Formatting Across All Panels: Time durations (e.g., "2h 42m") are currently handled inconsistently across various panels. We need to define and enforce a single global formatting method to avoid duplication and inconsistency (e.g., "2h 42m minutes"). This includes removing redundant suffixes like "minutes" when already included in formatted strings, implementing a global time formatter utility (e.g., `formatDuration()`) to be reused in all badge and label components, updating all components that display time durations — such as EnergyPanel, HabitLogCard, SummaryViews, and any pop-up badges — to use this formatter, and ensuring accessibility via consistent `aria-label` support, e.g., `aria-label="2 hours 42 minutes"`.
