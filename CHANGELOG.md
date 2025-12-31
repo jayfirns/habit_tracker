@@ -1,6 +1,6 @@
 ---
 created: 2025-12-30T20:19
-updated: 2025-12-31T00:44
+updated: 2025-12-31T00:49
 ---
 # CHANGELOG.md - FocusOS Project Progress
 
@@ -52,8 +52,10 @@ This document tracks significant changes, features, and fixes implemented throug
 - **Docs**: Created `LOGIC_RULES.md` to document system-level behavioral rules for deletion and modification of tasks and goals.
 - **Feature**: Implemented soft-delete for goals by setting their status to "archived", preserving goal history.
 - **Feature**: Enhanced habit deletion to purge all associated local data (time logs, manual logs, and active timers) from the frontend state.
-- **Frontend**: Enhanced workday time calculation (`computeWorkdayMinutes`) to provide detailed metrics including mode (planned, clocked, empty), clock state (idle, running, completed), planned, worked, and remaining minutes.
+- **Frontend**: Enhanced workday time calculation (`computeWorkdayMinutes`) to provide detailed metrics including mode (planned, clocked, empty), clock state (idle, running, completed), planned, worked, and remaining minutes. `remainingMinutes` is now `null` when in a completed clock state.
+- **Frontend**: Introduced `workday-state.js` module for managing complex workday state transitions (plan, clock in, clock out, override worked minutes) and deriving UI state for controls.
 - **Tests**: Added comprehensive unit tests for `computeWorkdayMinutes` covering various clock states, planned time, and worked overrides.
+- **Tests**: Added dedicated unit tests for `workday-state.js` functions (`applyWorkdayEvent`, `getWorkdayUiState`) covering event handling, clock state logic, and UI control enablement/disablement.
 - **Tests**: Added `renderDashboard` tests to verify correct display of workday metrics in the `time-workday-pill` based on calculated mode.
 
 ### Changed

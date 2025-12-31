@@ -43,7 +43,7 @@ test("computes worked minutes from clock in/out and ignores planned start", () =
   assert.equal(metrics.mode, "clocked");
   assert.equal(metrics.clockState, "completed");
   assert.equal(metrics.workedMinutes, 150);
-  assert.equal(metrics.remainingMinutes, 330);
+  assert.equal(metrics.remainingMinutes, null);
 });
 
 test("uses running clock when clock out is missing", () => {
