@@ -29,7 +29,7 @@ This document tracks significant changes, features, and fixes implemented throug
 - **Docs**: Updated `TESTING_MANDATES.md` with new insights on UI interaction testing and refactoring safeguards.
 - Refactored `energyMixPanel.js` to improve testability, robustness, and empty state handling.
 - Time summary and habit cards now consume a single source of truth for focus minutes, including manual overrides and active timers.
-- Goals/SMART UI tightened with linked habits and reflection hooks.
+- Milestones/SMART UI tightened with linked habits and reflection hooks.
 - SMART goal form now sends the backend-compatible payload, surfaces clearer save errors, and the modal footprint is slightly smaller for easier use.
 
 ### Fixed

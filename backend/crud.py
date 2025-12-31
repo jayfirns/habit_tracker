@@ -117,76 +117,88 @@ def list_completions(db: Session, habit_id: int) -> List[models.Completion]:
     return db.scalars(statement).all()
 
 
-# Goal CRUD
-def list_goals(db: Session) -> List[models.Goal]:
+# Milestone CRUD
+def list_milestones(db: Session) -> List[models.Milestone]:
     stmt = (
-        select(models.Goal)
-        .where(or_(models.Goal.status.is_(None), models.Goal.status != "archived"))
-        .options(selectinload(models.Goal.habits))
+        select(models.Milestone)
+        .where(or_(models.Milestone.status.is_(None), models.Milestone.status != "archived"))
+        .options(selectinload(models.Milestone.habits))
     )
     return db.scalars(stmt).all()
 
 
-def get_goal(db: Session, goal_id: int) -> Optional[models.Goal]:
-    stmt = select(models.Goal).where(models.Goal.id == goal_id).options(selectinload(models.Goal.habits))
+def get_milestone(db: Session, milestone_id: int) -> Optional[models.Milestone]:
+    stmt = (
+        select(models.Milestone)
+        .where(models.Milestone.id == milestone_id)
+        .options(selectinload(models.Milestone.habits))
+    )
     return db.scalars(stmt).first()
 
 
-def create_goal(db: Session, goal_in: schemas.GoalCreate) -> models.Goal:
-    tags = [t.strip() for t in (goal_in.tags or []) if t.strip()]
-    goal = models.Goal(
-        title=goal_in.title.strip(),
-        description=goal_in.description,
-        outcome=goal_in.outcome,
-        scope=goal_in.scope,
-        start_date=goal_in.start_date.isoformat() if goal_in.start_date else None,
-        due_date=goal_in.due_date.isoformat() if goal_in.due_date else None,
+def create_milestone(db: Session, milestone_in: schemas.MilestoneCreate) -> models.Milestone:
+    tags = [t.strip() for t in (milestone_in.tags or []) if t.strip()]
+    milestone = models.Milestone(
+        title=milestone_in.title.strip(),
+        description=milestone_in.description,
+        outcome=milestone_in.outcome,
+        scope=milestone_in.scope,
+        start_date=milestone_in.start_date.isoformat() if milestone_in.start_date else None,
+        due_date=milestone_in.due_date.isoformat() if milestone_in.due_date else None,
         tags=tags,
-        status=goal_in.status or "active",
+        status=milestone_in.status or "active",
     )
 
-    if goal_in.habit_ids:
-        goal.habits = db.scalars(select(models.Habit).where(models.Habit.id.in_(goal_in.habit_ids))).all()
+    if milestone_in.habit_ids:
+        milestone.habits = db.scalars(
+            select(models.Habit).where(models.Habit.id.in_(milestone_in.habit_ids))
+        ).all()
 
-    db.add(goal)
+    db.add(milestone)
     db.commit()
-    db.refresh(goal)
-    return goal
+    db.refresh(milestone)
+    return milestone
 
 
-def update_goal(db: Session, goal_id: int, goal_in: schemas.GoalUpdate) -> Optional[models.Goal]:
-    goal = db.get(models.Goal, goal_id)
-    if goal is None:
+def update_milestone(
+    db: Session, milestone_id: int, milestone_in: schemas.MilestoneUpdate
+) -> Optional[models.Milestone]:
+    milestone = db.get(models.Milestone, milestone_id)
+    if milestone is None:
         return None
 
     for field in ["title", "description", "outcome", "scope"]:
-        value = getattr(goal_in, field, None)
+        value = getattr(milestone_in, field, None)
         if value is not None:
-            setattr(goal, field, value.strip() if isinstance(value, str) else value)
+            setattr(milestone, field, value.strip() if isinstance(value, str) else value)
 
-    if goal_in.start_date is not None:
-        goal.start_date = goal_in.start_date.isoformat() if goal_in.start_date else None
-    if goal_in.due_date is not None:
-        goal.due_date = goal_in.due_date.isoformat() if goal_in.due_date else None
-    if goal_in.tags is not None:
-        goal.tags = [t.strip() for t in goal_in.tags if t.strip()]
-    if goal_in.habit_ids is not None:
-        goal.habits = db.scalars(select(models.Habit).where(models.Habit.id.in_(goal_in.habit_ids))).all()
-    if goal_in.status is not None:
-        goal.status = goal_in.status
+    if milestone_in.start_date is not None:
+        milestone.start_date = (
+            milestone_in.start_date.isoformat() if milestone_in.start_date else None
+        )
+    if milestone_in.due_date is not None:
+        milestone.due_date = milestone_in.due_date.isoformat() if milestone_in.due_date else None
+    if milestone_in.tags is not None:
+        milestone.tags = [t.strip() for t in milestone_in.tags if t.strip()]
+    if milestone_in.habit_ids is not None:
+        milestone.habits = db.scalars(
+            select(models.Habit).where(models.Habit.id.in_(milestone_in.habit_ids))
+        ).all()
+    if milestone_in.status is not None:
+        milestone.status = milestone_in.status
 
-    db.add(goal)
+    db.add(milestone)
     db.commit()
-    db.refresh(goal)
-    return goal
+    db.refresh(milestone)
+    return milestone
 
 
-def delete_goal(db: Session, goal_id: int) -> bool:
-    goal = db.get(models.Goal, goal_id)
-    if goal is None:
+def delete_milestone(db: Session, milestone_id: int) -> bool:
+    milestone = db.get(models.Milestone, milestone_id)
+    if milestone is None:
         return False
-    goal.status = "archived"
-    db.add(goal)
+    milestone.status = "archived"
+    db.add(milestone)
     db.commit()
     return True
 
@@ -206,7 +218,7 @@ def create_reflection(db: Session, reflection_in: schemas.ReflectionCreate) -> m
         prompts=reflection_in.prompts,
         responses=reflection_in.responses,
         submitted_at=reflection_in.submitted_at.isoformat() if reflection_in.submitted_at else None,
-        goal_id=reflection_in.goal_id,
+        milestone_id=reflection_in.milestone_id,
         rating=reflection_in.rating,
     )
     db.add(reflection)

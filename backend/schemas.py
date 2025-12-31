@@ -8,7 +8,7 @@ class HabitBase(BaseModel):
     name: str = Field(..., min_length=1)
     category: str = Field(..., min_length=1)
     tags: List[str] = Field(default_factory=list)
-    goal_ids: List[int] = Field(default_factory=list)
+    milestone_ids: List[int] = Field(default_factory=list)
 
     @field_validator("name", "category")
     @classmethod
@@ -75,7 +75,7 @@ class HabitRead(HabitBase):
     model_config = ConfigDict(from_attributes=True)
 
 
-class GoalBase(BaseModel):
+class MilestoneBase(BaseModel):
     title: str = Field(..., min_length=1)
     description: Optional[str] = None
     outcome: Optional[str] = None
@@ -87,11 +87,11 @@ class GoalBase(BaseModel):
     status: str = Field(default="active")
 
 
-class GoalCreate(GoalBase):
+class MilestoneCreate(MilestoneBase):
     pass
 
 
-class GoalUpdate(BaseModel):
+class MilestoneUpdate(BaseModel):
     title: Optional[str] = None
     description: Optional[str] = None
     outcome: Optional[str] = None
@@ -103,7 +103,7 @@ class GoalUpdate(BaseModel):
     status: Optional[str] = None
 
 
-class GoalRead(GoalBase):
+class MilestoneRead(MilestoneBase):
     id: int
 
     model_config = ConfigDict(from_attributes=True)
@@ -115,7 +115,7 @@ class ReflectionBase(BaseModel):
     prompts: List[str] = Field(default_factory=list)
     responses: List[str] = Field(default_factory=list)
     submitted_at: Optional[datetime.datetime] = None
-    goal_id: Optional[int] = None
+    milestone_id: Optional[int] = None
     rating: Optional[str] = None
 
 

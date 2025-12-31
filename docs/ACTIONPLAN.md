@@ -12,6 +12,60 @@ This document outlines the high-level action plan for migrating the "My Personal
 
 ---
 
+## HABIT_ARCHITECTURE Review Gameplan (Testing-Mandated)
+
+**Objective**: Review `docs/HABIT_ARCHITECTURE.md` for alignment with current implementation, terminology usage, and future roadmap, while scoping required tests per `docs/TESTING_MANDATES.md`.
+
+**Steps**:
+-   **Baseline scan**: Summarize the current entity hierarchy (Habit, Completion, Milestone/Target, Reflection) and note deprecated terms (Goal, Task/To-Do).
+-   **Implementation alignment check**: Compare the architecture terms against actual code usage in `backend/models.py`, `backend/schemas.py`, and API routes; log mismatches or terminology drift.
+-   **Schema consistency review**: Verify any referenced optional fields (e.g., `target_count`, `metrics`, `scope`) against the current schema; flag missing fields as either TODOs or doc updates.
+-   **UI labeling audit**: Confirm the frontend/UI does not expose legacy terms (`goal`) or imply unimplemented entities (`task`, `todo`, `action`).
+-   **Test plan mapping (per TESTING_MANDATES)**:
+    -   Define UI logic tests for any label/term shifts or new UX toggles.
+    -   Add state management tests for new/updated fields and their propagation to views.
+    -   Cover edge/empty states (missing optional fields, empty completions).
+    -   Validate any globally exposed helpers if introduced (existence + repeatable behavior).
+-   **Deliverables**: A short discrepancy list, doc updates (if needed), and a TDD checklist for any new implementation work.
+
+**Initial Review Notes (Alignment Gaps)**:
+-   **Goal → Milestone rename**: Goal terminology has been replaced by Milestone across backend, API, tests, and UI to match architecture.
+-   **Reflection linking**: Reflection now links via `milestone_id` to align with Milestone as the target entity.
+-   **Task label in UI**: Time summary “Task” label updated to “Habit” to avoid implying a Task entity.
+-   **Habit optional fields**: `category`/`tags` exist; `target_count`, `metrics`, `scope` are not present in the schema yet.
+
+**TDD Follow-Ups (If Changes Proceed)**:
+-   **UI logic**: Tests for milestone insights and prompt copy added; extend if overlay flow changes are introduced.
+-   **State management**: Ensure milestone field changes propagate to dashboard counts, reflection linking, and habit coverage.
+-   **Edge/empty states**: Verify “no milestones/habits” and missing optional fields still render sane fallbacks.
+-   **Global exposure**: If any new helpers are added for renaming/formatting, test existence and repeated calls.
+
+---
+
+## Task Deletion Behavior Review (Testing-Mandated)
+
+**Objective**: Ensure task deletion is supported as a first-class workflow and aligned with `docs/LOGIC_RULES.md` plus `docs/TESTING_MANDATES.md`.
+
+**Steps**:
+-   **Rules alignment**: Confirm the delete flow permanently removes the Task, all completion records, and any in-memory state (timers/logs).
+-   **UX audit**: Review delete affordances and destructive styling (see `docs/DESIGN_GLOSSARY.md` DeleteButton note) for clarity and intent.
+-   **API + data checks**: Verify API and persistence behavior guarantee no orphaned completion records.
+-   **Test plan (per TESTING_MANDATES)**:
+    -   UI logic: delete action wiring, confirm prompt, and list refresh behavior.
+    -   State management: removal from UI state + timers/logs purge.
+    -   Edge/empty states: deleting last habit, deleting with no completions, deleting with active timer.
+    -   Integration: ensure persistence and local state stay in sync after deletion.
+-   **Deliverables**: Gap list, required test cases, and any doc updates needed.
+-   **Known gaps to resolve**:
+    -   Habit deletion does not explicitly clear milestone join rows; validate join cleanup or add cascade.
+    -   Milestone habit selection state is not purged when a habit is deleted.
+    -   API tests do not assert completion rows are removed from persistence.
+-   **Repeatable test runs**:
+    -   `python -m pytest`
+    -   `node --test backend/frontend/**/*.test.mjs`
+
+---
+
 ## Phase 1: Backend Core - Domain Model & Persistence Layer (API First)
 
 **Objective**: Establish the core data model and persistence mechanism, exposed via a basic API. This phase prioritizes getting the "one source of truth" operational and accessible, following the Domain Model Layer and Persistence Layer principles from `GEMINI.md`.
@@ -65,28 +119,28 @@ This document outlines the high-level action plan for migrating the "My Personal
 
 ## Phase 3: Advanced Features & Refinements
 
-**Objective**: Implement the more complex FocusOS functional and non-functional requirements, including hierarchical goals, time tracking, advanced representations, and privacy-first LLM integration. This phase will build out the remaining aspects of the Domain Model, Representation, and Interaction & Intent Layers.
+**Objective**: Implement the more complex FocusOS functional and non-functional requirements, including hierarchical milestones, time tracking, advanced representations, and privacy-first LLM integration. This phase will build out the remaining aspects of the Domain Model, Representation, and Interaction & Intent Layers.
 
 **Key Deliverables**:
--   Extended Domain Model and API for Goals, Subgoals, Relationships, and TimeEntries.
+-   Extended Domain Model and API for Milestones, Submilestones, Relationships, and TimeEntries.
 -   Advanced web views (Strategic, Tactical, Operational, Analytical).
 -   Robust time tracking and reflection mechanisms.
--   SMART goal enforcement and intention setting.
+-   SMART milestone enforcement and intention setting.
 -   Privacy-first LLM integration for coaching.
 -   Comprehensive testing suite.
 -   Deployment documentation.
 
 **Tasks**:
--   [ ] **Goals & Hierarchical Structure**:
-    -   [ ] Extend Domain Model and database schema for `Goal` entities and `Relationship` entities.
-    -   [ ] Develop API endpoints for managing goals, subgoals, and their hierarchical relationships.
-    -   [ ] Update frontend to display and manage hierarchical goals.
+-   [ ] **Milestones & Hierarchical Structure**:
+-   [ ] Extend Domain Model and database schema for `Milestone` entities and `Relationship` entities.
+-   [ ] Develop API endpoints for managing milestones, submilestones, and their hierarchical relationships.
+-   [ ] Update frontend to display and manage hierarchical milestones.
     -   [ ] Write tests (TDD).
 -   [ ] **Enhanced Time Tracking & Accountability**:
     -   [ ] Add `TimeEntry` entity to Domain Model.
     -   [x] Implement manual start/stop and post-hoc attribution of time to habits (front-end timers + overrides).
     -   [x] Develop frontend UI for workday glide bar, focus summaries, and manual overrides.
-    -   [ ] Implement backend logic to track goal time boundaries, completion percentages, and surface planned vs. actual effort/drift.
+-   [ ] Implement backend logic to track milestone time boundaries, completion percentages, and surface planned vs. actual effort/drift.
     -   [ ] Develop frontend UI for quarterly and EOY reflection prompts.
     -   [ ] Write tests (TDD).
 -   [ ] **Advanced Representation Layer (Views)**:
@@ -94,10 +148,10 @@ This document outlines the high-level action plan for migrating the "My Personal
     -   [ ] Integrate web-based charting libraries (e.g., Chart.js, D3.js) and calendar components (e.g., FullCalendar.js) into the frontend.
     -   [ ] Develop dedicated frontend views for each representation.
     -   [ ] Write tests (TDD).
--   [ ] **SMART Goal Enforcement & Intentions**:
-    -   [ ] Implement robust validation logic in the backend (Interaction & Intent Layer) for SMART goal criteria.
-    -   [x] Develop frontend UI to guide users through SMART goal creation and intention setting, with linked habits.
-    -   [ ] Implement backend and frontend logic for displaying contextual banners/inspirational messages based on goal dates.
+-   [ ] **SMART Milestone Enforcement & Intentions**:
+-   [ ] Implement robust validation logic in the backend (Interaction & Intent Layer) for SMART milestone criteria.
+-   [x] Develop frontend UI to guide users through SMART milestone creation and intention setting, with linked habits.
+-   [ ] Implement backend and frontend logic for displaying contextual banners/inspirational messages based on milestone dates.
     -   [ ] Write tests (TDD).
 -   [ ] **Privacy-First LLM Integration for Coaching**:
     -   [ ] Research options for small/local/on-device LLMs or limited-context external LLM integration.

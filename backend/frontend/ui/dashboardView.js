@@ -7,14 +7,14 @@ export function createDashboardView(elements, helpers) {
     periodActions,
     habitCount,
     streakSummaryCard,
-    goalCountEl,
-    goalHighlightEl,
-    goalHabitsLinkedEl,
-    goalHabitCoverageEl,
-    goalDueCountEl,
-    goalDueLabelEl,
-    goalScopeHighlightEl,
-    goalNextStepEl,
+    milestoneCountEl,
+    milestoneHighlightEl,
+    milestoneHabitsLinkedEl,
+    milestoneHabitCoverageEl,
+    milestoneDueCountEl,
+    milestoneDueLabelEl,
+    milestoneScopeHighlightEl,
+    milestoneNextStepEl,
     chartTotalPill,
     chartCenterValue,
     chartCenterLabel,
@@ -51,7 +51,7 @@ export function createDashboardView(elements, helpers) {
     { formatMinutes },
   );
 
-  function renderDashboard({ now, habits, goals, reflections, workday, timeLogs, activeTimers }) {
+  function renderDashboard({ now, habits, milestones, reflections, workday, timeLogs, activeTimers }) {
     if (!periodLabel || !periodPrompt || !periodActions || !habitCount || !streakSummaryCard)
       return;
 
@@ -70,76 +70,78 @@ export function createDashboardView(elements, helpers) {
       li.textContent = item;
       periodActions.appendChild(li);
     });
-    periodPrompt.textContent = `How do your habits today support your Q${quarter} goals?`;
+    periodPrompt.textContent = `How do your habits today support your Q${quarter} milestones?`;
 
     habitCount.textContent = habits.length;
     streakSummaryCard.textContent = `${habits.reduce((sum, h) => sum + (h.streak || 0), 0)} streak days total`;
-    renderGoalInsights(goals, habits, reflections);
+    renderMilestoneInsights(milestones, habits, reflections);
     energyMixPanel.render({ habits, timeLogs, activeTimers, now });
     renderTimeSummary({ habits, workday, timeLogs, activeTimers });
   }
 
-  function renderGoalInsights(goals = [], habits = [], reflections = []) {
-    if (!goalCountEl) return;
+  function renderMilestoneInsights(milestones = [], habits = [], reflections = []) {
+    if (!milestoneCountEl) return;
     const today = new Date();
-    const activeGoals = goals.filter((g) => (g.status || "active").toLowerCase() !== "complete");
-    const completedGoals = goals.length - activeGoals.length;
-    goalCountEl.textContent = activeGoals.length;
+    const activeMilestones = milestones.filter(
+      (milestone) => (milestone.status || "active").toLowerCase() !== "complete",
+    );
+    const completedMilestones = milestones.length - activeMilestones.length;
+    milestoneCountEl.textContent = activeMilestones.length;
 
-    const scopeCounts = activeGoals.reduce((acc, goal) => {
-      acc[goal.scope] = (acc[goal.scope] || 0) + 1;
+    const scopeCounts = activeMilestones.reduce((acc, milestone) => {
+      acc[milestone.scope] = (acc[milestone.scope] || 0) + 1;
       return acc;
     }, {});
     const topScope = Object.entries(scopeCounts).sort((a, b) => b[1] - a[1])[0];
-    if (goalScopeHighlightEl) {
-      goalScopeHighlightEl.textContent = topScope
-        ? `${topScope[1]} ${topScope[0]} goals`
+    if (milestoneScopeHighlightEl) {
+      milestoneScopeHighlightEl.textContent = topScope
+        ? `${topScope[1]} ${topScope[0]} milestones`
         : "Quarter focus";
     }
 
     const linkedHabitIds = new Set();
-    goals.forEach((goal) => (goal.habit_ids || []).forEach((id) => linkedHabitIds.add(id)));
-    if (goalHabitsLinkedEl) {
-      goalHabitsLinkedEl.textContent = linkedHabitIds.size;
+    milestones.forEach((milestone) => (milestone.habit_ids || []).forEach((id) => linkedHabitIds.add(id)));
+    if (milestoneHabitsLinkedEl) {
+      milestoneHabitsLinkedEl.textContent = linkedHabitIds.size;
     }
     const coverage = habits.length ? Math.round((linkedHabitIds.size / habits.length) * 100) : 0;
-    if (goalHabitCoverageEl) {
-      goalHabitCoverageEl.textContent = habits.length ? `${coverage}% coverage` : "No habits yet";
+    if (milestoneHabitCoverageEl) {
+      milestoneHabitCoverageEl.textContent = habits.length ? `${coverage}% coverage` : "No habits yet";
     }
 
-    const dueSoon = activeGoals
-      .map((goal) => ({
-        ...goal,
-        dueDate: goal.due_date ? new Date(goal.due_date) : null,
+    const dueSoon = activeMilestones
+      .map((milestone) => ({
+        ...milestone,
+        dueDate: milestone.due_date ? new Date(milestone.due_date) : null,
       }))
-      .filter((goal) => goal.dueDate && !Number.isNaN(goal.dueDate.getTime()))
+      .filter((milestone) => milestone.dueDate && !Number.isNaN(milestone.dueDate.getTime()))
       .sort((a, b) => a.dueDate - b.dueDate);
     const windowDate = new Date();
     windowDate.setDate(windowDate.getDate() + 30);
-    const dueThisMonth = dueSoon.filter((goal) => goal.dueDate <= windowDate);
-    if (goalDueCountEl) {
-      goalDueCountEl.textContent = dueThisMonth.length;
+    const dueThisMonth = dueSoon.filter((milestone) => milestone.dueDate <= windowDate);
+    if (milestoneDueCountEl) {
+      milestoneDueCountEl.textContent = dueThisMonth.length;
     }
-    if (goalDueLabelEl) {
+    if (milestoneDueLabelEl) {
       if (dueThisMonth.length) {
         const nearest = dueThisMonth[0];
         const daysLeft = Math.max(0, Math.round((nearest.dueDate - today) / (1000 * 60 * 60 * 24)));
-        goalDueLabelEl.textContent = `${nearest.title} · ${formatDate(nearest.due_date)} (${daysLeft}d)`;
+        milestoneDueLabelEl.textContent = `${nearest.title} · ${formatDate(nearest.due_date)} (${daysLeft}d)`;
       } else if (dueSoon.length) {
-        goalDueLabelEl.textContent = `${dueSoon.length} with dates · next ${formatDate(dueSoon[0].due_date)}`;
+        milestoneDueLabelEl.textContent = `${dueSoon.length} with dates · next ${formatDate(dueSoon[0].due_date)}`;
       } else {
-        goalDueLabelEl.textContent = "No deadlines";
+        milestoneDueLabelEl.textContent = "No deadlines";
       }
     }
 
-    if (goalHighlightEl) {
-      if (activeGoals.length) {
-        const measurable = activeGoals.filter((goal) => goal.outcome).length;
-        goalHighlightEl.textContent = `${measurable}/${activeGoals.length} have measurable outcomes · ${completedGoals} completed`;
-      } else if (goals.length) {
-        goalHighlightEl.textContent = `${goals.length} archived or complete`;
+    if (milestoneHighlightEl) {
+      if (activeMilestones.length) {
+        const measurable = activeMilestones.filter((milestone) => milestone.outcome).length;
+        milestoneHighlightEl.textContent = `${measurable}/${activeMilestones.length} have measurable outcomes · ${completedMilestones} completed`;
+      } else if (milestones.length) {
+        milestoneHighlightEl.textContent = `${milestones.length} archived or complete`;
       } else {
-        goalHighlightEl.textContent = "Set your first target";
+        milestoneHighlightEl.textContent = "Set your first target";
       }
     }
 
@@ -152,15 +154,15 @@ export function createDashboardView(elements, helpers) {
             (new Date(a.submitted_at || a.period_label).getTime() || 0),
         )[0] || null;
 
-    if (goalNextStepEl) {
+    if (milestoneNextStepEl) {
       if (latestReflection) {
         const detail = latestReflection.responses?.[0] || "Keep momentum.";
-        goalNextStepEl.textContent = `Last reflection ${latestReflection.period_label}: ${detail}`;
+        milestoneNextStepEl.textContent = `Last reflection ${latestReflection.period_label}: ${detail}`;
       } else if (habits.length) {
         const topHabit = habits.slice().sort((a, b) => (b.streak || 0) - (a.streak || 0))[0];
-        goalNextStepEl.textContent = `Link ${topHabit.name} to a goal to lock intent.`;
+        milestoneNextStepEl.textContent = `Link ${topHabit.name} to a milestone to lock intent.`;
       } else {
-        goalNextStepEl.textContent = "Use SMART to define one measurable outcome this week.";
+        milestoneNextStepEl.textContent = "Use SMART to define one measurable outcome this week.";
       }
     }
   }
@@ -240,7 +242,7 @@ export function createDashboardView(elements, helpers) {
         .join("");
       const habitsHeader = `
         <div class="time-row header">
-          <div class="time-cell" style="grid-column: span 2;">Task</div>
+          <div class="time-cell" style="grid-column: span 2;">Habit</div>
           <div class="time-cell">Focused</div>
           <div class="time-cell" style="grid-column: span 2;">Closure note</div>
         </div>`;

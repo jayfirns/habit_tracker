@@ -122,12 +122,12 @@ p {
   gap: 8px;
 }
 
-.goal-list {
+.milestone-list {
   display: grid;
   gap: 8px;
 }
 
-.goal-actions {
+.milestone-actions {
   display: flex;
   gap: 6px;
 }
@@ -169,7 +169,7 @@ p {
   margin-top: 12px;
 }
 
-.goal-list .pill {
+.milestone-list .pill {
   margin: 0;
 }
 

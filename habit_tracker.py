@@ -482,7 +482,7 @@ class HabitTrackerApp:
         This method clears any existing progress bars in the progress frame and calculates the 
         progress for each habit by fetching the total number of completions and today's completions 
         from the database. A progress bar is created for each habit, displaying its name, category, 
-        and progress toward a predefined goal of 30 completions (used for demonstration purposes). 
+        and progress toward a predefined milestone target of 30 completions (used for demonstration purposes). 
         Progress is capped at a maximum of 100%.
 
         The progress bars also show the daily completions count to provide a quick view of the 
@@ -510,9 +510,11 @@ class HabitTrackerApp:
             logging.debug("Calculating total completions")
             logging.info(f"update_progress_bars: total_completions = {total_completions}")
 
-            # For demonstration, set a goal of 30 completions
-            goal = 30
-            progress = int((total_completions / goal) * 100) if goal else 0
+            # For demonstration, set a milestone target of 30 completions
+            milestone_target = 30
+            progress = (
+                int((total_completions / milestone_target) * 100) if milestone_target else 0
+            )
             progress = min(progress, 100)  # Cap at 100%
 
             # Display habit name, category, daily completions, and progress bar

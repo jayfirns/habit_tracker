@@ -3,7 +3,7 @@
 ## Purpose
 Dashboard panel that translates logged habit sessions into quick visual insight. It highlights how time is split across categories and habits, helps users spot imbalance (e.g., over-indexing on one category), and lets users switch chart modes without leaving the main dashboard.
 
-## Goals
+## Objectives
 - Visualize time allocation by category (pie chart) with a neutral empty state.
 - Tabs switch between chart modes (pie, bars, grouped) without reloading data.
 - Show bar charts for habit-level time logs (per-habit aggregation).

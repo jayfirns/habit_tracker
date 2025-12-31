@@ -13,12 +13,12 @@ import schemas  # noqa: E402
 from database import Base  # noqa: E402
 import models  # noqa: E402
 from main import (  # noqa: E402
-    create_goal,
+    create_milestone,
     create_habit,
     create_reflection,
-    delete_goal,
-    list_goals,
-    update_goal,
+    delete_milestone,
+    list_milestones,
+    update_milestone,
 )
 
 TEST_DATABASE_URL = "sqlite:///:memory:"
@@ -40,10 +40,10 @@ def db_session():
     session.close()
 
 
-def test_create_goal_with_habit_link(db_session):
+def test_create_milestone_with_habit_link(db_session):
     habit = create_habit(schemas.HabitCreate(name="Write", category="Work"), db_session)
-    goal = create_goal(
-        schemas.GoalCreate(
+    milestone = create_milestone(
+        schemas.MilestoneCreate(
             title="Publish Article",
             description="Draft and publish",
             outcome="Article live",
@@ -57,20 +57,20 @@ def test_create_goal_with_habit_link(db_session):
         db_session,
     )
 
-    assert goal.id is not None
-    assert goal.scope == "quarter"
-    assert goal.tags == ["writing"]
-    assert goal.habits[0].id == habit.id
-    assert goal.status == "active"
+    assert milestone.id is not None
+    assert milestone.scope == "quarter"
+    assert milestone.tags == ["writing"]
+    assert milestone.habits[0].id == habit.id
+    assert milestone.status == "active"
 
-    goals = list_goals(db_session)
-    assert len(goals) == 1
+    milestones = list_milestones(db_session)
+    assert len(milestones) == 1
 
 
-def test_reflection_with_goal_link(db_session):
+def test_reflection_with_milestone_link(db_session):
     habit = create_habit(schemas.HabitCreate(name="Plan", category="Work"), db_session)
-    goal = create_goal(
-        schemas.GoalCreate(
+    milestone = create_milestone(
+        schemas.MilestoneCreate(
             title="Plan Q1",
             scope="quarter",
             habit_ids=[habit.id],
@@ -84,20 +84,20 @@ def test_reflection_with_goal_link(db_session):
             period_label="2025-01",
             responses=["On track"],
             prompts=["Status"],
-            goal_id=goal.id,
+            milestone_id=milestone.id,
             rating="on_track",
         ),
         db_session,
     )
 
     assert reflection.id is not None
-    assert reflection.goal_id == goal.id
+    assert reflection.milestone_id == milestone.id
     assert reflection.rating == "on_track"
 
 
-def test_delete_active_goal_soft_archives_and_hides_from_list(db_session):
-    goal = create_goal(
-        schemas.GoalCreate(
+def test_delete_active_milestone_soft_archives_and_hides_from_list(db_session):
+    milestone = create_milestone(
+        schemas.MilestoneCreate(
             title="Ship Release",
             scope="quarter",
             status="active",
@@ -105,18 +105,18 @@ def test_delete_active_goal_soft_archives_and_hides_from_list(db_session):
         db_session,
     )
 
-    response = delete_goal(goal.id, db_session)
+    response = delete_milestone(milestone.id, db_session)
     assert response.status_code == 204
 
-    assert list_goals(db_session) == []
-    archived = db_session.get(models.Goal, goal.id)
+    assert list_milestones(db_session) == []
+    archived = db_session.get(models.Milestone, milestone.id)
     assert archived is not None
     assert archived.status == "archived"
 
 
-def test_delete_completed_goal_soft_archives_and_hides_from_list(db_session):
-    goal = create_goal(
-        schemas.GoalCreate(
+def test_delete_completed_milestone_soft_archives_and_hides_from_list(db_session):
+    milestone = create_milestone(
+        schemas.MilestoneCreate(
             title="Close OKRs",
             scope="quarter",
             status="complete",
@@ -124,18 +124,18 @@ def test_delete_completed_goal_soft_archives_and_hides_from_list(db_session):
         db_session,
     )
 
-    response = delete_goal(goal.id, db_session)
+    response = delete_milestone(milestone.id, db_session)
     assert response.status_code == 204
 
-    assert list_goals(db_session) == []
-    archived = db_session.get(models.Goal, goal.id)
+    assert list_milestones(db_session) == []
+    archived = db_session.get(models.Milestone, milestone.id)
     assert archived is not None
     assert archived.status == "archived"
 
 
-def test_modify_completed_goal_allows_status_reversal(db_session):
-    goal = create_goal(
-        schemas.GoalCreate(
+def test_modify_completed_milestone_allows_status_reversal(db_session):
+    milestone = create_milestone(
+        schemas.MilestoneCreate(
             title="Write Retrospective",
             scope="quarter",
             status="complete",
@@ -143,14 +143,14 @@ def test_modify_completed_goal_allows_status_reversal(db_session):
         db_session,
     )
 
-    updated = update_goal(
-        goal.id,
-        schemas.GoalUpdate(title="Rewrite Retrospective", status="active"),
+    updated = update_milestone(
+        milestone.id,
+        schemas.MilestoneUpdate(title="Rewrite Retrospective", status="active"),
         db_session,
     )
 
     assert updated.title == "Rewrite Retrospective"
     assert updated.status == "active"
-    goals = list_goals(db_session)
-    assert len(goals) == 1
-    assert goals[0].id == goal.id
+    milestones = list_milestones(db_session)
+    assert len(milestones) == 1
+    assert milestones[0].id == milestone.id

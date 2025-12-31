@@ -1,21 +1,23 @@
-import sys
 import os
+import sys
 from datetime import date, timedelta
 
 import pytest
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, select
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import StaticPool
 
 # Ensure the backend package is importable when running tests from this file
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
+import models  # noqa: E402
 import schemas  # noqa: E402
 from fastapi import HTTPException  # noqa: E402
 from database import Base  # noqa: E402
 from main import (  # noqa: E402
     complete_habit,
     create_habit,
+    create_milestone,
     delete_habit,
     get_habit,
     list_completions,
@@ -102,6 +104,63 @@ def test_delete_completed_habit_clears_completions(db_session):
     assert list_habits(db_session) == []
     with pytest.raises(HTTPException) as excinfo:
         get_habit(habit.id, db_session)
+    assert excinfo.value.status_code == 404
+
+
+def test_delete_habit_removes_completions_from_db(db_session):
+    habit = create_habit(schemas.HabitCreate(name="Stretch", category="Health"), db_session)
+    complete_habit(
+        habit.id,
+        schemas.CompletionCreate(note="Evening stretch", date=date.today()),
+        db_session,
+    )
+
+    completions_before = (
+        db_session.query(models.Completion).filter_by(habit_id=habit.id).count()
+    )
+    assert completions_before == 1
+
+    response = delete_habit(habit.id, db_session)
+    assert response.status_code == 204
+
+    completions_after = (
+        db_session.query(models.Completion).filter_by(habit_id=habit.id).count()
+    )
+    assert completions_after == 0
+
+
+def test_delete_habit_clears_milestone_links(db_session):
+    habit = create_habit(schemas.HabitCreate(name="Write", category="Work"), db_session)
+    milestone = create_milestone(
+        schemas.MilestoneCreate(
+            title="Ship Draft",
+            scope="quarter",
+            habit_ids=[habit.id],
+        ),
+        db_session,
+    )
+
+    links_before = db_session.execute(
+        select(models.habit_milestone_table).where(
+            models.habit_milestone_table.c.habit_id == habit.id
+        )
+    ).all()
+    assert len(links_before) == 1
+
+    response = delete_habit(habit.id, db_session)
+    assert response.status_code == 204
+
+    links_after = db_session.execute(
+        select(models.habit_milestone_table).where(
+            models.habit_milestone_table.c.habit_id == habit.id
+        )
+    ).all()
+    assert links_after == []
+
+
+def test_delete_nonexistent_habit_returns_404(db_session):
+    with pytest.raises(HTTPException) as excinfo:
+        delete_habit(999, db_session)
     assert excinfo.value.status_code == 404
 
 

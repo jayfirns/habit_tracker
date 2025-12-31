@@ -2,7 +2,7 @@
 
 ## Purpose
 
-This document defines the conceptual hierarchy and naming semantics of the `habit_tracker` system. It is intended to clarify the differences between core entities (such as Habit, Goal, Task, and To-Do), eliminate ambiguity in naming and architecture, and serve as a long-term reference for maintainability and user experience consistency.
+This document defines the conceptual hierarchy and naming semantics of the `habit_tracker` system. It is intended to clarify the differences between core entities (such as Habit, Milestone, Task, and To-Do), eliminate ambiguity in naming and architecture, and serve as a long-term reference for maintainability and user experience consistency.
 
 This is a design philosophy document. It guides naming, relationships, and system boundaries, but does not describe implementation logic (see `LOGIC_RULES.md` for that).
 
@@ -12,7 +12,7 @@ This is a design philosophy document. It guides naming, relationships, and syste
 
 > **Everything begins and ends with the habit.**
 
-The system does **not** treat "goals" as primary entities. Rather, **habits are the atomic unit of transformation**, and all supporting concepts exist to help structure, measure, or encourage them.
+The system does **not** treat legacy goals as primary entities. Rather, **habits are the atomic unit of transformation**, and all supporting concepts exist to help structure, measure, or encourage them. Milestones replace the legacy Goal concept and serve as structured targets tied to habits.
 
 ---
 
@@ -31,15 +31,14 @@ The system does **not** treat "goals" as primary entities. Rather, **habits are 
 - Optional fields (TBD via schema updates):
   - `target_count`: for milestone-based habits (e.g., "Do 50 workouts")
   - `scope`: time-bound context (e.g., `month`, `quarter`, `year`)
-  - `metrics`: daily, weekly, or interval-based frequency goal
+  - `metrics`: daily, weekly, or interval-based frequency target
   - `category`, `tags`, etc.
 
-### 3. **Milestone / Target (Optional Substructure)**
+### 3. **Milestone / Target (Supporting Entity)**
 
 - A milestone is a declarative **target** associated with a Habit.
 - May include due dates, outcome criteria, or numeric thresholds.
-- Future implementation may re-use former “Goal” schema to represent this (renamed).
-- Can be used to track progress against stretch goals (e.g., "Run 100 miles in 30 days").
+- Can be used to track progress against stretch targets (e.g., "Run 100 miles in 30 days").
 
 ### 4. **Completion (Event Record)**
 
@@ -62,11 +61,10 @@ The system does **not** treat "goals" as primary entities. Rather, **habits are 
 
 ## Retired Terms
 
-### ❌ Goal (Deprecated)
+### ❌ Goal (Legacy Term)
 
 - Formerly a standalone model with title, outcome, due_date, etc.
-- Redundant with enriched Habits and Milestones.
-- Removed to simplify data model and eliminate semantic confusion.
+- Replaced by Milestones to simplify the data model and eliminate semantic confusion.
 
 ## Planned Feature
 
@@ -85,8 +83,8 @@ The system does **not** treat "goals" as primary entities. Rather, **habits are 
 |------|-------------|-------|
 | `habit` | ✅ core entity | Central object; everything builds on this |
 | `completion` | ✅ core entity | Tied to habit_id; stores date, note |
-| `milestone`, `target`, `challenge` | 🚧 optional future entities | May replace deprecated Goal |
-| `goal` | ❌ deprecated | Do not use |
+| `milestone`, `target`, `challenge` | ✅ supporting entities | Milestone is implemented; synonyms optional |
+| `goal` | ❌ legacy | Do not use |
 | `task`, `todo`, `action` | 🕓 not implemented | Do not imply existence via UI/labels |
 
 ---

@@ -26,34 +26,34 @@ const habitCount = document.querySelector("#habit-count");
 const streakSummaryCard = document.querySelector("#streak-summary-card");
 const periodCta = document.querySelector("#period-cta");
 const reflectionCta = document.querySelector("#reflection-cta");
-const closeGoalBtn = document.querySelector("#close-goal");
-const goalOverlay = document.querySelector("#goal-overlay");
-const goalForm = document.querySelector("#goal-form");
-const goalSpecificTitleInput = document.querySelector("#goal-specific-title");
-const goalSpecificDescriptionInput = document.querySelector("#goal-specific-description");
-const goalMeasurableInput = document.querySelector("#goal-measurable");
-const goalAchievableInput = document.querySelector("#goal-achievable");
-const goalRelevantInput = document.querySelector("#goal-relevant");
-const goalDueInput = document.querySelector("#goal-due");
-const goalTagsInput = document.querySelector("#goal-tags");
-const goalFormError = document.querySelector("#goal-form-error");
+const closeMilestoneBtn = document.querySelector("#close-milestone");
+const milestoneOverlay = document.querySelector("#milestone-overlay");
+const milestoneForm = document.querySelector("#milestone-form");
+const milestoneSpecificTitleInput = document.querySelector("#milestone-specific-title");
+const milestoneSpecificDescriptionInput = document.querySelector("#milestone-specific-description");
+const milestoneMeasurableInput = document.querySelector("#milestone-measurable");
+const milestoneAchievableInput = document.querySelector("#milestone-achievable");
+const milestoneRelevantInput = document.querySelector("#milestone-relevant");
+const milestoneDueInput = document.querySelector("#milestone-due");
+const milestoneTagsInput = document.querySelector("#milestone-tags");
+const milestoneFormError = document.querySelector("#milestone-form-error");
 const openReflectionBtn = document.querySelector("#open-reflection");
 const closeReflectionBtn = document.querySelector("#close-reflection");
 const reflectionOverlay = document.querySelector("#reflection-overlay");
 const reflectionForm = document.querySelector("#reflection-form");
-const goalsList = document.querySelector("#goals-list");
-const newGoalBtn = document.querySelector("#new-goal");
+const milestonesList = document.querySelector("#milestones-list");
+const newMilestoneBtn = document.querySelector("#new-milestone");
 const themeButtons = document.querySelectorAll("button[data-theme]");
 const optionsToggle = document.querySelector("#options-toggle");
 const optionsPanel = document.querySelector("#options-panel");
-const goalCountEl = document.querySelector("#goal-count");
-const goalHighlightEl = document.querySelector("#goal-highlight");
-const goalHabitsLinkedEl = document.querySelector("#goal-habits-linked");
-const goalHabitCoverageEl = document.querySelector("#goal-habit-coverage");
-const goalDueCountEl = document.querySelector("#goal-due-count");
-const goalDueLabelEl = document.querySelector("#goal-due-label");
-const goalScopeHighlightEl = document.querySelector("#goal-scope-highlight");
-const goalNextStepEl = document.querySelector("#goal-next-step");
+const milestoneCountEl = document.querySelector("#milestone-count");
+const milestoneHighlightEl = document.querySelector("#milestone-highlight");
+const milestoneHabitsLinkedEl = document.querySelector("#milestone-habits-linked");
+const milestoneHabitCoverageEl = document.querySelector("#milestone-habit-coverage");
+const milestoneDueCountEl = document.querySelector("#milestone-due-count");
+const milestoneDueLabelEl = document.querySelector("#milestone-due-label");
+const milestoneScopeHighlightEl = document.querySelector("#milestone-scope-highlight");
+const milestoneNextStepEl = document.querySelector("#milestone-next-step");
 const chartTotalPill = document.querySelector("#chart-total-pill");
 const chartCenterValue = document.querySelector("#chart-center-value");
 const chartCenterLabel = document.querySelector("#chart-center-label");
@@ -61,11 +61,11 @@ const categoryChart = document.querySelector("#category-chart");
 const categoryLegend = document.querySelector("#category-legend");
 const energyTabs = document.querySelector("#energy-tabs");
 const energyValueToggle = document.querySelector("#energy-value-toggle");
-const goalHabitPicker = document.querySelector("#goal-habit-picker");
-const goalHabitChips = document.querySelector("#goal-habit-chips");
-const goalDashboardSection = document.querySelector("#goal-dashboard");
-const goalHomeSlot = document.querySelector("#goal-home-slot");
-const goalManagerSlot = document.querySelector("#goal-manager-slot");
+const milestoneHabitPicker = document.querySelector("#milestone-habit-picker");
+const milestoneHabitChips = document.querySelector("#milestone-habit-chips");
+const milestoneDashboardSection = document.querySelector("#milestone-dashboard");
+const milestoneHomeSlot = document.querySelector("#milestone-home-slot");
+const milestoneManagerSlot = document.querySelector("#milestone-manager-slot");
 const hero = document.querySelector(".hero");
 const workdayStartInput = document.querySelector("#workday-start");
 const workdayHoursInput = document.querySelector("#workday-hours");
@@ -84,11 +84,11 @@ const state = {
   habits: [],
   editingId: null,
   filterTag: null,
-  goals: [],
+  milestones: [],
   reflections: [],
-  editingGoalId: null,
-  editingGoalScope: "quarter",
-  goalHabitSelection: new Set(),
+  editingMilestoneId: null,
+  editingMilestoneScope: "quarter",
+  milestoneHabitSelection: new Set(),
   timeLogs: {},
   manualLogs: {},
   workday: {
@@ -109,14 +109,14 @@ const dashboardView = createDashboardView(
     periodActions,
     habitCount,
     streakSummaryCard,
-    goalCountEl,
-    goalHighlightEl,
-    goalHabitsLinkedEl,
-    goalHabitCoverageEl,
-    goalDueCountEl,
-    goalDueLabelEl,
-    goalScopeHighlightEl,
-    goalNextStepEl,
+    milestoneCountEl,
+    milestoneHighlightEl,
+    milestoneHabitsLinkedEl,
+    milestoneHabitCoverageEl,
+    milestoneDueCountEl,
+    milestoneDueLabelEl,
+    milestoneScopeHighlightEl,
+    milestoneNextStepEl,
     chartTotalPill,
     chartCenterValue,
     chartCenterLabel,
@@ -212,14 +212,14 @@ async function loadHabits() {
   }
 }
 
-async function loadGoals() {
+async function loadMilestones() {
   try {
-    const goals = await apiClient.listGoals();
-    state.goals = goals;
-    renderGoals();
+    const milestones = await apiClient.listMilestones();
+    state.milestones = milestones;
+    renderMilestones();
     renderDashboard();
   } catch (err) {
-    console.error("Failed to load goals", err);
+    console.error("Failed to load milestones", err);
   }
 }
 
@@ -417,36 +417,36 @@ function renderDashboard() {
   dashboardView.renderDashboard({
     now: new Date(),
     habits: state.habits,
-    goals: state.goals,
+    milestones: state.milestones,
     reflections: state.reflections,
     workday: state.workday,
     timeLogs: state.timeLogs,
     activeTimers: state.activeTimers,
   });
-  updateGoalPriority(state.goals, state.reflections);
+  updateMilestonePriority(state.milestones, state.reflections);
 }
 
-function updateGoalPriority(goals = [], reflections = []) {
-  if (!goalDashboardSection || !goalHomeSlot || !goalManagerSlot) return;
-  const quarterGoals = goals.filter((goal) => (goal.scope || "").toLowerCase() === "quarter");
-  const activeQuarterGoals = quarterGoals.filter(
-    (goal) => (goal.status || "active").toLowerCase() !== "complete",
+function updateMilestonePriority(milestones = [], reflections = []) {
+  if (!milestoneDashboardSection || !milestoneHomeSlot || !milestoneManagerSlot) return;
+  const quarterMilestones = milestones.filter((milestone) => (milestone.scope || "").toLowerCase() === "quarter");
+  const activeQuarterMilestones = quarterMilestones.filter(
+    (milestone) => (milestone.status || "active").toLowerCase() !== "complete",
   );
   const hasQuarterReflection = reflections.some(
     (reflection) => (reflection.reflection_type || "").toLowerCase() === "quarter",
   );
   const needsPriority =
-    activeQuarterGoals.length > 0 || quarterGoals.length === 0 || !hasQuarterReflection;
-  const target = needsPriority ? goalHomeSlot : goalManagerSlot;
-  if (target && goalDashboardSection.parentElement !== target) {
-    target.appendChild(goalDashboardSection);
+    activeQuarterMilestones.length > 0 || quarterMilestones.length === 0 || !hasQuarterReflection;
+  const target = needsPriority ? milestoneHomeSlot : milestoneManagerSlot;
+  if (target && milestoneDashboardSection.parentElement !== target) {
+    target.appendChild(milestoneDashboardSection);
   }
-  goalDashboardSection.classList.toggle("demoted", !needsPriority);
+  milestoneDashboardSection.classList.toggle("demoted", !needsPriority);
   if (hero) {
     hero.classList.toggle("hero--single", !needsPriority);
   }
-  if (goalHomeSlot) {
-    goalHomeSlot.hidden = !needsPriority;
+  if (milestoneHomeSlot) {
+    milestoneHomeSlot.hidden = !needsPriority;
   }
 }
 
@@ -629,7 +629,7 @@ loadWorkdayConfig();
 loadManualLogs();
 loadActiveTimers();
 loadHabits();
-loadGoals();
+loadMilestones();
 loadReflections();
 initThemePicker();
 initOptionsMenu();
@@ -645,45 +645,45 @@ function closeOverlay(el) {
   el.hidden = true;
 }
 
-function setGoalFormError(message = "") {
-  if (!goalFormError) return;
+function setMilestoneFormError(message = "") {
+  if (!milestoneFormError) return;
   if (message) {
-    goalFormError.textContent = message;
-    goalFormError.hidden = false;
+    milestoneFormError.textContent = message;
+    milestoneFormError.hidden = false;
   } else {
-    goalFormError.textContent = "";
-    goalFormError.hidden = true;
+    milestoneFormError.textContent = "";
+    milestoneFormError.hidden = true;
   }
 }
 
 periodCta?.addEventListener("click", () => {
-  state.editingGoalId = null;
-  state.editingGoalScope = "quarter";
-  goalForm.reset();
-  resetGoalHabitSelection();
-  setGoalFormError();
-  openOverlay(goalOverlay);
+  state.editingMilestoneId = null;
+  state.editingMilestoneScope = "quarter";
+  milestoneForm.reset();
+  resetMilestoneHabitSelection();
+  setMilestoneFormError();
+  openOverlay(milestoneOverlay);
 });
 reflectionCta?.addEventListener("click", () => {
   reflectionForm.querySelector("#reflection-period").value = autoPeriodLabel(new Date());
   openOverlay(reflectionOverlay);
 });
-newGoalBtn?.addEventListener("click", () => {
-  state.editingGoalId = null;
-  state.editingGoalScope = "quarter";
-  goalForm.reset();
-  resetGoalHabitSelection();
-  setGoalFormError();
-  openOverlay(goalOverlay);
+newMilestoneBtn?.addEventListener("click", () => {
+  state.editingMilestoneId = null;
+  state.editingMilestoneScope = "quarter";
+  milestoneForm.reset();
+  resetMilestoneHabitSelection();
+  setMilestoneFormError();
+  openOverlay(milestoneOverlay);
 });
-closeGoalBtn?.addEventListener("click", () => {
-  setGoalFormError();
-  closeOverlay(goalOverlay);
+closeMilestoneBtn?.addEventListener("click", () => {
+  setMilestoneFormError();
+  closeOverlay(milestoneOverlay);
 });
-goalOverlay?.addEventListener("click", (e) => {
-  if (e.target === goalOverlay) {
-    setGoalFormError();
-    closeOverlay(goalOverlay);
+milestoneOverlay?.addEventListener("click", (e) => {
+  if (e.target === milestoneOverlay) {
+    setMilestoneFormError();
+    closeOverlay(milestoneOverlay);
   }
 });
 
@@ -716,37 +716,37 @@ workdayApplyWorkedBtn?.addEventListener("click", () => {
   }
 });
 
-goalHabitPicker?.addEventListener("change", (event) => {
+milestoneHabitPicker?.addEventListener("change", (event) => {
   const selectedId = parseInt(event.target.value, 10);
   if (!Number.isNaN(selectedId)) {
-    state.goalHabitSelection.add(selectedId);
+    state.milestoneHabitSelection.add(selectedId);
     populateHabitOptions();
-    renderGoalHabitChips();
+    renderMilestoneHabitChips();
   }
-  goalHabitPicker.value = "";
+  milestoneHabitPicker.value = "";
 });
 
-goalForm?.addEventListener("submit", async (event) => {
+milestoneForm?.addEventListener("submit", async (event) => {
   event.preventDefault();
-  setGoalFormError();
-  const specific_title = goalSpecificTitleInput?.value.trim() || "";
-  const specific_description = goalSpecificDescriptionInput?.value.trim() || "";
-  const measurable = goalMeasurableInput?.value.trim() || "";
-  const achievable = goalAchievableInput?.value.trim() || "";
-  const relevant = goalRelevantInput?.value.trim() || "";
-  const due_date = goalDueInput?.value || null;
-  const tags = parseTags(goalTagsInput?.value || "");
-  const habit_ids = getGoalHabitSelection();
+  setMilestoneFormError();
+  const specific_title = milestoneSpecificTitleInput?.value.trim() || "";
+  const specific_description = milestoneSpecificDescriptionInput?.value.trim() || "";
+  const measurable = milestoneMeasurableInput?.value.trim() || "";
+  const achievable = milestoneAchievableInput?.value.trim() || "";
+  const relevant = milestoneRelevantInput?.value.trim() || "";
+  const due_date = milestoneDueInput?.value || null;
+  const tags = parseTags(milestoneTagsInput?.value || "");
+  const habit_ids = getMilestoneHabitSelection();
   if (!specific_title) {
-    setGoalFormError("Add a clear, specific title before saving.");
+    setMilestoneFormError("Add a clear, specific title before saving.");
     return;
   }
   if (!measurable) {
-    setGoalFormError("Describe the measurable criteria so progress can be tracked.");
+    setMilestoneFormError("Describe the measurable criteria so progress can be tracked.");
     return;
   }
   if (!due_date) {
-    setGoalFormError("Choose a due date to keep this goal time-bound.");
+    setMilestoneFormError("Choose a due date to keep this milestone time-bound.");
     return;
   }
   try {
@@ -759,30 +759,30 @@ goalForm?.addEventListener("submit", async (event) => {
       title: specific_title,
       description: descriptionParts.length ? descriptionParts.join("\n\n") : null,
       outcome: measurable,
-      scope: state.editingGoalScope || "quarter",
+      scope: state.editingMilestoneScope || "quarter",
       due_date,
       tags,
       habit_ids,
     };
-    if (state.editingGoalId) {
-      await apiClient.updateGoal(state.editingGoalId, payload);
-      setStatus("Goal updated");
+    if (state.editingMilestoneId) {
+      await apiClient.updateMilestone(state.editingMilestoneId, payload);
+      setStatus("Milestone updated");
     } else {
-      await apiClient.createGoal(payload);
-      setStatus("Goal saved");
+      await apiClient.createMilestone(payload);
+      setStatus("Milestone saved");
     }
-    closeOverlay(goalOverlay);
-    goalForm.reset();
-    state.editingGoalId = null;
-    state.editingGoalScope = "quarter";
-    setGoalFormError();
-    await loadGoals();
+    closeOverlay(milestoneOverlay);
+    milestoneForm.reset();
+    state.editingMilestoneId = null;
+    state.editingMilestoneScope = "quarter";
+    setMilestoneFormError();
+    await loadMilestones();
     await loadHabits();
   } catch (err) {
     console.error(err);
-    const msg = err?.message || "Could not save goal. Please try again.";
-    setStatus("Failed to save goal", true);
-    setGoalFormError(msg);
+    const msg = err?.message || "Could not save milestone. Please try again.";
+    setStatus("Failed to save milestone", true);
+    setMilestoneFormError(msg);
   }
 });
 
@@ -803,8 +803,8 @@ reflectionForm?.addEventListener("submit", async (event) => {
   const responses = [reflectionForm.querySelector("#reflection-responses").value.trim()].filter(
     Boolean,
   );
-  const goal_id =
-    parseInt(reflectionForm.querySelector("#reflection-goal")?.value || "0", 10) || null;
+  const milestone_id =
+    parseInt(reflectionForm.querySelector("#reflection-milestone")?.value || "0", 10) || null;
   const rating = reflectionForm.querySelector("#reflection-rating")?.value || null;
   if (!period_label) {
     setStatus("Period label required", true);
@@ -816,7 +816,7 @@ reflectionForm?.addEventListener("submit", async (event) => {
       period_label,
       responses,
       prompts: [],
-      goal_id,
+      milestone_id,
       rating,
     });
     setStatus("Reflection saved");
@@ -829,28 +829,28 @@ reflectionForm?.addEventListener("submit", async (event) => {
 });
 
 function populateHabitOptions() {
-  if (!goalHabitPicker) return;
-  goalHabitPicker.innerHTML = `<option value="">Select a habit to link</option>`;
+  if (!milestoneHabitPicker) return;
+  milestoneHabitPicker.innerHTML = `<option value="">Select a habit to link</option>`;
   state.habits.forEach((habit) => {
     const opt = document.createElement("option");
     opt.value = habit.id;
     opt.textContent = `${habit.name} (${habit.category})`;
-    if (state.goalHabitSelection.has(habit.id)) {
+    if (state.milestoneHabitSelection.has(habit.id)) {
       opt.disabled = true;
     }
-    goalHabitPicker.appendChild(opt);
+    milestoneHabitPicker.appendChild(opt);
   });
 }
 
-function renderGoalHabitChips() {
-  if (!goalHabitChips) return;
-  goalHabitChips.innerHTML = "";
-  if (state.goalHabitSelection.size === 0) {
-    goalHabitChips.innerHTML = `<span class="meta">No habits linked</span>`;
+function renderMilestoneHabitChips() {
+  if (!milestoneHabitChips) return;
+  milestoneHabitChips.innerHTML = "";
+  if (state.milestoneHabitSelection.size === 0) {
+    milestoneHabitChips.innerHTML = `<span class="meta">No habits linked</span>`;
     return;
   }
   const byId = Object.fromEntries(state.habits.map((h) => [h.id, h]));
-  Array.from(state.goalHabitSelection).forEach((id) => {
+  Array.from(state.milestoneHabitSelection).forEach((id) => {
     const habit = byId[id];
     const chip = document.createElement("span");
     chip.className = "chip";
@@ -858,103 +858,103 @@ function renderGoalHabitChips() {
       <span>${habit ? habit.name : `Habit ${id}`}</span>
       <button type="button" class="chip-remove" data-id="${id}" aria-label="Remove linked habit">×</button>
     `;
-    goalHabitChips.appendChild(chip);
+    milestoneHabitChips.appendChild(chip);
   });
-  goalHabitChips.querySelectorAll(".chip-remove").forEach((btn) => {
+  milestoneHabitChips.querySelectorAll(".chip-remove").forEach((btn) => {
     btn.addEventListener("click", () => {
       const id = parseInt(btn.dataset.id, 10);
-      state.goalHabitSelection.delete(id);
+      state.milestoneHabitSelection.delete(id);
       populateHabitOptions();
-      renderGoalHabitChips();
+      renderMilestoneHabitChips();
     });
   });
 }
 
-function resetGoalHabitSelection(ids = []) {
-  state.goalHabitSelection = new Set(ids);
+function resetMilestoneHabitSelection(ids = []) {
+  state.milestoneHabitSelection = new Set(ids);
   populateHabitOptions();
-  renderGoalHabitChips();
+  renderMilestoneHabitChips();
 }
 
-function getGoalHabitSelection() {
-  return Array.from(state.goalHabitSelection);
+function getMilestoneHabitSelection() {
+  return Array.from(state.milestoneHabitSelection);
 }
 
-function populateReflectionGoalOptions() {
-  const select = document.querySelector("#reflection-goal");
+function populateReflectionMilestoneOptions() {
+  const select = document.querySelector("#reflection-milestone");
   if (!select) return;
-  select.innerHTML = `<option value="">(Optional) Link to goal</option>`;
-  state.goals.forEach((goal) => {
+  select.innerHTML = `<option value="">(Optional) Link to milestone</option>`;
+  state.milestones.forEach((milestone) => {
     const opt = document.createElement("option");
-    opt.value = goal.id;
-    opt.textContent = goal.title;
+    opt.value = milestone.id;
+    opt.textContent = milestone.title;
     select.appendChild(opt);
   });
 }
 
-function renderGoals() {
-  if (!goalsList) return;
-  goalsList.innerHTML = "";
+function renderMilestones() {
+  if (!milestonesList) return;
+  milestonesList.innerHTML = "";
   populateHabitOptions();
-  populateReflectionGoalOptions();
-  if (state.goals.length === 0) {
-    goalsList.innerHTML = `<p class="meta">No goals yet. Tap the period pill to create one.</p>`;
+  populateReflectionMilestoneOptions();
+  if (state.milestones.length === 0) {
+    milestonesList.innerHTML = `<p class="meta">No milestones yet. Tap the period pill to create one.</p>`;
     return;
   }
-  state.goals.forEach((goal) => {
+  state.milestones.forEach((milestone) => {
     const line = document.createElement("div");
-    line.className = "goal-line";
+    line.className = "milestone-line";
     const left = document.createElement("div");
-    left.innerHTML = `<strong>${goal.title}</strong><div class="meta">${goal.scope} · ${goal.status || "active"}</div>`;
+    left.innerHTML = `<strong>${milestone.title}</strong><div class="meta">${milestone.scope} · ${milestone.status || "active"}</div>`;
     const actions = document.createElement("div");
-    actions.className = "goal-actions";
+    actions.className = "milestone-actions";
     const editBtn = document.createElement("button");
     editBtn.className = "ghost small";
     editBtn.textContent = "Edit";
-    editBtn.addEventListener("click", () => openGoalForEdit(goal));
+    editBtn.addEventListener("click", () => openMilestoneForEdit(milestone));
     const reflectBtn = document.createElement("button");
     reflectBtn.className = "ghost small";
     reflectBtn.textContent = "Reflect";
-    reflectBtn.addEventListener("click", () => openReflectionForGoal(goal));
+    reflectBtn.addEventListener("click", () => openReflectionForMilestone(milestone));
     const deleteBtn = document.createElement("button");
     deleteBtn.className = "ghost small";
     deleteBtn.textContent = "Delete";
-    deleteBtn.addEventListener("click", () => deleteGoal(goal.id));
+    deleteBtn.addEventListener("click", () => deleteMilestone(milestone.id));
     actions.appendChild(editBtn);
     actions.appendChild(reflectBtn);
     actions.appendChild(deleteBtn);
     line.appendChild(left);
     line.appendChild(actions);
-    goalsList.appendChild(line);
+    milestonesList.appendChild(line);
   });
 }
 
-function openGoalForEdit(goal) {
-  state.editingGoalId = goal.id;
-  state.editingGoalScope = goal.scope || "quarter";
-  if (goalSpecificTitleInput) goalSpecificTitleInput.value = goal.title || "";
-  if (goalSpecificDescriptionInput) {
-    goalSpecificDescriptionInput.value =
-      goal.specific_description || goal.description || "";
+function openMilestoneForEdit(milestone) {
+  state.editingMilestoneId = milestone.id;
+  state.editingMilestoneScope = milestone.scope || "quarter";
+  if (milestoneSpecificTitleInput) milestoneSpecificTitleInput.value = milestone.title || "";
+  if (milestoneSpecificDescriptionInput) {
+    milestoneSpecificDescriptionInput.value =
+      milestone.specific_description || milestone.description || "";
   }
-  if (goalMeasurableInput) {
-    goalMeasurableInput.value = goal.measurable || goal.outcome || "";
+  if (milestoneMeasurableInput) {
+    milestoneMeasurableInput.value = milestone.measurable || milestone.outcome || "";
   }
-  if (goalAchievableInput) goalAchievableInput.value = goal.achievable || "";
-  if (goalRelevantInput) goalRelevantInput.value = goal.relevant || "";
-  if (goalDueInput) goalDueInput.value = goal.due_date || "";
-  if (goalTagsInput) goalTagsInput.value = (goal.tags || []).join(", ");
-  const ids = goal.habit_ids || [];
-  resetGoalHabitSelection(ids);
-  setGoalFormError();
-  openOverlay(goalOverlay);
+  if (milestoneAchievableInput) milestoneAchievableInput.value = milestone.achievable || "";
+  if (milestoneRelevantInput) milestoneRelevantInput.value = milestone.relevant || "";
+  if (milestoneDueInput) milestoneDueInput.value = milestone.due_date || "";
+  if (milestoneTagsInput) milestoneTagsInput.value = (milestone.tags || []).join(", ");
+  const ids = milestone.habit_ids || [];
+  resetMilestoneHabitSelection(ids);
+  setMilestoneFormError();
+  openOverlay(milestoneOverlay);
 }
 
-function openReflectionForGoal(goal) {
+function openReflectionForMilestone(milestone) {
   reflectionForm.querySelector("#reflection-period").value = autoPeriodLabel(new Date());
-  const goalSelect = reflectionForm.querySelector("#reflection-goal");
-  if (goalSelect) {
-    goalSelect.value = goal.id;
+  const milestoneSelect = reflectionForm.querySelector("#reflection-milestone");
+  if (milestoneSelect) {
+    milestoneSelect.value = milestone.id;
   }
   openOverlay(reflectionOverlay);
 }
@@ -966,17 +966,17 @@ function autoPeriodLabel(dateObj) {
   return `${year}-Q${quarter}`;
 }
 
-async function deleteGoal(goalId) {
-  const ok = confirm("Delete this goal? Linked habits will remain.");
+async function deleteMilestone(milestoneId) {
+  const ok = confirm("Delete this milestone? Linked habits will remain.");
   if (!ok) return;
   try {
-    await apiClient.deleteGoal(goalId);
-    setStatus("Goal deleted");
-    await loadGoals();
+    await apiClient.deleteMilestone(milestoneId);
+    setStatus("Milestone deleted");
+    await loadMilestones();
     await loadHabits();
   } catch (err) {
     console.error(err);
-    setStatus("Failed to delete goal", true);
+    setStatus("Failed to delete milestone", true);
   }
 }
 

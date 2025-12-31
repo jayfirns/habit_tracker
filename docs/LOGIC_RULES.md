@@ -6,14 +6,14 @@ This document defines system-level behavioral rules that govern core logic acros
 
 ---
 
-## Task / Goal Lifecycle
+## Task / Milestone Lifecycle
 
-### Goal States
+### Milestone States
 
-A Goal **must** exist in one of the following states:
-- `active`: A goal that is currently in progress.
-- `complete`: A goal that has been successfully finished.
-- `archived`: A goal that has been deleted by a user.
+A Milestone **must** exist in one of the following states:
+- `active`: A milestone that is currently in progress.
+- `complete`: A milestone that has been successfully finished.
+- `archived`: A milestone that has been deleted by a user.
 
 ### Task States
 
@@ -23,12 +23,12 @@ A Task (Habit) has no explicit state. It is either present in the system or it i
 
 ## Deletion Rules
 
-### On Goal Deletion
+### On Milestone Deletion
 
-- When a Goal is deleted, its state **must** transition to `archived`.
-- Archived Goals **must not** appear in standard list views.
+- When a Milestone is deleted, its state **must** transition to `archived`.
+- Archived Milestones **must not** appear in standard list views.
 - All associated data, including links to Tasks, **must** be preserved.
-- Deletion of a Goal **must not** trigger the deletion of any associated Tasks.
+- Deletion of a Milestone **must not** trigger the deletion of any associated Tasks.
 
 ### On Task Deletion
 
@@ -39,10 +39,10 @@ A Task (Habit) has no explicit state. It is either present in the system or it i
 
 ---
 
-## Modification of Completed Goals
+## Modification of Completed Milestones
 
-- A Goal with a `complete` status **must** remain modifiable.
-- The system **guarantees** that the status of a completed Goal can be reverted to `active`.
+- A Milestone with a `complete` status **must** remain modifiable.
+- The system **guarantees** that the status of a completed Milestone can be reverted to `active`.
 
 ---
 
@@ -50,5 +50,5 @@ A Task (Habit) has no explicit state. It is either present in the system or it i
 
 - These rules are not merely descriptive; they are enforced by the automated test suite.
 - The repository’s tests are the final authority on system behavior. Any discrepancy between this document and the test suite indicates that this document is out of date.
-- Tests related to Goals (`test_goals.py`) assert the `archived` status transition on deletion and the modifiability of completed goals.
+- Tests related to Milestones (`test_milestones.py`) assert the `archived` status transition on deletion and the modifiability of completed milestones.
 - Tests related to Tasks (`test_api.py`, `habitState.test.mjs`) assert the permanent deletion of Tasks and the corresponding cleanup of all associated data from both persistence and local state.

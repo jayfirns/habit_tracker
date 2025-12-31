@@ -3,18 +3,18 @@
 The primary goal is to transform this project into "FocusOS," a **local network web server application** adhering to the architectural principles outlined above. This will involve:
 
 ### Functional Requirements Alignment
--   **Goal & Habit Model**: Develop robust backend services and database schema to support evolving goals, subgoals, nested structures, and their relationships. Habits will be independent or linked to goals.
--   **Hierarchical Structure**: Implement data models and API endpoints that explicitly maintain and leverage hierarchical relationships for goals and subgoals, ensuring higher-level structures contextualize lower-level execution.
+-   **Milestone & Habit Model**: Develop robust backend services and database schema to support evolving milestones, submilestones, nested structures, and their relationships. Habits will be independent or linked to milestones.
+-   **Hierarchical Structure**: Implement data models and API endpoints that explicitly maintain and leverage hierarchical relationships for milestones and submilestones, ensuring higher-level structures contextualize lower-level execution.
 -   **Representation Layer**: Design and implement multiple web-based views (Strategic, Tactical, Operational, Analytical) over the shared domain model, ensuring they are non-destructive and switchable.
 -   **Time Tracking & Accountability**:
-    *   Integrate embedded time tracking (manual start/stop, post-hoc attribution) linked to habits, subgoals, and goals.
+    *   Integrate embedded time tracking (manual start/stop, post-hoc attribution) linked to habits, submilestones, and milestones.
     *   Develop features to surface planned vs. actual effort, drift, and investment signals.
-    *   **Crucially, the system must track time boundaries set by the goal creator, providing reminders and completion percentage updates if metrics are available.**
+    *   **Crucially, the system must track time boundaries set by the milestone creator, providing reminders and completion percentage updates if metrics are available.**
     *   **Implement prompts for users to reflect quarterly and at year-end, covering reflections, lessons learned, and future outlook.**
--   **SMART Goal Enforcement**:
-    *   Implement validation logic in the Interaction & Intent layer to enforce measurable outcomes, time boundaries, and clear success definitions for goal creation, preventing ambiguous entries.
-    *   **Support setting intentions as part of the SMART goal creation process.**
-    *   **Implement a mechanism to display contextual banners or inspirational messages by dates defined in goal creation.**
+-   **SMART Milestone Enforcement**:
+    *   Implement validation logic in the Interaction & Intent layer to enforce measurable outcomes, time boundaries, and clear success definitions for milestone creation, preventing ambiguous entries.
+    *   **Support setting intentions as part of the SMART milestone creation process.**
+    *   **Implement a mechanism to display contextual banners or inspirational messages by dates defined in milestone creation.**
 -   **Privacy & Data Control**: Ensure the system is private by default, with no social sharing or external accountability, and full user control over their data. This will influence authentication/authorization design for a local server.
 -   **Focus Preservation**: Design the web application to minimize notifications, avoid gamification, and favor clarity, with reflective rather than punitive feedback.
 
@@ -36,8 +36,8 @@ The primary goal is to transform this project into "FocusOS," a **local network 
 -   **Deployment**: Document clear steps for deploying the "FocusOS" web application on a local Linux network, potentially leveraging Docker Compose for multi-service applications.
 -   **Privacy-First LLM Integration for Coaching**:
     *   **Inspirational Messages**: Explore mechanisms for generating inspirational messages/banners.
-    *   **Option 1: Limited Context LLM Calls**: If external LLMs are used, ensure they are invoked with minimal, non-sensitive, and anonymized context to maintain user privacy (e.g., only goal type or general progress, *not* goal content).
-    *   **Option 2: Embedded Prompt Creator**: Provide an in-app tool for users to craft prompts or provide explicit consent for what information from their goals/habits can be shared with an LLM for personalized coaching/messages.
+    *   **Option 1: Limited Context LLM Calls**: If external LLMs are used, ensure they are invoked with minimal, non-sensitive, and anonymized context to maintain user privacy (e.g., only milestone type or general progress, *not* milestone content).
+    *   **Option 2: Embedded Prompt Creator**: Provide an in-app tool for users to craft prompts or provide explicit consent for what information from their milestones/habits can be shared with an LLM for personalized coaching/messages.
     *   **Local/On-Device LLM (Future Consideration)**: Investigate the feasibility of integrating a small, local, or on-device LLM for generating these messages without any external data transmission, thus reinforcing privacy.
 
 When interacting with this project, new features and bug fixes should be aligned with the "FocusOS" product vision, prioritizing the development of the web-based, potentially containerized solution over further enhancements to the existing Tkinter desktop client.

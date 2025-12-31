@@ -1,7 +1,7 @@
 # EnergyMixPanel
 - Panel Title: Category Completions
 - Semantic ID: EnergyMixPanel
-- Location in app: Main layout after `#goal-manager-slot`, rendered as `<section class="card chart-card wide">` in `backend/frontend/index.html`.
+- Location in app: Main layout after `#milestone-manager-slot`, rendered as `<section class="card chart-card wide">` in `backend/frontend/index.html`.
 - Purpose: Visualize the distribution of habit completions by category, show total completions, and list category-level legend details.
 For detailed design, development notes, and enhancement matrix, see [EnergyMixPanel.md](docs/panels/EnergyMixPanel.md).
 
@@ -20,29 +20,29 @@ For detailed design, development notes, and enhancement matrix, see [EnergyMixPa
 - Design tokens used: Card surface/gradient uses `--bg1`, `--panel`, `--bg0`; border `--border`; radius `--radius-sm`; shadow `--shadow`; eyebrow uses `--accent2`; pill uses `--pill`, `--border`, `--muted`, `--text`; badge text uses theme typography defaults. Chart segments use a fixed JS palette (`#ff6f61`, `#36c2cf`, `#8f7bff`, `#ffd166`, `#4ade80`, `#f472b6`, `#22d3ee`, `#f97316`).
 - References to relevant JS/HTML files: `backend/frontend/index.html` (markup), `backend/frontend/components.css` (card, pie, legend, pill, badge styling), `backend/frontend/base.css` + `backend/frontend/themes.css` (tokens), `backend/frontend/ui/dashboardView.js` (render logic and palette).
 
-# GoalDashboardPanel
-- Panel Title: Goal Dashboard
-- Semantic ID: GoalDashboardPanel
-- Location in app: Hero insights column (`#goal-home-slot`) as `<section class="panel insight-panel" id="goal-dashboard">` in `backend/frontend/index.html`.
-- Purpose: Summarize active SMART goals, habit linkage, and upcoming deadlines with a next-step note.
+# MilestoneDashboardPanel
+- Panel Title: Milestone Dashboard
+- Semantic ID: MilestoneDashboardPanel
+- Location in app: Hero insights column (`#milestone-home-slot`) as `<section class="panel insight-panel" id="milestone-dashboard">` in `backend/frontend/index.html`.
+- Purpose: Summarize active SMART milestones, habit linkage, and upcoming deadlines with a next-step note.
 
 | Element Name | Description | Example content | CSS class | Notes |
 | --- | --- | --- | --- | --- |
 | PanelShell ([glossary](DESIGN_GLOSSARY.md#ui-design-glossary-new-habit--habit-board)) | Panel container with panel surface, border, radius, and shadow. | — | `panel insight-panel` | Uses insight-panel styling for padding and shadow. |
 | PanelHeader ([glossary](DESIGN_GLOSSARY.md#ui-design-glossary-new-habit--habit-board)) | Flex header row for eyebrow/title and scope pill. | — | `panel__header` | Shared layout spacing. |
 | Eyebrow ([glossary](DESIGN_GLOSSARY.md#glossary-legend)) | Context eyebrow preceding title. | SMART pulse | `eyebrow` | Accent2 color label. |
-| PanelTitle ([glossary](DESIGN_GLOSSARY.md#ui-design-glossary-new-habit--habit-board)) | Panel heading. | Goal Dashboard | `<h3>` | Display font, default heading size. |
-| ScopePill (glossary: [Pill](DESIGN_GLOSSARY.md#glossary-legend)) | Subtle pill showing dominant goal scope. | Quarter focus | `pill subtle` (`#goal-scope-highlight`) | Text updated by JS based on top scope count. |
+| PanelTitle ([glossary](DESIGN_GLOSSARY.md#ui-design-glossary-new-habit--habit-board)) | Panel heading. | Milestone Dashboard | `<h3>` | Display font, default heading size. |
+| ScopePill (glossary: [Pill](DESIGN_GLOSSARY.md#glossary-legend)) | Subtle pill showing dominant milestone scope. | Quarter focus | `pill subtle` (`#milestone-scope-highlight`) | Text updated by JS based on top scope count. |
 | InsightGrid | Grid wrapper for the stat cards. | — | `insight-grid` | Responsive auto-fit columns. |
-| InsightStatCard | Individual stat tile with border and subtle background. | Active goals | `insight-stat` | Three instances for active goals, linked habits, due soon. |
-| StatLabel | Muted label for each stat. | Active goals | `stat-label` | 12px, muted. |
-| StatValue (glossary: [Badge](DESIGN_GLOSSARY.md#glossary-legend)) | Bold numeric value for the stat. | 3 | `stat-value` with IDs `goal-count`, `goal-habits-linked`, `goal-due-count` | Populated dynamically. |
-| StatNote | Supporting meta line under each stat. | Set your first target | `meta` with IDs `goal-highlight`, `goal-habit-coverage`, `goal-due-label` | JS fills contextual text (coverage %, deadlines, highlights). |
-| NextStepNote | Callout note suggesting next action. | Use SMART to define one measurable outcome this week. | `smart-note` (`#goal-next-step`) | Border dashed, muted color-mix background. |
+| InsightStatCard | Individual stat tile with border and subtle background. | Active milestones | `insight-stat` | Three instances for active milestones, linked habits, due soon. |
+| StatLabel | Muted label for each stat. | Active milestones | `stat-label` | 12px, muted. |
+| StatValue (glossary: [Badge](DESIGN_GLOSSARY.md#glossary-legend)) | Bold numeric value for the stat. | 3 | `stat-value` with IDs `milestone-count`, `milestone-habits-linked`, `milestone-due-count` | Populated dynamically. |
+| StatNote | Supporting meta line under each stat. | Set your first target | `meta` with IDs `milestone-highlight`, `milestone-habit-coverage`, `milestone-due-label` | JS fills contextual text (coverage %, deadlines, highlights). |
+| NextStepNote | Callout note suggesting next action. | Use SMART to define one measurable outcome this week. | `smart-note` (`#milestone-next-step`) | Border dashed, muted color-mix background. |
 
-- Interactions: No direct user inputs. Content updates via `renderGoalInsights` in `backend/frontend/ui/dashboardView.js`, invoked from `renderDashboard` after habit/goal/reflection data load. Scope pill text, stat values, coverage %, due labels, and next-step note are all data-driven.
+- Interactions: No direct user inputs. Content updates via `renderMilestoneInsights` in `backend/frontend/ui/dashboardView.js`, invoked from `renderDashboard` after habit/milestone/reflection data load. Scope pill text, stat values, coverage %, due labels, and next-step note are all data-driven.
 - Design tokens used: Panel uses `--panel`, `--border`, `--radius`, `--shadow`; stat cards use color-mix on `--bg1` with `--border`; labels use `--muted`; stat values use theme text; pill uses `--pill`, `--border`, `--muted`, `--text`; next-step note uses dashed `--border` and color-mix on `--bg1`.
-- References to relevant JS/HTML files: `backend/frontend/index.html` (markup), `backend/frontend/components.css` (insight-panel, insight-grid, insight-stat, smart-note, pill, eyebrow), `backend/frontend/base.css` + `backend/frontend/themes.css` (tokens), `backend/frontend/ui/dashboardView.js` (goal insights logic), `backend/frontend/app.js` (dashboard view wiring).
+- References to relevant JS/HTML files: `backend/frontend/index.html` (markup), `backend/frontend/components.css` (insight-panel, insight-grid, insight-stat, smart-note, pill, eyebrow), `backend/frontend/base.css` + `backend/frontend/themes.css` (tokens), `backend/frontend/ui/dashboardView.js` (milestone insights logic), `backend/frontend/app.js` (dashboard view wiring).
 
 # TimeGlidePanel
 - Panel Title: Time Glide
@@ -67,7 +67,7 @@ For detailed design, development notes, and enhancement matrix, see [EnergyMixPa
 - Panel Title: Today’s Focus
 - Semantic ID: TodaysFocusPanel
 - Location in app: Hero dashboard row, second column `<section class="panel dashboard" id="dashboard">` in `backend/frontend/index.html`.
-- Purpose: Present current period context with actions and quick stats (habits count, time summary, active goals).
+- Purpose: Present current period context with actions and quick stats (habits count, time summary, active milestones).
 
 | Element Name | Description | Example content | CSS class | Notes |
 | --- | --- | --- | --- | --- |
@@ -75,16 +75,16 @@ For detailed design, development notes, and enhancement matrix, see [EnergyMixPa
 | PanelHeader ([glossary](DESIGN_GLOSSARY.md#ui-design-glossary-new-habit--habit-board)) | Header row with eyebrow/title and CTA pills. | — | `panel__header` | Flex layout. |
 | Eyebrow ([glossary](DESIGN_GLOSSARY.md#glossary-legend)) | Context label. | Alignment | `eyebrow` | Accent2 color. |
 | PanelTitle ([glossary](DESIGN_GLOSSARY.md#ui-design-glossary-new-habit--habit-board)) | Main heading. | Today’s Focus | `<h2>` | Display font. |
-| PillRow (glossary: [Pill](DESIGN_GLOSSARY.md#glossary-legend)) | Action pills to open goal/reflection overlays. | Q1 · March / Reflection | `pill subtle period-cta` (`#period-cta`), `pill subtle` (`#reflection-cta`) | Click handlers open respective overlays; text populated by JS. |
-| PeriodPrompt | Prompt text describing alignment question. | How do your habits today support your Q1 goals? | `meta` (`#period-prompt`) | Filled by dashboard render. |
+| PillRow (glossary: [Pill](DESIGN_GLOSSARY.md#glossary-legend)) | Action pills to open milestone/reflection overlays. | Q1 · March / Reflection | `pill subtle period-cta` (`#period-cta`), `pill subtle` (`#reflection-cta`) | Click handlers open respective overlays; text populated by JS. |
+| PeriodPrompt | Prompt text describing alignment question. | How do your habits today support your Q1 milestones? | `meta` (`#period-prompt`) | Filled by dashboard render. |
 | PeriodActionsList | Bullet list of suggested actions. | Review top 3 habits... | `meta` list (`#period-actions`) | Items injected by JS. |
 | HabitsSummaryBadge | Numeric badge card showing total habits and streak sum. | 5 Habits tracked | `badge card` with `badge__value`, `badge__label`, `meta` (`#habit-count`, `#streak-summary-card`) | Uses card gradient surface. |
 | TimeSummaryCard | Card showing planned/worked/focus table and per-habit notes. | Planned/Worked/% Focused rows | `card time-summary` with `panel__header`, `time-summary-list` (`#time-summary-list`), `time-summary-percent` | Populated by `renderTimeSummary` (dashboardView). |
-| ActiveGoalsCard | Card listing active SMART goals. | Active SMART Goals, pills | `card goals-card` with `panel__header`, `goal-list` (`#goals-list`) | Goals rendered by `renderGoals` in app.js. |
+| ActiveMilestonesCard | Card listing active SMART milestones. | Active SMART Milestones, pills | `card milestones-card` with `panel__header`, `milestone-list` (`#milestones-list`) | Milestones rendered by `renderMilestones` in app.js. |
 
-- Interactions: Pill buttons open overlays (`period-cta` opens goal form, `reflection-cta` opens reflection form). Goal creation button inside goals card (`#new-goal`) opens goal overlay. Dashboard data refreshes on habit/goal/reflection load via `renderDashboard` in `backend/frontend/app.js` using `dashboardView.renderDashboard`.
+- Interactions: Pill buttons open overlays (`period-cta` opens milestone form, `reflection-cta` opens reflection form). Milestone creation button inside milestones card (`#new-milestone`) opens milestone overlay. Dashboard data refreshes on habit/milestone/reflection load via `renderDashboard` in `backend/frontend/app.js` using `dashboardView.renderDashboard`.
 - Design tokens used: Panel uses `--panel`, `--border`, `--radius`, `--shadow`; cards use gradient surface with `--bg1`/`--bg0`, `--border`, `--radius-sm`, `--shadow`; pills use `--pill`, `--border`, `--muted`, `--text`; badges use display font and `--text`/`--muted`; time summary/table rows use `--border`, `--muted`.
-- References to relevant JS/HTML files: `backend/frontend/index.html` (markup), `backend/frontend/components.css` (panel, pill, card, time-summary, goal-list), `backend/frontend/base.css` + `backend/frontend/themes.css` (tokens), `backend/frontend/ui/dashboardView.js` (period text, time summary logic), `backend/frontend/app.js` (event handlers, goal list render).
+- References to relevant JS/HTML files: `backend/frontend/index.html` (markup), `backend/frontend/components.css` (panel, pill, card, time-summary, milestone-list), `backend/frontend/base.css` + `backend/frontend/themes.css` (tokens), `backend/frontend/ui/dashboardView.js` (period text, time summary logic), `backend/frontend/app.js` (event handlers, milestone list render).
 
 # NewHabitPanel
 - Panel Title: New Habit

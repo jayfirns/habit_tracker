@@ -103,37 +103,39 @@ def list_completions(habit_id: int, db: Session = Depends(get_db)):
     return crud.list_completions(db, habit_id)
 
 
-@app.get("/goals", response_model=list[schemas.GoalRead])
-def list_goals(db: Session = Depends(get_db)):
-    return crud.list_goals(db)
+@app.get("/milestones", response_model=list[schemas.MilestoneRead])
+def list_milestones(db: Session = Depends(get_db)):
+    return crud.list_milestones(db)
 
 
-@app.get("/goals/{goal_id}", response_model=schemas.GoalRead)
-def get_goal(goal_id: int, db: Session = Depends(get_db)):
-    goal = crud.get_goal(db, goal_id)
-    if goal is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Goal not found")
-    return goal
+@app.get("/milestones/{milestone_id}", response_model=schemas.MilestoneRead)
+def get_milestone(milestone_id: int, db: Session = Depends(get_db)):
+    milestone = crud.get_milestone(db, milestone_id)
+    if milestone is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Milestone not found")
+    return milestone
 
 
-@app.post("/goals", response_model=schemas.GoalRead, status_code=status.HTTP_201_CREATED)
-def create_goal(goal: schemas.GoalCreate, db: Session = Depends(get_db)):
-    return crud.create_goal(db, goal)
+@app.post("/milestones", response_model=schemas.MilestoneRead, status_code=status.HTTP_201_CREATED)
+def create_milestone(milestone: schemas.MilestoneCreate, db: Session = Depends(get_db)):
+    return crud.create_milestone(db, milestone)
 
 
-@app.put("/goals/{goal_id}", response_model=schemas.GoalRead)
-def update_goal(goal_id: int, goal: schemas.GoalUpdate, db: Session = Depends(get_db)):
-    updated = crud.update_goal(db, goal_id, goal)
+@app.put("/milestones/{milestone_id}", response_model=schemas.MilestoneRead)
+def update_milestone(
+    milestone_id: int, milestone: schemas.MilestoneUpdate, db: Session = Depends(get_db)
+):
+    updated = crud.update_milestone(db, milestone_id, milestone)
     if updated is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Goal not found")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Milestone not found")
     return updated
 
 
-@app.delete("/goals/{goal_id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_goal(goal_id: int, db: Session = Depends(get_db)):
-    deleted = crud.delete_goal(db, goal_id)
+@app.delete("/milestones/{milestone_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_milestone(milestone_id: int, db: Session = Depends(get_db)):
+    deleted = crud.delete_milestone(db, milestone_id)
     if not deleted:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Goal not found")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Milestone not found")
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 

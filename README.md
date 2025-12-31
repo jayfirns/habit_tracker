@@ -1,11 +1,11 @@
 # FocusOS Habit Tracker
 
-FastAPI backend with a lightweight HTML/JS frontend for local-first habit, goal, and reflection tracking. Data is stored in SQLite by default and can be swapped via `DATABASE_URL`.
+FastAPI backend with a lightweight HTML/JS frontend for local-first habit, milestone, and reflection tracking. Data is stored in SQLite by default and can be swapped via `DATABASE_URL`.
 
 ## Features
 
 - Habit CRUD with completion history, streaks, and tags
-- Goals linked to habits plus reflections scoped to goals
+- Milestones linked to habits plus reflections scoped to milestones
 - Simple web UI served from the backend at `/ui`
 - Local SQLite persistence (`backend/data/habit_tracker.db` by default)
 
@@ -42,7 +42,7 @@ CI runs on `push` to `main` and all PRs: Python 3.11 tests (`.github/workflows/c
 ## Project layout
 
 - `backend/` FastAPI app, models, schemas, and frontend assets
-- `backend/tests/` pytest suite for habits, goals, and reflections
+- `backend/tests/` pytest suite for habits, milestones, and reflections
 - `docker-compose.yml` Local orchestration for the backend service
 - `requirements.txt` Core dependencies for legacy entrypoints
 

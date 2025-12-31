@@ -23,11 +23,12 @@ export function makeApi(baseUrl) {
     deleteHabit: (id) => request(`/habits/${id}`, { method: "DELETE" }),
     completeHabit: (id, payload) =>
       request(`/habits/${id}/complete`, { method: "POST", body: JSON.stringify(payload) }),
-    listGoals: () => request("/goals"),
-    createGoal: (payload) => request("/goals", { method: "POST", body: JSON.stringify(payload) }),
-    updateGoal: (id, payload) =>
-      request(`/goals/${id}`, { method: "PUT", body: JSON.stringify(payload) }),
-    deleteGoal: (id) => request(`/goals/${id}`, { method: "DELETE" }),
+    listMilestones: () => request("/milestones"),
+    createMilestone: (payload) =>
+      request("/milestones", { method: "POST", body: JSON.stringify(payload) }),
+    updateMilestone: (id, payload) =>
+      request(`/milestones/${id}`, { method: "PUT", body: JSON.stringify(payload) }),
+    deleteMilestone: (id) => request(`/milestones/${id}`, { method: "DELETE" }),
     listReflections: () => request("/reflections"),
     createReflection: (payload) =>
       request("/reflections", {

@@ -3,14 +3,14 @@ from sqlalchemy.orm import relationship
 
 from database import Base  # Absolute import for standalone execution
 
-# Association table for many-to-many between habits and goals
+# Association table for many-to-many between habits and milestones
 from sqlalchemy import Table
 
-habit_goal_table = Table(
-    "habit_goals",
+habit_milestone_table = Table(
+    "habit_milestones",
     Base.metadata,
     Column("habit_id", ForeignKey("habits.id"), primary_key=True),
-    Column("goal_id", ForeignKey("goals.id"), primary_key=True),
+    Column("milestone_id", ForeignKey("milestones.id"), primary_key=True),
 )
 
 class Habit(Base):
@@ -29,7 +29,7 @@ class Habit(Base):
         cascade="all, delete-orphan",
         order_by="Completion.date",
     )
-    goals = relationship("Goal", secondary=habit_goal_table, back_populates="habits")
+    milestones = relationship("Milestone", secondary=habit_milestone_table, back_populates="habits")
 
 class Completion(Base):
     __tablename__ = "completions"
@@ -42,8 +42,8 @@ class Completion(Base):
     habit = relationship("Habit", back_populates="completions")
 
 
-class Goal(Base):
-    __tablename__ = "goals"
+class Milestone(Base):
+    __tablename__ = "milestones"
 
     id = Column(Integer, primary_key=True, index=True)
     title = Column(String, nullable=False)
@@ -55,7 +55,7 @@ class Goal(Base):
     status = Column(String, default="active")
     tags = Column(JSON, default=list)
 
-    habits = relationship("Habit", secondary=habit_goal_table, back_populates="goals")
+    habits = relationship("Habit", secondary=habit_milestone_table, back_populates="milestones")
 
     @property
     def habit_ids(self):
@@ -71,5 +71,5 @@ class Reflection(Base):
     prompts = Column(JSON, default=list)
     responses = Column(JSON, default=list)
     submitted_at = Column(String)
-    goal_id = Column(Integer, ForeignKey("goals.id"), nullable=True)
+    milestone_id = Column(Integer, ForeignKey("milestones.id"), nullable=True)
     rating = Column(String)  # on_track, blocked, ahead, complete

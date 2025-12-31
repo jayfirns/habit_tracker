@@ -95,7 +95,7 @@
                   class="pill subtle period-cta"
                   type="button"
                   id="period-cta"
-                  title="Set or review goals"
+                  title="Set or review milestones"
                 >
                   <span id="period-label"></span>
                 </button>
@@ -130,47 +130,47 @@
                 <div id="time-summary-list" class="time-summary-list meta"></div>
                 <div id="time-summary-percent" class="meta"></div>
               </div>
-              <div class="card goals-card">
+              <div class="card milestones-card">
                 <div class="panel__header">
                   <div>
-                    <p class="eyebrow">Goals</p>
-                    <h3>Active SMART Goals</h3>
+                    <p class="eyebrow">Milestones</p>
+                    <h3>Active SMART Milestones</h3>
                   </div>
-                  <button class="ghost small" id="new-goal">New Goal</button>
+                  <button class="ghost small" id="new-milestone">New Milestone</button>
                 </div>
-                <div id="goals-list" class="goal-list meta"></div>
+                <div id="milestones-list" class="milestone-list meta"></div>
               </div>
             </div>
           </section>
         </div>
       </div>
-      <div class="insights" id="goal-home-slot">
-        <section class="panel insight-panel" id="goal-dashboard">
+      <div class="insights" id="milestone-home-slot">
+        <section class="panel insight-panel" id="milestone-dashboard">
           <div class="panel__header">
             <div>
               <p class="eyebrow">SMART pulse</p>
-              <h3>Goal Dashboard</h3>
+              <h3>Milestone Dashboard</h3>
             </div>
-            <div class="pill subtle" id="goal-scope-highlight">Quarter focus</div>
+            <div class="pill subtle" id="milestone-scope-highlight">Quarter focus</div>
           </div>
           <div class="insight-grid">
             <div class="insight-stat">
-              <div class="stat-label">Active goals</div>
-              <div class="stat-value" id="goal-count">0</div>
-              <p class="meta" id="goal-highlight">Set your first target</p>
+              <div class="stat-label">Active milestones</div>
+              <div class="stat-value" id="milestone-count">0</div>
+              <p class="meta" id="milestone-highlight">Set your first target</p>
             </div>
             <div class="insight-stat">
               <div class="stat-label">Linked habits</div>
-              <div class="stat-value" id="goal-habits-linked">0</div>
-              <p class="meta" id="goal-habit-coverage">0% coverage</p>
+              <div class="stat-value" id="milestone-habits-linked">0</div>
+              <p class="meta" id="milestone-habit-coverage">0% coverage</p>
             </div>
             <div class="insight-stat">
               <div class="stat-label">Due soon</div>
-              <div class="stat-value" id="goal-due-count">0</div>
-              <p class="meta" id="goal-due-label">No deadlines</p>
+              <div class="stat-value" id="milestone-due-count">0</div>
+              <p class="meta" id="milestone-due-label">No deadlines</p>
             </div>
           </div>
-          <div class="smart-note" id="goal-next-step">
+          <div class="smart-note" id="milestone-next-step">
             Use SMART to define one measurable outcome this week.
           </div>
         </section>
@@ -229,7 +229,7 @@
         <div id="habits" class="habits-grid"></div>
       </section>
 
-      <div id="goal-manager-slot"></div>
+      <div id="milestone-manager-slot"></div>
 
       <section class="card chart-card wide" id="energy-mix-panel">
         <div class="panel__header">
@@ -317,113 +317,113 @@
       </div>
     </div>
 
-    <div class="overlay" id="goal-overlay" hidden>
+    <div class="overlay" id="milestone-overlay" hidden>
       <div class="overlay__content">
         <div class="overlay__header">
           <div>
             <p class="eyebrow">SMART</p>
-            <h3>New Goal</h3>
+            <h3>New Milestone</h3>
             <p class="meta">Make it Specific, Measurable, Achievable, Relevant, and Time-bound.</p>
           </div>
-          <button class="ghost small" type="button" id="close-goal">Close</button>
+          <button class="ghost small" type="button" id="close-milestone">Close</button>
         </div>
-        <form id="goal-form" class="form overlay__form">
+        <form id="milestone-form" class="form overlay__form">
           <div class="field full">
-            <label for="goal-specific-title">S — Specific</label>
+            <label for="milestone-specific-title">S — Specific</label>
             <input
-              id="goal-specific-title"
+              id="milestone-specific-title"
               name="specific_title"
               type="text"
               placeholder="Name the exact action or behavior"
-              aria-describedby="goal-specific-title-help"
+              aria-describedby="milestone-specific-title-help"
               required
             />
-            <p class="meta helper-text" id="goal-specific-title-help">
-              State the concrete goal in a short phrase (e.g., “Write 500 words before 10am”).
+            <p class="meta helper-text" id="milestone-specific-title-help">
+              State the concrete milestone in a short phrase (e.g., “Write 500 words before 10am”).
             </p>
           </div>
           <div class="field full">
-            <label for="goal-specific-description">Specific description</label>
+            <label for="milestone-specific-description">Specific description</label>
             <textarea
-              id="goal-specific-description"
+              id="milestone-specific-description"
               name="specific_description"
               rows="3"
               placeholder="Where, when, and how you will do this"
-              aria-describedby="goal-specific-description-help"
+              aria-describedby="milestone-specific-description-help"
             ></textarea>
-            <p class="meta helper-text" id="goal-specific-description-help">
-              Describe the routine and constraints so it’s obvious what “doing the goal” looks like.
+            <p class="meta helper-text" id="milestone-specific-description-help">
+              Describe the routine and constraints so it’s obvious what “doing the milestone” looks like.
             </p>
           </div>
           <div class="field full">
-            <label for="goal-measurable">M — Measurable</label>
+            <label for="milestone-measurable">M — Measurable</label>
             <input
-              id="goal-measurable"
+              id="milestone-measurable"
               name="measurable"
               type="text"
               placeholder="Numbers, frequency, or completion condition"
-              aria-describedby="goal-measurable-help"
+              aria-describedby="milestone-measurable-help"
               required
             />
-            <p class="meta helper-text" id="goal-measurable-help">
+            <p class="meta helper-text" id="milestone-measurable-help">
               Explain how you’ll track success—counts, minutes, sessions per week, or a clear done
               condition.
             </p>
           </div>
           <div class="field full">
-            <label for="goal-achievable">A — Achievable</label>
+            <label for="milestone-achievable">A — Achievable</label>
             <input
-              id="goal-achievable"
+              id="milestone-achievable"
               name="achievable"
               type="text"
               placeholder="Why this fits your time, energy, or resources"
-              aria-describedby="goal-achievable-help"
+              aria-describedby="milestone-achievable-help"
             />
-            <p class="meta helper-text" id="goal-achievable-help">
+            <p class="meta helper-text" id="milestone-achievable-help">
               Share why this target is realistic given your current schedule, energy, and constraints.
             </p>
           </div>
           <div class="field full">
-            <label for="goal-relevant">R — Relevant</label>
+            <label for="milestone-relevant">R — Relevant</label>
             <input
-              id="goal-relevant"
+              id="milestone-relevant"
               name="relevant"
               type="text"
               placeholder="Why this matters"
-              aria-describedby="goal-relevant-help"
+              aria-describedby="milestone-relevant-help"
             />
-            <p class="meta helper-text" id="goal-relevant-help">
-              Note why this goal matters in plain language—as if explaining it to a friend.
+            <p class="meta helper-text" id="milestone-relevant-help">
+              Note why this milestone matters in plain language—as if explaining it to a friend.
             </p>
           </div>
           <div class="field">
-            <label for="goal-due">T — Time-bound</label>
+            <label for="milestone-due">T — Time-bound</label>
             <input
-              id="goal-due"
+              id="milestone-due"
               name="due_date"
               type="date"
-              aria-describedby="goal-due-help"
+              aria-describedby="milestone-due-help"
               required
             />
-            <p class="meta helper-text" id="goal-due-help">
-              Set a clear deadline so the dashboard can surface and evaluate this goal on time.
+            <p class="meta helper-text" id="milestone-due-help">
+              Set a clear deadline so the dashboard can surface and evaluate this milestone on time.
             </p>
           </div>
           <div class="field">
-            <label for="goal-tags">Tags</label>
-            <input id="goal-tags" name="tags" type="text" placeholder="focus, q1" />
+            <label for="milestone-tags">Tags</label>
+            <input id="milestone-tags" name="tags" type="text" placeholder="focus, q1" />
           </div>
           <div class="field full">
-            <label for="goal-habit-picker">Link habits</label>
+            <label for="milestone-habit-picker">Link habits</label>
             <div class="habit-picker">
-              <select id="goal-habit-picker">
+              <select id="milestone-habit-picker">
                 <option value="">Select a habit to link</option>
               </select>
-              <div id="goal-habit-chips" class="chip-row meta"></div>
+              <div id="milestone-habit-chips" class="chip-row meta"></div>
             </div>
           </div>
-          <p class="meta field-error" id="goal-form-error" role="status" aria-live="polite" hidden></p>
-          <button type="submit" class="button full">Save goal</button>
+          <p class="meta field-error" id="milestone-form-error" role="status" aria-live="polite" hidden></p>
+          <button type="submit" class="button full">Save milestone</button>
         </form>
       </div>
     </div>
@@ -449,6 +449,10 @@
           <div class="field">
             <label for="reflection-period">Period label</label>
             <input id="reflection-period" name="period_label" type="text" placeholder="2025 Q1" />
+          </div>
+          <div class="field">
+            <label for="reflection-milestone">Linked milestone (optional)</label>
+            <select id="reflection-milestone" name="milestone_id"></select>
           </div>
           <div class="field full">
             <label for="reflection-responses">Notes</label>

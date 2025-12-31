@@ -20,7 +20,7 @@
 
 # UI Design Glossary (New Habit & Habit Board)
 
-- **Detailed Panel Documentation**: For comprehensive design, goals, and enhancement matrices of individual UI panels (e.g., Energy Mix Panel, Goal Dashboard Panel), refer to the dedicated files in the `docs/panels/` directory, indexed by [UI_PANELS_DOCUMENTATION.md](UI_PANELS_DOCUMENTATION.md).
+- **Detailed Panel Documentation**: For comprehensive design objectives and enhancement matrices of individual UI panels (e.g., Energy Mix Panel, Milestone Dashboard Panel), refer to the dedicated files in the `docs/panels/` directory, indexed by [UI_PANELS_DOCUMENTATION.md](UI_PANELS_DOCUMENTATION.md).
 
 | Element Name | Description | Text Example | Panel | Style Controlled By | Conforms? | Fix Recommendation |
 |--------------|-------------|--------------|-------|---------------------|-----------|---------------------|
