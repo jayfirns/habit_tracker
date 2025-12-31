@@ -425,10 +425,22 @@ export function createEnergyMixPanel(elements = {}, helpers = {}) {
       chartCenterValue.textContent = formatFn(total);
     }
     if (chartCenterLabel) {
-      chartCenterLabel.textContent = model.valueMode === "duration" ? "minutes" : "sessions";
+      chartCenterLabel.textContent = model.valueMode === "duration" ? "" : "sessions";
     }
     if (chartTotalPill) {
       chartTotalPill.textContent = `${formatFn(total)} ${suffix}`;
+    }
+    if (chartCenterValue) {
+      if (model.valueMode === "duration") {
+        const hours = Math.floor(total / 60);
+        const minutes = Math.max(0, total - hours * 60);
+        const parts = [];
+        if (hours) parts.push(`${hours} ${hours === 1 ? "hour" : "hours"}`);
+        parts.push(`${minutes} ${minutes === 1 ? "minute" : "minutes"}`);
+        chartCenterValue.setAttribute("aria-label", parts.join(" "));
+      } else {
+        chartCenterValue.setAttribute("aria-label", `${total} sessions`);
+      }
     }
   }
 

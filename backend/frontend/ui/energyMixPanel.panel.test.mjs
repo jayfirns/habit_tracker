@@ -52,7 +52,13 @@ function setupPanel() {
       chartUpdatedNote,
     },
     {
-      formatMinutes: (v) => `${v}m`,
+      formatMinutes: (v) => {
+        const hours = Math.floor(v / 60);
+        const minutes = v % 60;
+        if (!hours) return `${minutes}m`;
+        if (!minutes) return `${hours}h`;
+        return `${hours}h ${minutes}m`;
+      },
     },
   );
 
@@ -144,4 +150,19 @@ test("test_window_updateEnergyMixData_exposed_for_dev", () => {
   assert.equal(chartCenterValue.textContent, "1");
   const secondStamp = chartContainer.getAttribute("data-last-updated");
   assert.notEqual(firstStamp, secondStamp);
+});
+
+test("test_duration_badge_excludes_minutes_suffix", () => {
+  const { panel, chartCenterValue, chartCenterLabel, chartTotalPill } = setupPanel();
+  const data = {
+    habits: [{ id: 1, name: "Long", category: "Time", completions: [{}] }],
+    timeLogs: { today: { 1: 162 } },
+    activeTimers: {},
+  };
+  panel.updateEnergyMixData(data);
+
+  const combined = `${chartCenterValue.textContent} ${chartCenterLabel.textContent}`.trim();
+  assert.equal(chartCenterValue.textContent, "2h 42m");
+  assert.ok(!combined.toLowerCase().includes("minutes"));
+  assert.ok(!chartTotalPill.textContent.toLowerCase().includes("minutes"));
 });
