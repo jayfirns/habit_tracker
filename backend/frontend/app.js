@@ -75,6 +75,7 @@ const workdayHoursInput = document.querySelector("#workday-hours");
 const workdaySaveBtn = document.querySelector("#workday-save");
 const workdayClockinBtn = document.querySelector("#workday-clockin");
 const workdayClockoutBtn = document.querySelector("#workday-clockout");
+const workdayResetBtn = document.querySelector("#workday-reset");
 const workdayWorkedOverride = document.querySelector("#workday-worked-override");
 const workdayApplyWorkedBtn = document.querySelector("#workday-apply-worked");
 const workdayProgress = document.querySelector("#workday-progress");
@@ -96,6 +97,7 @@ const state = {
   timeLogs: {},
   manualLogs: {},
   workday: {
+    workdayDate: null,
     plannedStart: "09:00",
     plannedMinutes: null,
     clockInAt: null,
@@ -156,6 +158,7 @@ const setStatus = (text, isError = false) => {
 
 function normalizeWorkdayConfig(saved) {
   const normalized = {
+    workdayDate: null,
     plannedStart: "09:00",
     plannedMinutes: null,
     clockInAt: null,
@@ -163,6 +166,8 @@ function normalizeWorkdayConfig(saved) {
     workedMinutesOverride: null,
   };
   if (!saved) return normalized;
+  if (saved.workdayDate) normalized.workdayDate = saved.workdayDate;
+  if (saved.workday_date) normalized.workdayDate = saved.workday_date;
   if (saved.plannedStart) normalized.plannedStart = saved.plannedStart;
   if (saved.planned_start) normalized.plannedStart = saved.planned_start;
   if (Number.isFinite(saved.plannedMinutes)) {
@@ -188,13 +193,14 @@ function normalizeWorkdayConfig(saved) {
   return normalized;
 }
 
-function hasWorkdayData(workday) {
-  return (
-    (Number.isFinite(workday.plannedMinutes) && workday.plannedMinutes > 0) ||
-    Boolean(workday.clockInAt) ||
-    Boolean(workday.clockOutAt) ||
-    workday.workedMinutesOverride != null
-  );
+function resetWorkdayActuals() {
+  state.workday = {
+    ...state.workday,
+    workdayDate: todayKey(),
+    clockInAt: null,
+    clockOutAt: null,
+    workedMinutesOverride: null,
+  };
 }
 
 function applyWorkdayInputs() {
@@ -210,6 +216,7 @@ function applyWorkdayInputs() {
 
 function serializeWorkdayForApi(workday) {
   return {
+    workday_date: workday.workdayDate || todayKey(),
     planned_start: workday.plannedStart || "09:00",
     planned_minutes:
       Number.isFinite(workday.plannedMinutes) && workday.plannedMinutes > 0
@@ -227,6 +234,7 @@ function serializeWorkdayForApi(workday) {
 async function loadWorkdayConfig() {
   const saved = loadJson("focusos-workday", null);
   state.workday = { ...state.workday, ...normalizeWorkdayConfig(saved) };
+  if (!state.workday.workdayDate) state.workday.workdayDate = todayKey();
   applyWorkdayInputs();
   updateWorkdayProgress();
   renderDashboard();
@@ -234,11 +242,11 @@ async function loadWorkdayConfig() {
   try {
     const remote = await apiClient.getWorkdayState();
     const normalizedRemote = normalizeWorkdayConfig(remote);
-    if (!hasWorkdayData(normalizedRemote) && hasWorkdayData(state.workday)) {
-      void saveWorkdayConfig();
-      return;
-    }
     state.workday = { ...state.workday, ...normalizedRemote };
+    if (state.workday.workdayDate !== todayKey()) {
+      resetWorkdayActuals();
+      void saveWorkdayConfig();
+    }
     saveJson("focusos-workday", state.workday);
     applyWorkdayInputs();
     updateWorkdayProgress();
@@ -249,6 +257,7 @@ async function loadWorkdayConfig() {
 }
 
 async function saveWorkdayConfig() {
+  state.workday.workdayDate = todayKey();
   saveJson("focusos-workday", state.workday);
   try {
     await apiClient.saveWorkdayState(serializeWorkdayForApi(state.workday));
@@ -848,6 +857,26 @@ workdayClockoutBtn?.addEventListener("click", () => {
   if (result.ignored) return;
   state.workday = result.workday;
   void saveWorkdayConfig();
+  updateWorkdayProgress();
+  renderDashboard();
+});
+
+workdayResetBtn?.addEventListener("click", () => {
+  const startVal = workdayStartInput?.value || "09:00";
+  const hoursVal = parseFloat(workdayHoursInput?.value);
+  const plannedMinutes =
+    Number.isFinite(hoursVal) && hoursVal > 0 ? Math.round(hoursVal * 60) : null;
+  state.workday = {
+    ...state.workday,
+    workdayDate: todayKey(),
+    plannedStart: startVal,
+    plannedMinutes,
+    clockInAt: null,
+    clockOutAt: null,
+    workedMinutesOverride: null,
+  };
+  void saveWorkdayConfig();
+  applyWorkdayInputs();
   updateWorkdayProgress();
   renderDashboard();
 });

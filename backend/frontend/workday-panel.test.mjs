@@ -40,6 +40,7 @@ function buildDom({ initialNow = "2025-01-15T09:00:00Z" } = {}) {
     <button id="workday-save" type="button">Save plan</button>
     <button id="workday-clockin" type="button">Clock in</button>
     <button id="workday-clockout" type="button">Clock out</button>
+    <button id="workday-reset" type="button">Reset day</button>
     <input id="workday-worked-override" type="number" />
     <button id="workday-apply-worked" type="button">Apply adjustment</button>
     <div id="workday-progress"></div>
@@ -74,11 +75,29 @@ function buildDom({ initialNow = "2025-01-15T09:00:00Z" } = {}) {
           json: async () => ({ id: 1, ...body }),
         };
       }
+      const cached = dom.window.localStorage.getItem("focusos-workday");
+      if (cached) {
+        const parsed = JSON.parse(cached);
+        return {
+          ok: true,
+          status: 200,
+          json: async () => ({
+            id: 1,
+            workday_date: new Date().toISOString().slice(0, 10),
+            planned_start: parsed.plannedStart ?? "09:00",
+            planned_minutes: parsed.plannedMinutes ?? null,
+            clock_in_at: parsed.clockInAt ?? null,
+            clock_out_at: parsed.clockOutAt ?? null,
+            worked_minutes_override: parsed.workedMinutesOverride ?? null,
+          }),
+        };
+      }
       return {
         ok: true,
         status: 200,
         json: async () => ({
           id: 1,
+          workday_date: new Date().toISOString().slice(0, 10),
           planned_start: "09:00",
           planned_minutes: null,
           clock_in_at: null,
@@ -241,6 +260,36 @@ test("clocked workday ticks based on plan and stops early on clock out", async (
     const actualPct = parseFloat(progress.style.width);
     const expectedPct = (60 / 180) * 100;
     assert.ok(Math.abs(actualPct - expectedPct) < 0.5);
+  } finally {
+    restore();
+  }
+});
+
+test("reset day clears clocked state and unlocks inputs", async () => {
+  // 1. Setup
+  const { dom, restore } = buildDom();
+  try {
+    const clockInAt = new Date(Date.now() - 5 * 60000).toISOString();
+    dom.window.localStorage.setItem(
+      "focusos-workday",
+      JSON.stringify({
+        plannedStart: "09:00",
+        plannedMinutes: 180,
+        clockInAt,
+        clockOutAt: null,
+        workedMinutesOverride: null,
+        workdayDate: new Date().toISOString().slice(0, 10),
+      }),
+    );
+
+    // 2. Act
+    await loadApp();
+    dom.window.document.querySelector("#workday-reset").click();
+
+    // 3. Assert
+    assert.equal(dom.window.document.querySelector("#workday-clockin").disabled, false);
+    assert.equal(dom.window.document.querySelector("#workday-clockout").disabled, true);
+    assert.equal(dom.window.document.querySelector("#workday-hours").disabled, false);
   } finally {
     restore();
   }

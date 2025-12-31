@@ -1,6 +1,6 @@
 ---
 created: 2025-12-31T00:00
-updated: 2025-12-31T10:28
+updated: 2025-12-31T11:20
 ---
 # Workday Time Glide Panel
 
@@ -21,6 +21,7 @@ This panel provides a simple, reliable daily time clock for a single workday. It
 - [x] "Save plan" button (clears any active clock state)
 - [x] "Clock in" button (single use, state locked)
 - [x] "Clock out" button (single use, state locked)
+- [x] Reset day button to clear clock state for a new session
 - [x] Manual worked minutes override (post-clock-out only, labeled)
 - [x] Progress bar with mode-appropriate labeling
 - [x] Persistence of settings via backend `/workday` API
@@ -49,7 +50,8 @@ The panel primarily interacts with client-side state and local storage. Key data
   "plannedMinutes": 480,            // Integer, total planned minutes
   "clockInAt": "2025-01-15T09:00:00.000Z",  // ISO timestamp (nullable)
   "clockOutAt": "2025-01-15T17:00:00.000Z", // ISO timestamp (nullable)
-  "workedMinutesOverride": 420      // Integer, post-clock-out override (nullable)
+  "workedMinutesOverride": 420,     // Integer, post-clock-out override (nullable)
+  "workdayDate": "2025-01-15"        // ISO date (YYYY-MM-DD)
 }
 ```
 
@@ -60,7 +62,8 @@ Server payload (snake_case):
   "planned_minutes": 480,
   "clock_in_at": "2025-01-15T09:00:00.000Z",
   "clock_out_at": "2025-01-15T17:00:00.000Z",
-  "worked_minutes_override": 420
+  "worked_minutes_override": 420,
+  "workday_date": "2025-01-15"
 }
 ```
 
@@ -84,10 +87,17 @@ Derived data (calculated client-side):
 - Confirm local storage key `focusos-workday` only acts as a fallback cache.
 - Confirm that manual worked overrides only apply after clock out and are labeled explicitly.
 - Verify that planned settings are ignored for calculations once clocking starts.
+- If `workday_date` differs from today, the client should reset actual clock fields before applying UI locks.
 - Check time zone handling if the application ever expands beyond local network use.
+
+## Behavioral Notes
+
+- Clock in/out are single-use per day. After a clock-out, the panel remains in a completed state until reset.
+- Use “Reset day” to start a new clocked session without changing the planned inputs.
 
 ## Failure Modes & Recovery
 
 - **Locked inputs across devices**: If planned hours or clock buttons are disabled unexpectedly, check `/workday` for a stale `clock_in_at` or `clock_out_at`. Reset the state to idle via `PUT /workday` with all fields null.
 - **Cross-device mismatch**: If one device shows running and another does not, verify both devices point to the same backend host and refresh to load the latest `/workday` state.
 - **Offline fallback drift**: If the backend is unreachable, local storage may diverge. Once connectivity returns, refresh the UI to reconcile with `/workday`.
+- **Daily rollover**: If yesterday’s clock remains active, use the in-panel “Reset day” action or reset via `/workday` to clear actuals.

@@ -130,6 +130,7 @@ class ReflectionRead(ReflectionBase):
 
 
 class WorkdayStateBase(BaseModel):
+    workday_date: Optional[datetime.date] = None
     planned_start: str = Field(default="09:00")
     planned_minutes: Optional[int] = None
     clock_in_at: Optional[str] = None

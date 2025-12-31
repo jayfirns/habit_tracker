@@ -1,6 +1,6 @@
 ---
 created: 2025-12-30T20:19
-updated: 2025-12-31T10:31
+updated: 2025-12-31T11:26
 ---
 # CHANGELOG.md - FocusOS Project Progress
 
@@ -49,21 +49,64 @@ This document tracks significant changes, features, and fixes implemented throug
 ## Unreleased - Time Glide, Focus Tracking, SMART Enhancements
 
 ### Added
-- **Backend**: Introduced `WorkdayState` SQLAlchemy model to persist workday planning and clocking details.
-- **Backend**: Added CRUD operations for `WorkdayState` in `crud.py`.
-- **Backend**: Implemented FastAPI endpoints (`/workday` GET/PUT) for managing workday state.
-- **Frontend**: Implemented API client methods (`getWorkdayState`, `saveWorkdayState`) for interacting with the backend workday state.
-- **Frontend**: Refactored `loadWorkdayConfig` and `saveWorkdayConfig` to sync workday state with the backend, with local storage fallback.
-- **Frontend**: Added `hasWorkdayData` and `serializeWorkdayForApi` utility functions.
-- **Tests**: Expanded `workday-panel.test.mjs` to mock `/workday` API calls, enabling comprehensive testing of frontend workday state logic.
-- **Tests**: Added new API tests (`test_get_workday_state_creates_default`, `test_update_workday_state_persists`) for the `WorkdayState` endpoints.
-- **Schema**: Defined `WorkdayState` Pydantic schemas (`WorkdayStateBase`, `WorkdayStateUpdate`, `WorkdayStateRead`) for API validation.
-- **Docs**: Updated `LOGIC_RULES.md` with "Workday Time Glide Rules" section, detailing backend persistence, modes, clocking, UI locking, and progress calculation.
-- **Docs**: Updated `panels/WorkdayTimeGlidePanel.md` to reflect backend persistence, local storage fallback, server payload structure, and refined development/debug notes.
-- **Docs**: Updated `HABIT_ARCHITECTURE.md` to include "Workday State" as a "Supporting System Entity" in its Concept Hierarchy and Naming Guidelines.
+
+-   **Backend**: Introduced `WorkdayState` SQLAlchemy model to persist workday planning and clocking details.
+
+-   **Backend**: Added CRUD operations for `WorkdayState` in `crud.py`.
+
+-   **Backend**: Implemented FastAPI endpoints (`/workday` GET/PUT) for managing workday state.
+
+-   **Backend**: Introduced `workday_date` field to `WorkdayState` model and schemas to track daily state.
+
+-   **Frontend**: Implemented API client methods (`getWorkdayState`, `saveWorkdayState`) for interacting with the backend workday state.
+
+-   **Frontend**: Refactored `loadWorkdayConfig` and `saveWorkdayConfig` to sync workday state with the backend, with local storage fallback.
+
+-   **Frontend**: Added `hasWorkdayData` and `serializeWorkdayForApi` utility functions.
+
+-   **Frontend**: Added "Reset day" button and logic to clear clock-in/out and worked minutes, allowing a fresh start for the day.
+
+-   **Tests**: Expanded `workday-panel.test.mjs` to mock `/workday` API calls, enabling comprehensive testing of frontend workday state logic.
+
+-   **Tests**: Added new API tests (`test_get_workday_state_creates_default`, `test_update_workday_state_persists`) for the `WorkdayState` endpoints.
+
+-   **Schema**: Defined `WorkdayState` Pydantic schemas (`WorkdayStateBase`, `WorkdayStateUpdate`, `WorkdayStateRead`) for API validation.
+
+-   **Docs**: Updated `LOGIC_RULES.md` with "Workday Time Glide Rules" section, detailing backend persistence, modes, clocking, UI locking, and progress calculation.
+
+-   **Docs**: Updated `LOGIC_RULES.md` and `WorkdayTimeGlidePanel.md` with rules and behavior for `workday_date` and reset functionality.
+
+-   **Docs**: Updated `panels/WorkdayTimeGlidePanel.md` to reflect backend persistence, local storage fallback, server payload structure, and refined development/debug notes.
+
+-   **Docs**: Updated `HABIT_ARCHITECTURE.md` to include "Workday State" as a "Supporting System Entity" in its Concept Hierarchy and Naming Guidelines.
+
+-   **Migration**: Added `backend/migrate_workday_state.py` to add `workday_date` column to existing databases.
+
+
 
 ### Fixed
-- **Frontend**: Corrected progress bar calculation in `updateWorkdayProgress` to accurately reflect worked minutes against planned minutes.
+
+-   **Frontend**: Corrected progress bar calculation in `updateWorkdayProgress` to accurately reflect worked minutes against planned minutes.
+
+### Fixed
+
+-   **Frontend**: Corrected progress bar calculation in `updateWorkdayProgress` within `app.js` to accurately reflect worked minutes against planned minutes, handling zero/null planned minutes.
+
+-   **Frontend**: `backend/frontend/ui/dashboardView.js` updated to consume the new `computeWorkdayMinutes` output and dynamically render workday metrics.
+
+-   **Docs**: `docs/ACTIONPLAN.md`, `docs/UI_PANELS_DOCUMENTATION.md`, and `docs/panels/WorkdayTimeGlidePanel.md` updated to reflect the new "planned vs. clocked" workday model, UI changes, and state management approach.
+
+
+
+### Changed
+
+-   **Backend**: Modified `crud.py` to handle `workday_date` during state creation and updates.
+
+-   **Frontend**: `app.js`, `workday-panel.test.mjs`, and `workday-state.js` updated to integrate `workday_date` and "Reset day" functionality.
+
+-   **Tests**: Updated `test_api.py` and `workday-panel.test.mjs` to include tests for `workday_date` and reset actions.
+
+-   **Docs**: Reorganized documentation files by moving several markdown files from the root directory into the `docs/` and `docs/frontend/` directories to improve repository structure.
 ### Fixed
 - **Frontend**: Corrected progress bar calculation in `updateWorkdayProgress` within `app.js` to accurately reflect worked minutes against planned minutes, handling zero/null planned minutes.
 - **Frontend**: `backend/frontend/ui/dashboardView.js` updated to consume the new `computeWorkdayMinutes` output and dynamically render workday metrics.

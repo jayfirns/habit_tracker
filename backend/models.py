@@ -79,6 +79,7 @@ class WorkdayState(Base):
     __tablename__ = "workday_states"
 
     id = Column(Integer, primary_key=True, index=True)
+    workday_date = Column(String, nullable=True)
     planned_start = Column(String, default="09:00")
     planned_minutes = Column(Integer, nullable=True)
     clock_in_at = Column(String, nullable=True)

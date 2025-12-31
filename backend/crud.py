@@ -242,10 +242,19 @@ def save_workday_state(
     db: Session, workday_in: schemas.WorkdayStateUpdate
 ) -> models.WorkdayState:
     state = get_workday_state(db)
+    workday_date = (
+        workday_in.workday_date.isoformat()
+        if workday_in.workday_date
+        else date.today().isoformat()
+    )
     if state is None:
-        state = models.WorkdayState(planned_start=workday_in.planned_start or "09:00")
+        state = models.WorkdayState(
+            workday_date=workday_date,
+            planned_start=workday_in.planned_start or "09:00",
+        )
         db.add(state)
 
+    state.workday_date = workday_date
     state.planned_start = workday_in.planned_start or "09:00"
     state.planned_minutes = workday_in.planned_minutes
     state.clock_in_at = workday_in.clock_in_at

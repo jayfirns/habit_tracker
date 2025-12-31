@@ -32,6 +32,7 @@ export function getWorkdayUiState(workday = {}) {
 
 export function applyWorkdayEvent(workday = {}, event) {
   const next = {
+    workdayDate: workday.workdayDate || null,
     plannedStart: workday.plannedStart || "09:00",
     plannedMinutes:
       Number.isFinite(workday.plannedMinutes) && workday.plannedMinutes > 0

@@ -229,6 +229,7 @@ def test_delete_habit_does_not_affect_other_habits(db_session):
 def test_get_workday_state_creates_default(db_session):
     state = get_workday_state(db_session)
     assert state.id is not None
+    assert state.workday_date == date.today().isoformat()
     assert state.planned_start == "09:00"
     assert state.planned_minutes is None
     assert state.clock_in_at is None
@@ -237,6 +238,7 @@ def test_get_workday_state_creates_default(db_session):
 def test_update_workday_state_persists(db_session):
     updated = update_workday_state(
         schemas.WorkdayStateUpdate(
+            workday_date=date(2025, 1, 15),
             planned_start="08:30",
             planned_minutes=180,
             clock_in_at="2025-01-15T08:30:00Z",
@@ -245,12 +247,14 @@ def test_update_workday_state_persists(db_session):
         ),
         db_session,
     )
+    assert updated.workday_date == "2025-01-15"
     assert updated.planned_start == "08:30"
     assert updated.planned_minutes == 180
     assert updated.clock_in_at == "2025-01-15T08:30:00Z"
 
     fetched = get_workday_state(db_session)
     assert fetched.id == updated.id
+    assert fetched.workday_date == "2025-01-15"
     assert fetched.planned_minutes == 180
 
 

@@ -1,6 +1,6 @@
 ---
 created: 2025-12-30T22:02
-updated: 2025-12-31T10:28
+updated: 2025-12-31T11:20
 ---
 # LOGIC_RULES.md
 
@@ -73,12 +73,14 @@ A Task (Habit) has no explicit state. It is either present in the system or it i
 - A Workday is in exactly one of three modes: `empty`, `planned`, or `clocked`.
 - `planned` mode is active when `planned_minutes > 0` and no clock-in exists.
 - `clocked` mode is active when `clock_in_at` is set, regardless of planned values.
+- If `workday_date` does not match today, actual clock fields **must** reset to idle before UI locking is applied.
 
 ### Clocking Rules
 
 - A day can only be clocked in once and clocked out once.
 - `clock_out_at` **must not** be set unless `clock_in_at` exists.
 - Manual worked-time overrides **must** be accepted only after clock out.
+- After a clock-out, the state remains completed until a reset is performed.
 
 ### UI Locking Rules
 
