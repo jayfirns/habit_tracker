@@ -14,3 +14,7 @@ backend/alembic.ini
 backend/*.db
 data/
 backend/data/
+
+# Frontend dependencies
+backend/frontend/node_modules/
+backend/frontend/node_modules/.package-lock.json

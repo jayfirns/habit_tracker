@@ -1,3 +1,5 @@
+import { createEnergyMixPanel } from "./energyMixPanel.js";
+
 export function createDashboardView(elements, helpers) {
   const {
     periodLabel,
@@ -15,8 +17,11 @@ export function createDashboardView(elements, helpers) {
     goalNextStepEl,
     chartTotalPill,
     chartCenterValue,
+    chartCenterLabel,
     categoryChart,
     categoryLegend,
+    energyTabs,
+    energyValueToggle,
     timeSummaryList,
     timeWorkdayPill,
     timeSummaryPercent,
@@ -32,6 +37,19 @@ export function createDashboardView(elements, helpers) {
     collectHabitsWithTodayCompletions,
     latestCompletionNote,
   } = helpers;
+
+  const energyMixPanel = createEnergyMixPanel(
+    {
+      chartTotalPill,
+      chartCenterValue,
+      chartCenterLabel,
+      categoryChart,
+      categoryLegend,
+      tabsContainer: energyTabs,
+      valueToggleContainer: energyValueToggle,
+    },
+    { formatMinutes },
+  );
 
   function renderDashboard({ now, habits, goals, reflections, workday, timeLogs, activeTimers }) {
     if (!periodLabel || !periodPrompt || !periodActions || !habitCount || !streakSummaryCard)
@@ -57,7 +75,7 @@ export function createDashboardView(elements, helpers) {
     habitCount.textContent = habits.length;
     streakSummaryCard.textContent = `${habits.reduce((sum, h) => sum + (h.streak || 0), 0)} streak days total`;
     renderGoalInsights(goals, habits, reflections);
-    renderCategoryChart(habits);
+    energyMixPanel.render({ habits, timeLogs, activeTimers, now });
     renderTimeSummary({ habits, workday, timeLogs, activeTimers });
   }
 
@@ -145,100 +163,6 @@ export function createDashboardView(elements, helpers) {
         goalNextStepEl.textContent = "Use SMART to define one measurable outcome this week.";
       }
     }
-  }
-
-  function renderCategoryChart(habits = []) {
-    if (!categoryChart || !categoryLegend) return;
-
-    const stats = habits.reduce((acc, habit) => {
-      const category = habit.category || "Uncategorized";
-      const completions = (habit.completions || []).length;
-      if (!acc[category]) {
-        acc[category] = { completions: 0, habits: 0 };
-      }
-      acc[category].completions += completions;
-      acc[category].habits += 1;
-      return acc;
-    }, {});
-    const entries = Object.entries(stats).sort((a, b) => b[1].completions - a[1].completions);
-    const totalCompletions = entries.reduce((sum, [, data]) => sum + data.completions, 0);
-
-    if (chartCenterValue) {
-      chartCenterValue.textContent = totalCompletions;
-    }
-    if (chartTotalPill) {
-      chartTotalPill.textContent = `${totalCompletions} logged`;
-    }
-
-    categoryChart.innerHTML = "";
-    categoryLegend.innerHTML = "";
-
-    if (!entries.length || totalCompletions === 0) {
-      categoryChart.innerHTML = `<p class="meta">Log completions to see your mix.</p>`;
-      categoryLegend.innerHTML = `<p class="meta">No completions yet. Add a note to your next one.</p>`;
-      return;
-    }
-
-    const svgNS = "http://www.w3.org/2000/svg";
-    const size = 220;
-    const r = 90;
-    const circumference = 2 * Math.PI * r;
-    const svg = document.createElementNS(svgNS, "svg");
-    svg.setAttribute("viewBox", `0 0 ${size} ${size}`);
-    svg.setAttribute("width", size);
-    svg.setAttribute("height", size);
-
-    const bgCircle = document.createElementNS(svgNS, "circle");
-    bgCircle.setAttribute("cx", size / 2);
-    bgCircle.setAttribute("cy", size / 2);
-    bgCircle.setAttribute("r", r);
-    bgCircle.setAttribute("fill", "none");
-    bgCircle.setAttribute("stroke", "rgba(255,255,255,0.05)");
-    bgCircle.setAttribute("stroke-width", "22");
-    svg.appendChild(bgCircle);
-
-    const palette = [
-      "#ff6f61",
-      "#36c2cf",
-      "#8f7bff",
-      "#ffd166",
-      "#4ade80",
-      "#f472b6",
-      "#22d3ee",
-      "#f97316",
-    ];
-    let offset = 0;
-
-    entries.forEach(([category, data], idx) => {
-      const share = data.completions / totalCompletions;
-      const segment = Math.max(share * circumference, 2);
-      const circle = document.createElementNS(svgNS, "circle");
-      circle.setAttribute("cx", size / 2);
-      circle.setAttribute("cy", size / 2);
-      circle.setAttribute("r", r);
-      circle.setAttribute("fill", "none");
-      circle.setAttribute("stroke", palette[idx % palette.length]);
-      circle.setAttribute("stroke-width", "22");
-      circle.setAttribute("stroke-dasharray", `${segment} ${circumference - segment}`);
-      circle.setAttribute("stroke-dashoffset", `${-offset}`);
-      circle.setAttribute("transform", `rotate(-90 ${size / 2} ${size / 2})`);
-      circle.setAttribute("stroke-linecap", "butt");
-      svg.appendChild(circle);
-      offset += segment;
-
-      const legend = document.createElement("div");
-      legend.className = "legend-item";
-      legend.innerHTML = `
-        <span class="legend-swatch" style="background:${palette[idx % palette.length]}"></span>
-        <div class="legend-text">
-          <span class="legend-title">${category}</span>
-          <span class="meta">${data.completions} completions · ${data.habits} habits</span>
-        </div>
-      `;
-      categoryLegend.appendChild(legend);
-    });
-
-    categoryChart.appendChild(svg);
   }
 
   function renderTimeSummary({ habits, workday, timeLogs, activeTimers }) {

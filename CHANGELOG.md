@@ -7,17 +7,25 @@ This document tracks significant changes, features, and fixes implemented throug
 ## Unreleased - Time Glide, Focus Tracking, SMART Enhancements
 
 ### Added
+- **Docs**: Added `TESTING_MANDATES.md` detailing project-wide testing standards and workflow.
+- **Tests**: Added `jsdom`-based unit tests for Energy Mix Panel UI rendering functions; refactored `energyMixPanel.js` for testability.
+- **Docs**: Added bidirectional links between `DESIGN_GLOSSARY.md` and `UI_PANELS_DOCUMENTATION.md`.
+- **Docs**: Added detailed dependency analysis for `.js-category` to `DESIGN_GLOSSARY.md`.
 - **Workday Time Glide**: Gradient bar with planned vs. worked minutes, clock-out, and manual worked override so summaries stay honest to the day.
 - **Focused Time**: Habit-level stopwatch with live counter, manual adjustment per habit, and focus parsing from completion notes to keep daily totals accurate.
 - **Dashboards**: SMART pulse dashboard, Energy Mix pie chart, and a 5-column daily time summary (planned, worked, % plan, focused, % focused).
 - **TDD Utilities**: `time-utils` tests covering focus parsing, time formatting, and workday math.
 
 ### Changed
+- **Docs**: Updated `TESTING_MANDATES.md` with new insights on UI interaction testing and refactoring safeguards.
+- Refactored `energyMixPanel.js` to improve testability, robustness, and empty state handling.
 - Time summary and habit cards now consume a single source of truth for focus minutes, including manual overrides and active timers.
 - Goals/SMART UI tightened with linked habits and reflection hooks.
 - SMART goal form now sends the backend-compatible payload, surfaces clearer save errors, and the modal footprint is slightly smaller for easier use.
 
 ### Fixed
+- Fixed non-functional tabs on the Energy Mix Panel by correcting a data attribute mismatch between the HTML and JavaScript.
+- Safely removed redundant `.js-category` element from habit cards, fixing a critical rendering failure on the Habit Board.
 - Eliminated double-counting of focus minutes across completions, timers, and overrides; ensured manual worked values propagate through all calculations.
 
 ## 0.1.2 - 2025-12-30 (Frontend Modularization and Gitignore Updates)
