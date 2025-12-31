@@ -147,3 +147,18 @@ def list_reflections(reflection_type: str | None = None, db: Session = Depends(g
 @app.post("/reflections", response_model=schemas.ReflectionRead, status_code=status.HTTP_201_CREATED)
 def create_reflection(reflection: schemas.ReflectionCreate, db: Session = Depends(get_db)):
     return crud.create_reflection(db, reflection)
+
+
+@app.get("/workday", response_model=schemas.WorkdayStateRead)
+def get_workday_state(db: Session = Depends(get_db)):
+    state = crud.get_workday_state(db)
+    if state is None:
+        state = crud.save_workday_state(db, schemas.WorkdayStateUpdate())
+    return state
+
+
+@app.put("/workday", response_model=schemas.WorkdayStateRead)
+def update_workday_state(
+    workday: schemas.WorkdayStateUpdate, db: Session = Depends(get_db)
+):
+    return crud.save_workday_state(db, workday)

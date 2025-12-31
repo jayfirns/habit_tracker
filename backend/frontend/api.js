@@ -35,5 +35,8 @@ export function makeApi(baseUrl) {
         method: "POST",
         body: JSON.stringify(payload),
       }),
+    getWorkdayState: () => request("/workday"),
+    saveWorkdayState: (payload) =>
+      request("/workday", { method: "PUT", body: JSON.stringify(payload) }),
   };
 }

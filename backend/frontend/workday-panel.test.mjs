@@ -62,11 +62,37 @@ function buildDom({ initialNow = "2025-01-15T09:00:00Z" } = {}) {
   });
   global.Date = clock.FakeDate;
   global.confirm = () => true;
-  global.fetch = async () => ({
-    ok: true,
-    status: 200,
-    json: async () => [],
-  });
+  global.fetch = async (url, options = {}) => {
+    const resolved = typeof url === "string" ? new URL(url, "http://localhost") : url;
+    const pathname = resolved.pathname || "/";
+    if (pathname === "/workday") {
+      if ((options.method || "GET").toUpperCase() === "PUT") {
+        const body = options.body ? JSON.parse(options.body) : {};
+        return {
+          ok: true,
+          status: 200,
+          json: async () => ({ id: 1, ...body }),
+        };
+      }
+      return {
+        ok: true,
+        status: 200,
+        json: async () => ({
+          id: 1,
+          planned_start: "09:00",
+          planned_minutes: null,
+          clock_in_at: null,
+          clock_out_at: null,
+          worked_minutes_override: null,
+        }),
+      };
+    }
+    return {
+      ok: true,
+      status: 200,
+      json: async () => [],
+    };
+  };
   global.setInterval = (fn) => {
     intervalCallbacks.push(fn);
     return intervalCallbacks.length;

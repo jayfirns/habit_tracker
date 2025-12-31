@@ -1,6 +1,6 @@
 ---
 created: 2025-12-30T20:19
-updated: 2025-12-31T09:48
+updated: 2025-12-31T10:15
 ---
 # CHANGELOG.md - FocusOS Project Progress
 
@@ -49,19 +49,20 @@ This document tracks significant changes, features, and fixes implemented throug
 ## Unreleased - Time Glide, Focus Tracking, SMART Enhancements
 
 ### Added
-- **Docs**: Created `LOGIC_RULES.md` to document system-level behavioral rules for deletion and modification of tasks and goals.
-- **Feature**: Implemented soft-delete for goals by setting their status to "archived", preserving goal history.
-- **Feature**: Enhanced habit deletion to purge all associated local data (time logs, manual logs, and active timers) from the frontend state.
-- **Frontend**: Enhanced workday time calculation (`computeWorkdayMinutes`) to provide detailed metrics including mode (planned, clocked, empty), clock state (idle, running, completed), planned, worked, and remaining minutes. `remainingMinutes` is now `null` when in a completed clock state.
-- **Frontend**: Introduced `workday-state.js` module for managing complex workday state transitions (plan, clock in, clock out, override worked minutes) and deriving UI state for controls.
-- **Tests**: Added comprehensive unit tests for `computeWorkdayMinutes` covering various clock states, planned time, and worked overrides.
-- **Tests**: Added dedicated unit tests for `workday-state.js` functions (`applyWorkdayEvent`, `getWorkdayUiState`) covering event handling, clock state logic, and UI control enablement/disablement.
-- **Tests**: Added `renderDashboard` tests to verify correct display of workday metrics in the `time-workday-pill` based on calculated mode.
-- **UI**: Added "Clock in" button and updated labels for workday controls (e.g., "Planned hours", "Save plan", "Adjusted worked time", "Apply adjustment").
+- **Backend**: Introduced `WorkdayState` SQLAlchemy model to persist workday planning and clocking details.
+- **Backend**: Added CRUD operations for `WorkdayState` in `crud.py`.
+- **Backend**: Implemented FastAPI endpoints (`/workday` GET/PUT) for managing workday state.
+- **Frontend**: Implemented API client methods (`getWorkdayState`, `saveWorkdayState`) for interacting with the backend workday state.
+- **Frontend**: Refactored `loadWorkdayConfig` and `saveWorkdayConfig` to sync workday state with the backend, with local storage fallback.
+- **Frontend**: Added `hasWorkdayData` and `serializeWorkdayForApi` utility functions.
+- **Tests**: Expanded `workday-panel.test.mjs` to mock `/workday` API calls, enabling comprehensive testing of frontend workday state logic.
+- **Tests**: Added new API tests (`test_get_workday_state_creates_default`, `test_update_workday_state_persists`) for the `WorkdayState` endpoints.
+- **Schema**: Defined `WorkdayState` Pydantic schemas (`WorkdayStateBase`, `WorkdayStateUpdate`, `WorkdayStateRead`) for API validation..
 
 ### Fixed
 - **Frontend**: Corrected progress bar calculation in `updateWorkdayProgress` to accurately reflect worked minutes against planned minutes.
-- **Frontend**: `backend/frontend/time-utils.js`'s `computeWorkdayMinutes` refactored to align with the new "planned vs. clocked" state model.
+### Fixed
+- **Frontend**: Corrected progress bar calculation in `updateWorkdayProgress` within `app.js` to accurately reflect worked minutes against planned minutes, handling zero/null planned minutes.
 - **Frontend**: `backend/frontend/ui/dashboardView.js` updated to consume the new `computeWorkdayMinutes` output and dynamically render workday metrics.
 - **Docs**: `docs/ACTIONPLAN.md`, `docs/UI_PANELS_DOCUMENTATION.md`, and `docs/panels/WorkdayTimeGlidePanel.md` updated to reflect the new "planned vs. clocked" workday model, UI changes, and state management approach.
 
@@ -89,7 +90,9 @@ This document tracks significant changes, features, and fixes implemented throug
 ### Fixed
 - Fixed non-functional tabs on the Energy Mix Panel by correcting a data attribute mismatch between the HTML and JavaScript.
 - Safely removed redundant `.js-category` element from habit cards, fixing a critical rendering failure on the Habit Board.
-- Eliminated double-counting of focus minutes across completions, timers, and overrides; ensured manual worked values propagate through all calculations.
+### Changed
+- **Frontend**: Updated `normalizeWorkdayConfig` to correctly handle `snake_case` keys from the API for workday state.
+- **Frontend**: Changed calls to `saveWorkdayConfig` to `void saveWorkdayConfig()` to correctly handle the now-asynchronous function.
 
 ## 0.1.2 - 2025-12-30 (Frontend Modularization and Gitignore Updates)
 

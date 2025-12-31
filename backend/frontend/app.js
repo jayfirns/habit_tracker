@@ -164,13 +164,22 @@ function normalizeWorkdayConfig(saved) {
   };
   if (!saved) return normalized;
   if (saved.plannedStart) normalized.plannedStart = saved.plannedStart;
+  if (saved.planned_start) normalized.plannedStart = saved.planned_start;
   if (Number.isFinite(saved.plannedMinutes)) {
     normalized.plannedMinutes = Math.floor(saved.plannedMinutes);
   }
+  if (Number.isFinite(saved.planned_minutes)) {
+    normalized.plannedMinutes = Math.floor(saved.planned_minutes);
+  }
   if (saved.clockInAt) normalized.clockInAt = saved.clockInAt;
   if (saved.clockOutAt) normalized.clockOutAt = saved.clockOutAt;
+  if (saved.clock_in_at) normalized.clockInAt = saved.clock_in_at;
+  if (saved.clock_out_at) normalized.clockOutAt = saved.clock_out_at;
   if (saved.workedMinutesOverride != null) {
     normalized.workedMinutesOverride = Math.floor(saved.workedMinutesOverride);
+  }
+  if (saved.worked_minutes_override != null) {
+    normalized.workedMinutesOverride = Math.floor(saved.worked_minutes_override);
   }
   if (!saved.plannedStart && saved.start) normalized.plannedStart = saved.start;
   if (normalized.plannedMinutes == null && Number.isFinite(saved.hours)) {
@@ -179,9 +188,16 @@ function normalizeWorkdayConfig(saved) {
   return normalized;
 }
 
-function loadWorkdayConfig() {
-  const saved = loadJson("focusos-workday", null);
-  state.workday = { ...state.workday, ...normalizeWorkdayConfig(saved) };
+function hasWorkdayData(workday) {
+  return (
+    (Number.isFinite(workday.plannedMinutes) && workday.plannedMinutes > 0) ||
+    Boolean(workday.clockInAt) ||
+    Boolean(workday.clockOutAt) ||
+    workday.workedMinutesOverride != null
+  );
+}
+
+function applyWorkdayInputs() {
   if (workdayStartInput) workdayStartInput.value = state.workday.plannedStart || "09:00";
   if (workdayHoursInput) {
     workdayHoursInput.value =
@@ -192,8 +208,53 @@ function loadWorkdayConfig() {
   }
 }
 
-function saveWorkdayConfig() {
+function serializeWorkdayForApi(workday) {
+  return {
+    planned_start: workday.plannedStart || "09:00",
+    planned_minutes:
+      Number.isFinite(workday.plannedMinutes) && workday.plannedMinutes > 0
+        ? Math.floor(workday.plannedMinutes)
+        : null,
+    clock_in_at: workday.clockInAt || null,
+    clock_out_at: workday.clockOutAt || null,
+    worked_minutes_override:
+      workday.workedMinutesOverride != null
+        ? Math.floor(workday.workedMinutesOverride)
+        : null,
+  };
+}
+
+async function loadWorkdayConfig() {
+  const saved = loadJson("focusos-workday", null);
+  state.workday = { ...state.workday, ...normalizeWorkdayConfig(saved) };
+  applyWorkdayInputs();
+  updateWorkdayProgress();
+  renderDashboard();
+
+  try {
+    const remote = await apiClient.getWorkdayState();
+    const normalizedRemote = normalizeWorkdayConfig(remote);
+    if (!hasWorkdayData(normalizedRemote) && hasWorkdayData(state.workday)) {
+      void saveWorkdayConfig();
+      return;
+    }
+    state.workday = { ...state.workday, ...normalizedRemote };
+    saveJson("focusos-workday", state.workday);
+    applyWorkdayInputs();
+    updateWorkdayProgress();
+    renderDashboard();
+  } catch (err) {
+    console.warn("Failed to load workday state", err);
+  }
+}
+
+async function saveWorkdayConfig() {
   saveJson("focusos-workday", state.workday);
+  try {
+    await apiClient.saveWorkdayState(serializeWorkdayForApi(state.workday));
+  } catch (err) {
+    console.warn("Failed to sync workday state", err);
+  }
 }
 
 function loadTimeLogs() {
@@ -270,7 +331,11 @@ function updateWorkdayProgress() {
   let pct = 0;
 
   if (metrics.mode === "clocked") {
-    pct = metrics.workedMinutes > 0 ? 100 : 0;
+    const plannedBase = metrics.plannedMinutes > 0 ? metrics.plannedMinutes : 480;
+    pct =
+      metrics.workedMinutes > 0
+        ? Math.min(100, Math.max(0, (metrics.workedMinutes / plannedBase) * 100))
+        : 0;
   }
   workdayProgress.style.width = `${pct}%`;
 
@@ -758,7 +823,7 @@ workdaySaveBtn?.addEventListener("click", () => {
   });
   if (result.ignored) return;
   state.workday = result.workday;
-  saveWorkdayConfig();
+  void saveWorkdayConfig();
   updateWorkdayProgress();
   renderDashboard();
 });
@@ -770,7 +835,7 @@ workdayClockinBtn?.addEventListener("click", () => {
   });
   if (result.ignored) return;
   state.workday = result.workday;
-  saveWorkdayConfig();
+  void saveWorkdayConfig();
   updateWorkdayProgress();
   renderDashboard();
 });
@@ -782,7 +847,7 @@ workdayClockoutBtn?.addEventListener("click", () => {
   });
   if (result.ignored) return;
   state.workday = result.workday;
-  saveWorkdayConfig();
+  void saveWorkdayConfig();
   updateWorkdayProgress();
   renderDashboard();
 });
@@ -796,7 +861,7 @@ workdayApplyWorkedBtn?.addEventListener("click", () => {
   });
   if (result.ignored) return;
   state.workday = result.workday;
-  saveWorkdayConfig();
+  void saveWorkdayConfig();
   updateWorkdayProgress();
   renderDashboard();
 });

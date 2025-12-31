@@ -127,3 +127,21 @@ class ReflectionRead(ReflectionBase):
     id: int
 
     model_config = ConfigDict(from_attributes=True)
+
+
+class WorkdayStateBase(BaseModel):
+    planned_start: str = Field(default="09:00")
+    planned_minutes: Optional[int] = None
+    clock_in_at: Optional[str] = None
+    clock_out_at: Optional[str] = None
+    worked_minutes_override: Optional[int] = None
+
+
+class WorkdayStateUpdate(WorkdayStateBase):
+    pass
+
+
+class WorkdayStateRead(WorkdayStateBase):
+    id: int
+
+    model_config = ConfigDict(from_attributes=True)

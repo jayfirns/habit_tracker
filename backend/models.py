@@ -73,3 +73,14 @@ class Reflection(Base):
     submitted_at = Column(String)
     milestone_id = Column(Integer, ForeignKey("milestones.id"), nullable=True)
     rating = Column(String)  # on_track, blocked, ahead, complete
+
+
+class WorkdayState(Base):
+    __tablename__ = "workday_states"
+
+    id = Column(Integer, primary_key=True, index=True)
+    planned_start = Column(String, default="09:00")
+    planned_minutes = Column(Integer, nullable=True)
+    clock_in_at = Column(String, nullable=True)
+    clock_out_at = Column(String, nullable=True)
+    worked_minutes_override = Column(Integer, nullable=True)

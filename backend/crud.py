@@ -230,3 +230,29 @@ def create_reflection(db: Session, reflection_in: schemas.ReflectionCreate) -> m
     db.commit()
     db.refresh(reflection)
     return reflection
+
+
+# Workday state
+def get_workday_state(db: Session) -> Optional[models.WorkdayState]:
+    stmt = select(models.WorkdayState)
+    return db.scalars(stmt).first()
+
+
+def save_workday_state(
+    db: Session, workday_in: schemas.WorkdayStateUpdate
+) -> models.WorkdayState:
+    state = get_workday_state(db)
+    if state is None:
+        state = models.WorkdayState(planned_start=workday_in.planned_start or "09:00")
+        db.add(state)
+
+    state.planned_start = workday_in.planned_start or "09:00"
+    state.planned_minutes = workday_in.planned_minutes
+    state.clock_in_at = workday_in.clock_in_at
+    state.clock_out_at = workday_in.clock_out_at
+    state.worked_minutes_override = workday_in.worked_minutes_override
+
+    db.add(state)
+    db.commit()
+    db.refresh(state)
+    return state

@@ -20,10 +20,12 @@ from main import (  # noqa: E402
     create_milestone,
     delete_habit,
     get_habit,
+    get_workday_state,
     list_completions,
     list_habits,
     list_milestones,
     update_habit,
+    update_workday_state,
 )
 
 TEST_DATABASE_URL = "sqlite:///:memory:"
@@ -222,6 +224,34 @@ def test_delete_habit_does_not_affect_other_habits(db_session):
     assert len(remaining) == 1
     assert remaining[0].id == habit_b.id
     assert len(remaining[0].completions) == 1
+
+
+def test_get_workday_state_creates_default(db_session):
+    state = get_workday_state(db_session)
+    assert state.id is not None
+    assert state.planned_start == "09:00"
+    assert state.planned_minutes is None
+    assert state.clock_in_at is None
+
+
+def test_update_workday_state_persists(db_session):
+    updated = update_workday_state(
+        schemas.WorkdayStateUpdate(
+            planned_start="08:30",
+            planned_minutes=180,
+            clock_in_at="2025-01-15T08:30:00Z",
+            clock_out_at=None,
+            worked_minutes_override=None,
+        ),
+        db_session,
+    )
+    assert updated.planned_start == "08:30"
+    assert updated.planned_minutes == 180
+    assert updated.clock_in_at == "2025-01-15T08:30:00Z"
+
+    fetched = get_workday_state(db_session)
+    assert fetched.id == updated.id
+    assert fetched.planned_minutes == 180
 
 
 def test_complete_habit_updates_streak_and_last_completed(db_session):
