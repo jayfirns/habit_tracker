@@ -1,3 +1,7 @@
+---
+created: 2025-12-30T20:19
+updated: 2025-12-31T00:02
+---
 # CHANGELOG.md - FocusOS Project Progress
 
 This document tracks significant changes, features, and fixes implemented throughout the development of the FocusOS web application. It serves as a record of progress, a reference for debugging, and a tool for quality control.
@@ -7,6 +11,7 @@ This document tracks significant changes, features, and fixes implemented throug
 ## Unreleased - Habit Deletion Refactor and Test Enhancement
 
 ### Added
+- **Docs**: Updated `README.md` Quickstart for macOS/Linux with Docker Compose.
 - **Frontend**: Created `deleteHabitFlow.js` to encapsulate the habit deletion logic, making it more robust and testable.
 - **Frontend**: Introduced `milestoneSelection.js` to manage habit selection state for milestones in the UI.
 - **Tests**: Added tests for the new `deleteHabitFlow.js` module (`deleteHabitFlow.test.mjs`).
@@ -16,6 +21,9 @@ This document tracks significant changes, features, and fixes implemented throug
 - **Tests**: Introduced tests for `milestoneSelection.js` (`milestoneSelection.test.mjs`) to validate milestone habit selection management.
 
 ### Changed
+- **Feature**: Implemented comprehensive habit deletion flow with milestone integration.
+- **Refactor**: Completed Goal to Milestone refactoring.
+- **Checkpointing**: Habit deletion flow enhancements and refactor fixes.
 - **Backend**: Enhanced habit deletion in `crud.py` to explicitly clear habit-milestone associations, ensuring data integrity.
 - **Frontend**: Refactored `app.js` to use the new `deleteHabitFlow` function, integrating client-side state cleanup for milestone pickers via an `onAfterDelete` callback.
 - **Docs**: Updated `ACTIONPLAN.md` with more detailed information on known gaps and test execution, reflecting the resolution of habit deletion issues.
