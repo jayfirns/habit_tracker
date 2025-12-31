@@ -38,3 +38,29 @@ test("purgeHabitState removes completed habit entries from logs and timers", () 
   assert.deepEqual(state.manualLogs, { "2024-01-01": {} });
   assert.deepEqual(state.activeTimers, { 2: { start: 222 } });
 });
+
+test("purgeHabitState handles missing collections safely", () => {
+  const state = {};
+
+  purgeHabitState(state, 1);
+
+  assert.deepEqual(state, {});
+});
+
+test("purgeHabitState removes string-keyed habit ids", () => {
+  const state = {
+    timeLogs: {
+      "2024-01-01": { "7": 30 },
+    },
+    manualLogs: {
+      "2024-01-01": { "7": 15, "8": 10 },
+    },
+    activeTimers: { 7: { start: 1000 } },
+  };
+
+  purgeHabitState(state, "7");
+
+  assert.deepEqual(state.timeLogs, { "2024-01-01": {} });
+  assert.deepEqual(state.manualLogs, { "2024-01-01": { "8": 10 } });
+  assert.deepEqual(state.activeTimers, {});
+});

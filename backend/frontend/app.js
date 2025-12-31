@@ -4,6 +4,7 @@ import { loadJson, saveJson } from "./storage.js";
 import { makeApi } from "./api.js";
 import { renderHabitsView } from "./ui/habitsView.js";
 import { createDashboardView } from "./ui/dashboardView.js";
+import { DELETE_HABIT_CONFIRMATION, deleteHabitFlow } from "./ui/deleteHabitFlow.js";
 import { purgeHabitState } from "./ui/habitState.js";
 
 const API_BASE = window.location.origin;
@@ -331,16 +332,19 @@ async function completeHabit(id, { note, date }) {
 }
 
 async function deleteHabit(id) {
-  const ok = confirm("Delete this habit? This will remove its completions.");
-  if (!ok) return;
-  setStatus("Deleting...");
-  await apiClient.deleteHabit(id);
-  purgeHabitState(state, id);
-  saveTimeLogs();
-  saveManualLogs();
-  saveActiveTimers();
-  setStatus("Deleted");
-  await loadHabits();
+  await deleteHabitFlow({
+    id,
+    confirmDelete: (message) => confirm(message),
+    confirmMessage: DELETE_HABIT_CONFIRMATION,
+    apiClient,
+    setStatus,
+    purgeHabitState,
+    state,
+    saveTimeLogs,
+    saveManualLogs,
+    saveActiveTimers,
+    loadHabits,
+  });
 }
 
 form.addEventListener("submit", async (event) => {

@@ -22,6 +22,7 @@ from main import (  # noqa: E402
     get_habit,
     list_completions,
     list_habits,
+    list_milestones,
     update_habit,
 )
 
@@ -158,10 +159,69 @@ def test_delete_habit_clears_milestone_links(db_session):
     assert links_after == []
 
 
+def test_delete_habit_does_not_delete_milestone(db_session):
+    habit = create_habit(schemas.HabitCreate(name="Plan", category="Work"), db_session)
+    milestone = create_milestone(
+        schemas.MilestoneCreate(
+            title="Ship Plan",
+            scope="quarter",
+            habit_ids=[habit.id],
+        ),
+        db_session,
+    )
+
+    response = delete_habit(habit.id, db_session)
+    assert response.status_code == 204
+
+    milestones = list_milestones(db_session)
+    assert len(milestones) == 1
+    assert milestones[0].id == milestone.id
+    assert milestones[0].status == "active"
+
+
 def test_delete_nonexistent_habit_returns_404(db_session):
     with pytest.raises(HTTPException) as excinfo:
         delete_habit(999, db_session)
     assert excinfo.value.status_code == 404
+
+
+def test_delete_habit_blocks_completion_listing(db_session):
+    habit = create_habit(schemas.HabitCreate(name="Cook", category="Home"), db_session)
+    complete_habit(
+        habit.id,
+        schemas.CompletionCreate(note="Dinner", date=date.today()),
+        db_session,
+    )
+
+    response = delete_habit(habit.id, db_session)
+    assert response.status_code == 204
+
+    with pytest.raises(HTTPException) as excinfo:
+        list_completions(habit.id, db_session)
+    assert excinfo.value.status_code == 404
+
+
+def test_delete_habit_does_not_affect_other_habits(db_session):
+    habit_a = create_habit(schemas.HabitCreate(name="Yoga", category="Health"), db_session)
+    habit_b = create_habit(schemas.HabitCreate(name="Study", category="Work"), db_session)
+    complete_habit(
+        habit_a.id,
+        schemas.CompletionCreate(note="Morning", date=date.today()),
+        db_session,
+    )
+    complete_habit(
+        habit_b.id,
+        schemas.CompletionCreate(note="Evening", date=date.today()),
+        db_session,
+    )
+
+    response = delete_habit(habit_a.id, db_session)
+    assert response.status_code == 204
+
+    remaining = list_habits(db_session)
+    assert len(remaining) == 1
+    assert remaining[0].id == habit_b.id
+    assert len(remaining[0].completions) == 1
 
 
 def test_complete_habit_updates_streak_and_last_completed(db_session):

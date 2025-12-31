@@ -57,12 +57,18 @@ This document outlines the high-level action plan for migrating the "My Personal
     -   Integration: ensure persistence and local state stay in sync after deletion.
 -   **Deliverables**: Gap list, required test cases, and any doc updates needed.
 -   **Known gaps to resolve**:
-    -   Habit deletion does not explicitly clear milestone join rows; validate join cleanup or add cascade.
-    -   Milestone habit selection state is not purged when a habit is deleted.
-    -   API tests do not assert completion rows are removed from persistence.
+    -   Habit deletion does not explicitly clear join rows in `habit_milestones` (see `backend/models.py` and `backend/crud.py`); validate DB-level cascade or add explicit cleanup.
+    -   Habit deletion does not update `state.milestoneHabitSelection`, which can leave deleted habit IDs in the milestone picker state (see `backend/frontend/app.js`).
 -   **Repeatable test runs**:
     -   `python -m pytest`
     -   `node --test backend/frontend/**/*.test.mjs`
+    -   **Expected results (current tests passing)**:
+        -   Deleting a habit removes it from listings and deletes completions in persistence (`backend/tests/test_api.py`).
+        -   Deleting a habit does not delete associated milestones (`backend/tests/test_api.py`).
+        -   Deleting a habit blocks completion listing for that habit (`backend/tests/test_api.py`).
+        -   UI delete wiring calls the delete handler per habit (`backend/frontend/ui/habitsView.test.mjs`).
+        -   Delete flow confirms, updates status, purges local logs/timers, and refreshes (`backend/frontend/ui/deleteHabitFlow.test.mjs`).
+        -   Delete confirmation message warns it cannot be undone (`backend/frontend/ui/deleteHabitFlow.test.mjs`).
 
 ---
 

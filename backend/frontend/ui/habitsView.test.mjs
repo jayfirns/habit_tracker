@@ -72,3 +72,52 @@ test("renderHabitsView wires delete button with habit id", () => {
   deleteBtn.click();
   assert.deepEqual(calls, [7]);
 });
+
+test("renderHabitsView wires delete buttons for each habit", () => {
+  const { container, template } = setupDom();
+  const habits = [
+    {
+      id: 1,
+      name: "Read",
+      category: "Growth",
+      streak: 1,
+      last_completed: "2024-01-01",
+      tags: [],
+      completions: [],
+    },
+    {
+      id: 2,
+      name: "Run",
+      category: "Health",
+      streak: 0,
+      last_completed: null,
+      tags: ["cardio"],
+      completions: [],
+    },
+  ];
+  const calls = [];
+
+  renderHabitsView({
+    container,
+    template,
+    activeTagEl: null,
+    streakSummaryEl: null,
+    habits,
+    filterTag: null,
+    formatDate: (value) => value || "Never",
+    todayValue: () => "2024-01-02",
+    onFilterTag: () => {},
+    onComplete: () => {},
+    onAdjustTime: () => {},
+    onToggleTimer: () => {},
+    onDelete: (id) => calls.push(id),
+    onEdit: () => {},
+    refreshHabitTimeDisplay: () => {},
+  });
+
+  const deleteBtns = Array.from(container.querySelectorAll(".js-delete"));
+  assert.equal(deleteBtns.length, 2);
+  deleteBtns[0].click();
+  deleteBtns[1].click();
+  assert.deepEqual(calls, [1, 2]);
+});
