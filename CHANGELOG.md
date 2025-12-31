@@ -4,6 +4,19 @@ This document tracks significant changes, features, and fixes implemented throug
 
 ---
 
+## Unreleased - Habit Deletion Refactor and Test Enhancement
+
+### Added
+- **Frontend**: Created `deleteHabitFlow.js` to encapsulate the habit deletion logic, making it more robust and testable.
+- **Tests**: Added tests for the new `deleteHabitFlow.js` module.
+- **Tests**: Added tests to `habitState.test.mjs` to handle missing collections and string-keyed habit ids.
+- **Tests**: Added tests to `habitsView.test.mjs` to ensure delete buttons are correctly wired for each habit.
+- **Tests**: Added backend API tests to ensure that deleting a habit does not delete the associated milestone, that it blocks the listing of completions for the deleted habit, and that it does not affect other habits.
+
+### Changed
+- **Frontend**: Refactored `app.js` to use the new `deleteHabitFlow` function.
+- **Docs**: Updated `ACTIONPLAN.md` with more detailed information on known gaps and test execution.
+
 ## Unreleased - Time Glide, Focus Tracking, SMART Enhancements
 
 ### Added
