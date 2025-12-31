@@ -20,22 +20,63 @@ test("formats minutes dropping zero minutes", () => {
   assert.equal(formatMinutes(0), "0m");
 });
 
-test("computes workday minutes with clockout", () => {
+test("computes planned metrics when no clock exists", () => {
   const now = new Date("2024-01-01T10:00:00");
-  const workday = {
-    start: "09:00",
-    hours: 1,
-    clockedOutAt: new Date("2024-01-01T09:38:00").toISOString(),
-  };
-  const { usedMinutes, totalMinutes } = computeWorkdayMinutes(workday, now);
-  assert.equal(totalMinutes, 60);
-  assert.equal(usedMinutes, 38);
+  const workday = { plannedStart: "09:00", plannedMinutes: 480 };
+  const metrics = computeWorkdayMinutes(workday, now);
+  assert.equal(metrics.mode, "planned");
+  assert.equal(metrics.clockState, "idle");
+  assert.equal(metrics.plannedMinutes, 480);
+  assert.equal(metrics.workedMinutes, 0);
+  assert.equal(metrics.remainingMinutes, 480);
 });
 
-test("respects manual worked override", () => {
+test("computes worked minutes from clock in/out and ignores planned start", () => {
+  const now = new Date("2024-01-01T12:00:00");
+  const workday = {
+    plannedStart: "09:00",
+    plannedMinutes: 480,
+    clockInAt: new Date("2024-01-01T09:30:00").toISOString(),
+    clockOutAt: new Date("2024-01-01T12:00:00").toISOString(),
+  };
+  const metrics = computeWorkdayMinutes(workday, now);
+  assert.equal(metrics.mode, "clocked");
+  assert.equal(metrics.clockState, "completed");
+  assert.equal(metrics.workedMinutes, 150);
+  assert.equal(metrics.remainingMinutes, 330);
+});
+
+test("uses running clock when clock out is missing", () => {
   const now = new Date("2024-01-01T10:00:00");
-  const workday = { start: "09:00", hours: 1, manualWorkedMinutes: 22 };
-  const { usedMinutes, totalMinutes } = computeWorkdayMinutes(workday, now);
-  assert.equal(totalMinutes, 60);
-  assert.equal(usedMinutes, 22);
+  const workday = {
+    plannedMinutes: 480,
+    clockInAt: new Date("2024-01-01T09:00:00").toISOString(),
+  };
+  const metrics = computeWorkdayMinutes(workday, now);
+  assert.equal(metrics.mode, "clocked");
+  assert.equal(metrics.clockState, "running");
+  assert.equal(metrics.workedMinutes, 60);
+});
+
+test("applies worked override only after clock out", () => {
+  const now = new Date("2024-01-01T10:00:00");
+  const workday = {
+    plannedMinutes: 480,
+    clockInAt: new Date("2024-01-01T09:00:00").toISOString(),
+    clockOutAt: new Date("2024-01-01T09:10:00").toISOString(),
+    workedMinutesOverride: 42,
+  };
+  const metrics = computeWorkdayMinutes(workday, now);
+  assert.equal(metrics.workedMinutes, 42);
+});
+
+test("ignores worked override while clock is running", () => {
+  const now = new Date("2024-01-01T10:00:00");
+  const workday = {
+    plannedMinutes: 480,
+    clockInAt: new Date("2024-01-01T09:00:00").toISOString(),
+    workedMinutesOverride: 200,
+  };
+  const metrics = computeWorkdayMinutes(workday, now);
+  assert.equal(metrics.workedMinutes, 60);
 });

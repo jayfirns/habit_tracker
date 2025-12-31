@@ -1,6 +1,6 @@
 ---
 created: 2025-12-30T20:19
-updated: 2025-12-31T00:28
+updated: 2025-12-31T00:44
 ---
 # CHANGELOG.md - FocusOS Project Progress
 
@@ -52,6 +52,9 @@ This document tracks significant changes, features, and fixes implemented throug
 - **Docs**: Created `LOGIC_RULES.md` to document system-level behavioral rules for deletion and modification of tasks and goals.
 - **Feature**: Implemented soft-delete for goals by setting their status to "archived", preserving goal history.
 - **Feature**: Enhanced habit deletion to purge all associated local data (time logs, manual logs, and active timers) from the frontend state.
+- **Frontend**: Enhanced workday time calculation (`computeWorkdayMinutes`) to provide detailed metrics including mode (planned, clocked, empty), clock state (idle, running, completed), planned, worked, and remaining minutes.
+- **Tests**: Added comprehensive unit tests for `computeWorkdayMinutes` covering various clock states, planned time, and worked overrides.
+- **Tests**: Added `renderDashboard` tests to verify correct display of workday metrics in the `time-workday-pill` based on calculated mode.
 
 ### Changed
 - **Docs**: Reorganized documentation files by moving several markdown files from the root directory into the `docs/` and `docs/frontend/` directories to improve repository structure.

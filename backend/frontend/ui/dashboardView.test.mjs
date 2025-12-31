@@ -66,7 +66,13 @@ test("renderDashboard updates milestone insights and prompt copy", () => {
     {
       formatDate: () => "2025-01-15",
       formatMinutes: (value) => `${value}m`,
-      computeWorkdayMinutes: () => ({ usedMinutes: 0, totalMinutes: 480 }),
+      computeWorkdayMinutes: () => ({
+        mode: "planned",
+        clockState: "idle",
+        plannedMinutes: 480,
+        workedMinutes: 0,
+        remainingMinutes: 480,
+      }),
       todayKey: () => "2025-01-15",
       getHabitMinutes: () => 0,
       getTodayFocusedMinutes: () => 0,
@@ -94,4 +100,190 @@ test("renderDashboard updates milestone insights and prompt copy", () => {
   assert.match(doc.querySelector("#milestone-scope-highlight").textContent, /milestones/);
   assert.match(doc.querySelector("#period-prompt").textContent, /milestones/);
   assert.match(doc.querySelector("#milestone-next-step").textContent, /milestone/);
+});
+
+test("renderDashboard shows planned pill when plan exists", () => {
+  // 1. Setup
+  const doc = setupDom();
+  const view = createDashboardView(
+    {
+      periodLabel: doc.querySelector("#period-label"),
+      periodPrompt: doc.querySelector("#period-prompt"),
+      periodActions: doc.querySelector("#period-actions"),
+      habitCount: doc.querySelector("#habit-count"),
+      streakSummaryCard: doc.querySelector("#streak-summary-card"),
+      milestoneCountEl: doc.querySelector("#milestone-count"),
+      milestoneHighlightEl: doc.querySelector("#milestone-highlight"),
+      milestoneHabitsLinkedEl: doc.querySelector("#milestone-habits-linked"),
+      milestoneHabitCoverageEl: doc.querySelector("#milestone-habit-coverage"),
+      milestoneDueCountEl: doc.querySelector("#milestone-due-count"),
+      milestoneDueLabelEl: doc.querySelector("#milestone-due-label"),
+      milestoneScopeHighlightEl: doc.querySelector("#milestone-scope-highlight"),
+      milestoneNextStepEl: doc.querySelector("#milestone-next-step"),
+      chartTotalPill: doc.querySelector("#chart-total-pill"),
+      chartCenterValue: doc.querySelector("#chart-center-value"),
+      chartCenterLabel: doc.querySelector("#chart-center-label"),
+      categoryChart: doc.querySelector("#category-chart"),
+      categoryLegend: doc.querySelector("#category-legend"),
+      energyTabs: doc.querySelector("#energy-tabs"),
+      energyValueToggle: doc.querySelector("#energy-value-toggle"),
+      timeSummaryList: doc.querySelector("#time-summary-list"),
+      timeWorkdayPill: doc.querySelector("#time-workday-pill"),
+      timeSummaryPercent: doc.querySelector("#time-summary-percent"),
+    },
+    {
+      formatDate: () => "2025-01-15",
+      formatMinutes: (value) => `${value}m`,
+      computeWorkdayMinutes: () => ({
+        mode: "planned",
+        clockState: "idle",
+        plannedMinutes: 480,
+        workedMinutes: 0,
+        remainingMinutes: 480,
+      }),
+      todayKey: () => "2025-01-15",
+      getHabitMinutes: () => 0,
+      getTodayFocusedMinutes: () => 0,
+      collectHabitsWithTodayCompletions: () => [],
+      latestCompletionNote: () => null,
+    },
+  );
+
+  // 2. Act
+  view.renderDashboard({
+    now: new Date("2025-01-15T12:00:00Z"),
+    habits: [],
+    milestones: [],
+    reflections: [],
+    workday: {},
+    timeLogs: {},
+    activeTimers: {},
+  });
+
+  // 3. Assert
+  assert.equal(doc.querySelector("#time-workday-pill").textContent, "Planned: 480m");
+});
+
+test("renderDashboard shows worked pill when clocked", () => {
+  // 1. Setup
+  const doc = setupDom();
+  const view = createDashboardView(
+    {
+      periodLabel: doc.querySelector("#period-label"),
+      periodPrompt: doc.querySelector("#period-prompt"),
+      periodActions: doc.querySelector("#period-actions"),
+      habitCount: doc.querySelector("#habit-count"),
+      streakSummaryCard: doc.querySelector("#streak-summary-card"),
+      milestoneCountEl: doc.querySelector("#milestone-count"),
+      milestoneHighlightEl: doc.querySelector("#milestone-highlight"),
+      milestoneHabitsLinkedEl: doc.querySelector("#milestone-habits-linked"),
+      milestoneHabitCoverageEl: doc.querySelector("#milestone-habit-coverage"),
+      milestoneDueCountEl: doc.querySelector("#milestone-due-count"),
+      milestoneDueLabelEl: doc.querySelector("#milestone-due-label"),
+      milestoneScopeHighlightEl: doc.querySelector("#milestone-scope-highlight"),
+      milestoneNextStepEl: doc.querySelector("#milestone-next-step"),
+      chartTotalPill: doc.querySelector("#chart-total-pill"),
+      chartCenterValue: doc.querySelector("#chart-center-value"),
+      chartCenterLabel: doc.querySelector("#chart-center-label"),
+      categoryChart: doc.querySelector("#category-chart"),
+      categoryLegend: doc.querySelector("#category-legend"),
+      energyTabs: doc.querySelector("#energy-tabs"),
+      energyValueToggle: doc.querySelector("#energy-value-toggle"),
+      timeSummaryList: doc.querySelector("#time-summary-list"),
+      timeWorkdayPill: doc.querySelector("#time-workday-pill"),
+      timeSummaryPercent: doc.querySelector("#time-summary-percent"),
+    },
+    {
+      formatDate: () => "2025-01-15",
+      formatMinutes: (value) => `${value}m`,
+      computeWorkdayMinutes: () => ({
+        mode: "clocked",
+        clockState: "completed",
+        plannedMinutes: 480,
+        workedMinutes: 210,
+        remainingMinutes: 270,
+      }),
+      todayKey: () => "2025-01-15",
+      getHabitMinutes: () => 0,
+      getTodayFocusedMinutes: () => 0,
+      collectHabitsWithTodayCompletions: () => [],
+      latestCompletionNote: () => null,
+    },
+  );
+
+  // 2. Act
+  view.renderDashboard({
+    now: new Date("2025-01-15T12:00:00Z"),
+    habits: [],
+    milestones: [],
+    reflections: [],
+    workday: {},
+    timeLogs: {},
+    activeTimers: {},
+  });
+
+  // 3. Assert
+  assert.equal(doc.querySelector("#time-workday-pill").textContent, "Worked: 210m");
+});
+
+test("renderDashboard shows empty pill when no plan or clock", () => {
+  // 1. Setup
+  const doc = setupDom();
+  const view = createDashboardView(
+    {
+      periodLabel: doc.querySelector("#period-label"),
+      periodPrompt: doc.querySelector("#period-prompt"),
+      periodActions: doc.querySelector("#period-actions"),
+      habitCount: doc.querySelector("#habit-count"),
+      streakSummaryCard: doc.querySelector("#streak-summary-card"),
+      milestoneCountEl: doc.querySelector("#milestone-count"),
+      milestoneHighlightEl: doc.querySelector("#milestone-highlight"),
+      milestoneHabitsLinkedEl: doc.querySelector("#milestone-habits-linked"),
+      milestoneHabitCoverageEl: doc.querySelector("#milestone-habit-coverage"),
+      milestoneDueCountEl: doc.querySelector("#milestone-due-count"),
+      milestoneDueLabelEl: doc.querySelector("#milestone-due-label"),
+      milestoneScopeHighlightEl: doc.querySelector("#milestone-scope-highlight"),
+      milestoneNextStepEl: doc.querySelector("#milestone-next-step"),
+      chartTotalPill: doc.querySelector("#chart-total-pill"),
+      chartCenterValue: doc.querySelector("#chart-center-value"),
+      chartCenterLabel: doc.querySelector("#chart-center-label"),
+      categoryChart: doc.querySelector("#category-chart"),
+      categoryLegend: doc.querySelector("#category-legend"),
+      energyTabs: doc.querySelector("#energy-tabs"),
+      energyValueToggle: doc.querySelector("#energy-value-toggle"),
+      timeSummaryList: doc.querySelector("#time-summary-list"),
+      timeWorkdayPill: doc.querySelector("#time-workday-pill"),
+      timeSummaryPercent: doc.querySelector("#time-summary-percent"),
+    },
+    {
+      formatDate: () => "2025-01-15",
+      formatMinutes: (value) => `${value}m`,
+      computeWorkdayMinutes: () => ({
+        mode: "empty",
+        clockState: "idle",
+        plannedMinutes: 0,
+        workedMinutes: 0,
+        remainingMinutes: null,
+      }),
+      todayKey: () => "2025-01-15",
+      getHabitMinutes: () => 0,
+      getTodayFocusedMinutes: () => 0,
+      collectHabitsWithTodayCompletions: () => [],
+      latestCompletionNote: () => null,
+    },
+  );
+
+  // 2. Act
+  view.renderDashboard({
+    now: new Date("2025-01-15T12:00:00Z"),
+    habits: [],
+    milestones: [],
+    reflections: [],
+    workday: {},
+    timeLogs: {},
+    activeTimers: {},
+  });
+
+  // 3. Assert
+  assert.equal(doc.querySelector("#time-workday-pill").textContent, "");
 });
