@@ -1,3 +1,7 @@
+---
+created: 2025-12-30T21:52
+updated: 2025-12-31T00:24
+---
 # HABIT_ARCHITECTURE.md
 
 ## Purpose

@@ -1,10 +1,28 @@
 ---
 created: 2025-12-30T20:19
-updated: 2025-12-31T00:02
+updated: 2025-12-31T00:28
 ---
 # CHANGELOG.md - FocusOS Project Progress
 
 This document tracks significant changes, features, and fixes implemented throughout the development of the FocusOS web application. It serves as a record of progress, a reference for debugging, and a tool for quality control.
+
+---
+
+## Unreleased - Documentation Updates and Project Structure
+
+### Added
+- **Docs**: Comprehensive `GEMINI.md` update with Strategic Overview & Development Guide, including Guiding Principles, Terminology, Logic Rules, Testing Mandates, Project Status, Frontend Guide, UI Design Glossary, and Authoritative Files.
+- **Docs**: New `docs/panels/WorkdayTimeGlidePanel.md` documenting the Workday Time Glide Panel.
+- **Project Structure**: New `utils/` directory for utility scripts.
+- **Utils**: Added `utils/rsync_target_mac.sh` for pulling database from remote and `utils/rsync_target_trigkey.sh` for pushing database to remote.
+
+### Changed
+- **Docs**: `docs/panels/EnergyMixPanel.md` updated with `created`, `updated` metadata and `Debug Notes`.
+- **Docs**: `docs/UI_PANELS_DOCUMENTATION.md` updated with `created`, `updated` metadata and documentation for `WorkdayTimeGlidePanel`.
+- **Docs**: `docs/HABIT_ARCHITECTURE.md` updated with `created` and `updated` metadata.
+
+### Fixed
+- **Docs**: Removed stray character in `docs/HABIT_ARCHITECTURE.md`.
 
 ---
 

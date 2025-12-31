@@ -1,3 +1,7 @@
+---
+created: 2025-12-30T20:19
+updated: 2025-12-31T00:24
+---
 # EnergyMixPanel
 - Panel Title: Category Completions
 - Semantic ID: EnergyMixPanel
@@ -49,6 +53,26 @@ For detailed design, development notes, and enhancement matrix, see [EnergyMixPa
 - Semantic ID: TimeGlidePanel
 - Location in app: Hero dashboard row, first column `<section class="panel day-timer">` in `backend/frontend/index.html`.
 - Purpose: Configure workday start/time window, view remaining vs used time, and update/apply manual worked minutes.
+
+| Element Name | Description | Example content | CSS class | Notes |
+| --- | --- | --- | --- | --- |
+| PanelShell ([glossary](DESIGN_GLOSSARY.md#ui-design-glossary-new-habit--habit-board)) | Panel container framing controls and progress bar. | — | `panel day-timer` | Uses panel surface/border/shadow. |
+| PanelHeader ([glossary](DESIGN_GLOSSARY.md#ui-design-glossary-new-habit--habit-board)) | Header row with eyebrow/title and control cluster. | — | `panel__header` | Flex align center. |
+| Eyebrow ([glossary](DESIGN_GLOSSARY.md#glossary-legend)) | Context label. | Workday | `eyebrow` | Accent2 color. |
+| PanelTitle ([glossary](DESIGN_GLOSSARY.md#ui-design-glossary-new-habit--habit-board)) | Panel heading. | Time Glide | `<h3>` | Display font. |
+| WorkdayControls | Inline control row for start time, hours, apply buttons. | Start 09:00 / Hours 8 / Set / Clock out / Worked override | `day-controls` with inputs `#workday-start`, `#workday-hours`, `#workday-worked-override`; buttons `#workday-save`, `#workday-clockout`, `#workday-apply-worked` | Inputs use global input styling; ghost/small buttons use `.button.ghost.small` and inherit focus ring tokens. |
+| WorkdayBar | Horizontal bar showing worked vs planned. | Gradient bar with inner fill | `workday-bar` containing `workday-progress` and `workday-label` | Progress fill width and color animate with usage; label overlays center. |
+
+- Interactions: Button clicks update workday state (`workday-save`, `clockout`, `apply-worked`) via listeners in `backend/frontend/app.js`, persisting to local storage and re-rendering dashboard/progress. Progress bar auto-updates every 60s (`setInterval(updateWorkdayProgress)`) and on workday changes; label shows remaining/used minutes computed in `computeWorkdayMinutes`.
+- Design tokens used: Panel uses `--panel`, `--border`, `--radius`, `--shadow`; controls use input/button tokens (`--border`, `--radius-sm`, `--focus-ring`, `--accent`); progress bar gradients use `--accent`, `--accent2`; label text uses `--text`.
+- References to relevant JS/HTML files: `backend/frontend/index.html` (markup), `backend/frontend/components.css` (day-controls, workday-bar/progress/label, panel, eyebrow), `backend/frontend/base.css` + `backend/frontend/themes.css` (tokens), `backend/frontend/app.js` (workday state, progress updates).
+
+# WorkdayTimeGlidePanel
+- Panel Title: Workday Time Glide
+- Semantic ID: WorkdayTimeGlidePanel
+- Location in app: Hero dashboard row, first column `<section class="panel day-timer">` in `backend/frontend/index.html`.
+- Purpose: Configure workday start/time window, view remaining vs used time, and update/apply manual worked minutes.
+For detailed design, development notes, and enhancement matrix, see [panels/WorkdayTimeGlidePanel.md](docs/panels/WorkdayTimeGlidePanel.md).
 
 | Element Name | Description | Example content | CSS class | Notes |
 | --- | --- | --- | --- | --- |

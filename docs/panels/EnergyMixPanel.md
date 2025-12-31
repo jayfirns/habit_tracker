@@ -1,3 +1,7 @@
+---
+created: 2025-12-30T20:19
+updated: 2025-12-30T23:56
+---
 # Energy Mix Panel
 
 ## Purpose
@@ -56,8 +60,13 @@ Additional derived fields:
 Development Notes
 - Backed by tests in `backend/frontend/ui/energyMixPanel.test.mjs` and `energyMixPanel.dom.test.mjs`; keep new features covered.
 - UI architecture: EnergyMixPanel (state + DOM bindings) renders pie/bars/grouped DOM and legend; tabs (`data-chart-mode` pie/habit/grouped) and value toggle (`data-value-mode` duration/frequency) drive client-side state.
-- Starts with mock data if no habits/logs exist; shows “No data available” for empty filtered series.
+- Starts with mock data if no habits exist and `mockEntries` are available; shows “No data available” for empty filtered series.
 - Use chart containers that degrade gracefully if no data is available (fallback meta text, empty legend).
 - Tabs and toggles are client-side only, driven by internal state.
 - Add utility functions for grouping, sorting, and formatting time (e.g., minutes to HH:MM).
 - Consider accessibility: color contrast and ARIA labels for tabbed interface; ensure tooltips are keyboard-triggerable and charts have text summaries.
+
+## Debug Notes
+- Ghost habits in the Energy Mix originate from `DEFAULT_MOCK_ENTRIES` in `backend/frontend/ui/energyMixPanel.js`.
+- `normalizeEntries()` returns the mock entries when the `habits` array is empty and `mockEntries` is non-empty (defaults to `DEFAULT_MOCK_ENTRIES`).
+- The dashboard calls `energyMixPanel.render({ habits, timeLogs, activeTimers, now })` without overriding `mockEntries`, so mock habits appear whenever `habits` is empty.
