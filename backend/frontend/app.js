@@ -4,6 +4,7 @@ import { loadJson, saveJson } from "./storage.js";
 import { makeApi } from "./api.js";
 import { renderHabitsView } from "./ui/habitsView.js";
 import { createDashboardView } from "./ui/dashboardView.js";
+import { purgeHabitState } from "./ui/habitState.js";
 
 const API_BASE = window.location.origin;
 
@@ -334,6 +335,10 @@ async function deleteHabit(id) {
   if (!ok) return;
   setStatus("Deleting...");
   await apiClient.deleteHabit(id);
+  purgeHabitState(state, id);
+  saveTimeLogs();
+  saveManualLogs();
+  saveActiveTimers();
   setStatus("Deleted");
   await loadHabits();
 }

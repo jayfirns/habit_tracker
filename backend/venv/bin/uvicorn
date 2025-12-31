@@ -1,4 +1,4 @@
-#!/home/john5/Documents/git/habit_tracker/backend/venv/bin/python3
+#!/Users/johnfirnschild/Documents/HomeLab/git_projects/habit_tracker/backend/venv/bin/python3.12
 # -*- coding: utf-8 -*-
 import re
 import sys

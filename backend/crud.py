@@ -1,7 +1,7 @@
 from datetime import date
 from typing import List, Optional, Tuple
 
-from sqlalchemy import select
+from sqlalchemy import or_, select
 from sqlalchemy.orm import Session, selectinload
 
 import models
@@ -119,7 +119,11 @@ def list_completions(db: Session, habit_id: int) -> List[models.Completion]:
 
 # Goal CRUD
 def list_goals(db: Session) -> List[models.Goal]:
-    stmt = select(models.Goal).options(selectinload(models.Goal.habits))
+    stmt = (
+        select(models.Goal)
+        .where(or_(models.Goal.status.is_(None), models.Goal.status != "archived"))
+        .options(selectinload(models.Goal.habits))
+    )
     return db.scalars(stmt).all()
 
 
@@ -181,7 +185,8 @@ def delete_goal(db: Session, goal_id: int) -> bool:
     goal = db.get(models.Goal, goal_id)
     if goal is None:
         return False
-    db.delete(goal)
+    goal.status = "archived"
+    db.add(goal)
     db.commit()
     return True
 

@@ -11,7 +11,15 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")
 
 import schemas  # noqa: E402
 from database import Base  # noqa: E402
-from main import create_goal, create_habit, create_reflection, list_goals  # noqa: E402
+import models  # noqa: E402
+from main import (  # noqa: E402
+    create_goal,
+    create_habit,
+    create_reflection,
+    delete_goal,
+    list_goals,
+    update_goal,
+)
 
 TEST_DATABASE_URL = "sqlite:///:memory:"
 
@@ -85,3 +93,64 @@ def test_reflection_with_goal_link(db_session):
     assert reflection.id is not None
     assert reflection.goal_id == goal.id
     assert reflection.rating == "on_track"
+
+
+def test_delete_active_goal_soft_archives_and_hides_from_list(db_session):
+    goal = create_goal(
+        schemas.GoalCreate(
+            title="Ship Release",
+            scope="quarter",
+            status="active",
+        ),
+        db_session,
+    )
+
+    response = delete_goal(goal.id, db_session)
+    assert response.status_code == 204
+
+    assert list_goals(db_session) == []
+    archived = db_session.get(models.Goal, goal.id)
+    assert archived is not None
+    assert archived.status == "archived"
+
+
+def test_delete_completed_goal_soft_archives_and_hides_from_list(db_session):
+    goal = create_goal(
+        schemas.GoalCreate(
+            title="Close OKRs",
+            scope="quarter",
+            status="complete",
+        ),
+        db_session,
+    )
+
+    response = delete_goal(goal.id, db_session)
+    assert response.status_code == 204
+
+    assert list_goals(db_session) == []
+    archived = db_session.get(models.Goal, goal.id)
+    assert archived is not None
+    assert archived.status == "archived"
+
+
+def test_modify_completed_goal_allows_status_reversal(db_session):
+    goal = create_goal(
+        schemas.GoalCreate(
+            title="Write Retrospective",
+            scope="quarter",
+            status="complete",
+        ),
+        db_session,
+    )
+
+    updated = update_goal(
+        goal.id,
+        schemas.GoalUpdate(title="Rewrite Retrospective", status="active"),
+        db_session,
+    )
+
+    assert updated.title == "Rewrite Retrospective"
+    assert updated.status == "active"
+    goals = list_goals(db_session)
+    assert len(goals) == 1
+    assert goals[0].id == goal.id

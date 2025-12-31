@@ -88,6 +88,23 @@ def test_delete_habit_removes_it_from_listing(db_session):
     assert list_habits(db_session) == []
 
 
+def test_delete_completed_habit_clears_completions(db_session):
+    habit = create_habit(schemas.HabitCreate(name="Practice", category="Skills"), db_session)
+    complete_habit(
+        habit.id,
+        schemas.CompletionCreate(note="Session", date=date.today()),
+        db_session,
+    )
+
+    response = delete_habit(habit.id, db_session)
+    assert response.status_code == 204
+
+    assert list_habits(db_session) == []
+    with pytest.raises(HTTPException) as excinfo:
+        get_habit(habit.id, db_session)
+    assert excinfo.value.status_code == 404
+
+
 def test_complete_habit_updates_streak_and_last_completed(db_session):
     habit = create_habit(schemas.HabitCreate(name="Code", category="Work"), db_session)
 

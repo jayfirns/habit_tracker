@@ -1,0 +1,2225 @@
+2024-09-14 18:32:54,126 - DEBUG - ------------------------------------------------------------
+2024-09-14 18:32:54,126 - DEBUG - ------------------------------------------------------------
+2024-09-14 18:32:54,126 - DEBUG - Establishing connection to habit_tracker.db
+2024-09-14 18:32:54,126 - DEBUG - ------------------------------------------------------------
+2024-09-14 18:32:54,127 - DEBUG - ------------------------------------------------------------
+2024-09-14 18:32:54,381 - DEBUG - ------------------------------------------------------------
+2024-09-14 18:32:54,381 - DEBUG - Initialized Habit Tracker App
+2024-09-14 18:32:54,381 - DEBUG - ------------------------------------------------------------
+2024-09-14 18:32:54,381 - DEBUG - Initializing create_widgets method
+2024-09-14 18:32:54,389 - DEBUG - Configured Treeview column: Name
+2024-09-14 18:32:54,389 - DEBUG - Configured Treeview column: Category
+2024-09-14 18:32:54,389 - DEBUG - Configured Treeview column: Streak
+2024-09-14 18:32:54,389 - DEBUG - Configured Treeview column: Daily Completions
+2024-09-14 18:32:54,389 - DEBUG - Configured Treeview column: Recent Note
+2024-09-14 18:32:54,389 - DEBUG - Habit Treeview initialized and event bound
+2024-09-14 18:32:54,390 - DEBUG - Action buttons for habit management added
+2024-09-14 18:32:54,390 - DEBUG - Progress frame for habit tracking initialized
+2024-09-14 18:32:54,390 - DEBUG - UI Elements Created
+2024-09-14 18:32:54,390 - DEBUG - Initializing load_preferences method
+2024-09-14 18:32:54,390 - DEBUG - Preferences Loaded
+2024-09-14 18:32:54,390 - DEBUG - Initializing load_habits method
+2024-09-14 19:01:25,591 - DEBUG - ------------------------------------------------------------
+2024-09-14 19:01:25,591 - DEBUG - ------------------------------------------------------------
+2024-09-14 19:01:25,591 - DEBUG - Establishing connection to habit_tracker.db
+2024-09-14 19:01:25,591 - DEBUG - ------------------------------------------------------------
+2024-09-14 19:01:25,591 - DEBUG - ------------------------------------------------------------
+2024-09-14 19:01:25,794 - DEBUG - ------------------------------------------------------------
+2024-09-14 19:01:25,794 - DEBUG - Initialized Habit Tracker App
+2024-09-14 19:01:25,794 - DEBUG - ------------------------------------------------------------
+2024-09-14 19:01:25,794 - DEBUG - Initializing database setup
+2024-09-14 19:01:25,794 - INFO - Database file exists. Ensuring schema is up to date.
+2024-09-14 19:01:25,794 - DEBUG - Ensured 'habits' table exists with the correct schema.
+2024-09-14 19:01:25,794 - DEBUG - Ensured 'completions' table exists with the correct schema.
+2024-09-14 19:01:25,795 - INFO - Added missing 'note' column to 'completions' table.
+2024-09-14 19:01:25,795 - INFO - Database initialized successfully.
+2024-09-14 19:01:25,795 - DEBUG - Database connection closed.
+2024-09-14 19:01:25,795 - INFO - Database initialized successfully.
+2024-09-14 19:01:25,795 - DEBUG - Initializing create_widgets method
+2024-09-14 19:01:25,798 - DEBUG - Configured Treeview column: Name
+2024-09-14 19:01:25,798 - DEBUG - Configured Treeview column: Category
+2024-09-14 19:01:25,798 - DEBUG - Configured Treeview column: Streak
+2024-09-14 19:01:25,798 - DEBUG - Configured Treeview column: Daily Completions
+2024-09-14 19:01:25,798 - DEBUG - Configured Treeview column: Recent Note
+2024-09-14 19:01:25,798 - DEBUG - Habit Treeview initialized and event bound
+2024-09-14 19:01:25,798 - DEBUG - Action buttons for habit management added
+2024-09-14 19:01:25,798 - DEBUG - Progress frame for habit tracking initialized
+2024-09-14 19:01:25,798 - DEBUG - UI Elements Created
+2024-09-14 19:01:25,798 - DEBUG - Initializing load_preferences method
+2024-09-14 19:01:25,798 - DEBUG - Preferences Loaded
+2024-09-14 19:01:25,798 - DEBUG - Initializing load_habits method
+2024-09-14 19:01:25,798 - ERROR - Error while loading habits: no such column: id
+2024-09-14 19:01:32,354 - DEBUG - Initializing schedule_notifications method
+2024-09-14 19:01:32,355 - DEBUG - Initializing notify method
+2024-09-14 19:01:32,355 - DEBUG - Notifications scheduled successfully.
+2024-09-14 19:01:32,355 - DEBUG - Notification Times: [8, 12, 20]
+2024-09-14 19:01:32,355 - INFO - notify noted time as: 2024-09-14 19:01:32.355377
+2024-09-14 19:01:32,355 - INFO - notify noted target time as: 2024-09-14 08:00:00
+2024-09-14 19:01:32,355 - WARNING - 2024-09-14 19:01:32.355377 >= 2024-09-14 08:00:00
+2024-09-14 19:01:32,355 - INFO - target_time now set to: 2024-09-15 08:00:00
+2024-09-14 19:01:32,355 - DEBUG - ------------------------------------------------------------
+2024-09-14 19:01:32,355 - DEBUG - Initializing mainloop
+2024-09-14 19:01:32,355 - DEBUG - ------------------------------------------------------------
+2024-09-14 19:01:56,410 - DEBUG - Initializing add_habit method
+2024-09-14 19:01:56,414 - INFO - Habit added: Work on new project - Coding
+2024-09-14 19:01:56,414 - DEBUG - Initializing load_habits method
+2024-09-14 19:02:02,749 - DEBUG - Initializing add_habit method
+2024-09-14 19:02:05,132 - WARNING - Input Error: No Habit Name or Category provided.
+2024-09-14 19:02:08,091 - DEBUG - Initializing add_habit method
+2024-09-14 19:02:08,093 - INFO - Habit added: asdf - sdf
+2024-09-14 19:02:08,093 - DEBUG - Initializing load_habits method
+2024-09-14 19:02:10,828 - DEBUG - Initializing on_closing method
+2024-09-14 19:02:10,828 - DEBUG - Initializing save_preferences
+2024-09-14 19:02:10,829 - DEBUG - Window size and position saved: width=966, height=419, x=-2426, y=208
+2024-09-14 19:02:10,829 - WARNING - Column 'Name' not found in display columns. It might be hidden or removed.
+2024-09-14 19:02:10,829 - WARNING - Column 'Category' not found in display columns. It might be hidden or removed.
+2024-09-14 19:02:10,829 - WARNING - Column 'Streak' not found in display columns. It might be hidden or removed.
+2024-09-14 19:02:10,829 - WARNING - Column 'Daily Completions' not found in display columns. It might be hidden or removed.
+2024-09-14 19:02:10,829 - WARNING - Column 'Recent Note' not found in display columns. It might be hidden or removed.
+2024-09-14 19:02:10,830 - INFO - Updated config file with window size, position, and column configurations.
+2024-09-14 19:02:10,830 - INFO - Preferences Saved!
+2024-09-14 19:02:10,838 - DEBUG - Connection closed
+2024-09-14 19:02:10,838 - DEBUG - ------------------------------------------------------------
+2024-09-14 19:02:10,838 - DEBUG - ------------------------------------------------------------
+2024-09-14 19:15:50,696 - DEBUG - ------------------------------------------------------------
+2024-09-14 19:15:50,697 - DEBUG - ------------------------------------------------------------
+2024-09-14 19:15:50,697 - DEBUG - Establishing connection to habit_tracker.db
+2024-09-14 19:15:50,697 - DEBUG - ------------------------------------------------------------
+2024-09-14 19:15:50,697 - DEBUG - ------------------------------------------------------------
+2024-09-14 19:15:50,911 - DEBUG - ------------------------------------------------------------
+2024-09-14 19:15:50,911 - DEBUG - Initialized Habit Tracker App
+2024-09-14 19:15:50,911 - DEBUG - ------------------------------------------------------------
+2024-09-14 19:15:50,911 - DEBUG - Initializing database setup
+2024-09-14 19:15:50,911 - INFO - Database file exists. Ensuring schema is up to date.
+2024-09-14 19:15:50,911 - DEBUG - Ensured 'habits' table exists with the correct schema.
+2024-09-14 19:15:50,911 - DEBUG - Ensured 'completions' table exists with the correct schema.
+2024-09-14 19:15:50,911 - ERROR - Database error occurred: Cannot add a PRIMARY KEY column
+2024-09-14 19:15:50,911 - DEBUG - Database connection closed.
+2024-09-14 19:15:50,911 - ERROR - Failed to initialize the database: Cannot add a PRIMARY KEY column
+2024-09-14 19:21:35,476 - DEBUG - ------------------------------------------------------------
+2024-09-14 19:21:35,476 - DEBUG - ------------------------------------------------------------
+2024-09-14 19:21:35,476 - DEBUG - Establishing connection to habit_tracker.db
+2024-09-14 19:21:35,476 - DEBUG - ------------------------------------------------------------
+2024-09-14 19:21:35,476 - DEBUG - ------------------------------------------------------------
+2024-09-14 19:21:35,641 - DEBUG - ------------------------------------------------------------
+2024-09-14 19:21:35,641 - DEBUG - Initialized Habit Tracker App
+2024-09-14 19:21:35,641 - DEBUG - ------------------------------------------------------------
+2024-09-14 19:21:35,641 - DEBUG - Initializing database setup
+2024-09-14 19:21:35,641 - INFO - Database file exists. Ensuring schema is up to date.
+2024-09-14 19:21:35,641 - DEBUG - Ensured 'habits' table exists with the correct schema.
+2024-09-14 19:21:35,641 - DEBUG - Ensured 'completions' table exists with the correct schema.
+2024-09-14 19:21:35,641 - INFO - Database initialized successfully.
+2024-09-14 19:21:35,641 - DEBUG - Database connection closed.
+2024-09-14 19:21:35,641 - INFO - Database initialized successfully.
+2024-09-14 19:21:35,641 - DEBUG - Initializing create_widgets method
+2024-09-14 19:21:35,644 - DEBUG - Configured Treeview column: Name
+2024-09-14 19:21:35,645 - DEBUG - Configured Treeview column: Category
+2024-09-14 19:21:35,645 - DEBUG - Configured Treeview column: Streak
+2024-09-14 19:21:35,645 - DEBUG - Configured Treeview column: Daily Completions
+2024-09-14 19:21:35,645 - DEBUG - Configured Treeview column: Recent Note
+2024-09-14 19:21:35,645 - DEBUG - Habit Treeview initialized and event bound
+2024-09-14 19:21:35,645 - DEBUG - Action buttons for habit management added
+2024-09-14 19:21:35,645 - DEBUG - Progress frame for habit tracking initialized
+2024-09-14 19:21:35,645 - DEBUG - UI Elements Created
+2024-09-14 19:21:35,645 - DEBUG - Initializing load_preferences method
+2024-09-14 19:21:35,645 - DEBUG - Window loaded with width: 966, height: 419, x: -2426, y: 208
+2024-09-14 19:21:35,645 - WARNING - Width configuration missing for column 'Name'
+2024-09-14 19:21:35,645 - WARNING - Position configuration missing for column 'Name'
+2024-09-14 19:21:35,645 - WARNING - Width configuration missing for column 'Category'
+2024-09-14 19:21:35,645 - WARNING - Position configuration missing for column 'Category'
+2024-09-14 19:21:35,645 - WARNING - Width configuration missing for column 'Streak'
+2024-09-14 19:21:35,645 - WARNING - Position configuration missing for column 'Streak'
+2024-09-14 19:21:35,645 - WARNING - Width configuration missing for column 'Daily Completions'
+2024-09-14 19:21:35,645 - WARNING - Position configuration missing for column 'Daily Completions'
+2024-09-14 19:21:35,645 - WARNING - Width configuration missing for column 'Recent Note'
+2024-09-14 19:21:35,645 - WARNING - Position configuration missing for column 'Recent Note'
+2024-09-14 19:21:35,645 - DEBUG - Preferences Loaded
+2024-09-14 19:21:35,645 - DEBUG - Initializing load_habits method
+2024-09-14 19:21:35,645 - ERROR - Error while loading habits: no such column: id
+2024-09-14 19:22:21,348 - DEBUG - Initializing schedule_notifications method
+2024-09-14 19:22:21,349 - DEBUG - Initializing notify method
+2024-09-14 19:22:21,349 - DEBUG - Notifications scheduled successfully.
+2024-09-14 19:22:21,349 - DEBUG - Notification Times: [8, 12, 20]
+2024-09-14 19:22:21,349 - DEBUG - ------------------------------------------------------------
+2024-09-14 19:22:21,349 - INFO - notify noted time as: 2024-09-14 19:22:21.349562
+2024-09-14 19:22:21,349 - DEBUG - Initializing mainloop
+2024-09-14 19:22:21,349 - INFO - notify noted target time as: 2024-09-14 08:00:00
+2024-09-14 19:22:21,349 - DEBUG - ------------------------------------------------------------
+2024-09-14 19:22:21,349 - WARNING - 2024-09-14 19:22:21.349562 >= 2024-09-14 08:00:00
+2024-09-14 19:22:21,350 - INFO - target_time now set to: 2024-09-15 08:00:00
+2024-09-14 19:22:25,502 - DEBUG - Initializing add_habit method
+2024-09-14 19:22:25,506 - INFO - Habit added: adsf - adf
+2024-09-14 19:22:25,506 - DEBUG - Initializing load_habits method
+2024-09-14 19:22:30,482 - DEBUG - Initializing add_habit method
+2024-09-14 19:22:30,484 - INFO - Habit added: asdfasdf - asdfasdf
+2024-09-14 19:22:30,484 - DEBUG - Initializing load_habits method
+2024-09-14 19:22:36,001 - DEBUG - Initializing on_closing method
+2024-09-14 19:22:36,002 - DEBUG - Initializing save_preferences
+2024-09-14 19:22:36,002 - DEBUG - Window size and position saved: width=966, height=419, x=-2428, y=208
+2024-09-14 19:22:36,002 - WARNING - Column 'Name' not found in display columns. It might be hidden or removed.
+2024-09-14 19:22:36,002 - WARNING - Column 'Category' not found in display columns. It might be hidden or removed.
+2024-09-14 19:22:36,002 - WARNING - Column 'Streak' not found in display columns. It might be hidden or removed.
+2024-09-14 19:22:36,002 - WARNING - Column 'Daily Completions' not found in display columns. It might be hidden or removed.
+2024-09-14 19:22:36,002 - WARNING - Column 'Recent Note' not found in display columns. It might be hidden or removed.
+2024-09-14 19:22:36,003 - INFO - Updated config file with window size, position, and column configurations.
+2024-09-14 19:22:36,004 - INFO - Preferences Saved!
+2024-09-14 19:22:36,014 - DEBUG - Connection closed
+2024-09-14 19:22:36,014 - DEBUG - ------------------------------------------------------------
+2024-09-14 19:22:36,014 - DEBUG - ------------------------------------------------------------
+2024-09-14 19:26:10,209 - DEBUG - ------------------------------------------------------------
+2024-09-14 19:26:10,209 - DEBUG - ------------------------------------------------------------
+2024-09-14 19:26:10,209 - DEBUG - Establishing connection to habit_tracker.db
+2024-09-14 19:26:10,209 - DEBUG - ------------------------------------------------------------
+2024-09-14 19:26:10,209 - DEBUG - ------------------------------------------------------------
+2024-09-14 19:26:10,368 - DEBUG - ------------------------------------------------------------
+2024-09-14 19:26:10,368 - DEBUG - Initialized Habit Tracker App
+2024-09-14 19:26:10,368 - DEBUG - ------------------------------------------------------------
+2024-09-14 19:26:10,368 - DEBUG - Initializing database setup
+2024-09-14 19:26:10,369 - INFO - Database file exists. Ensuring schema is up to date.
+2024-09-14 19:26:10,369 - DEBUG - Ensured 'habits' table exists with the correct schema.
+2024-09-14 19:26:10,369 - DEBUG - Ensured 'completions' table exists with the correct schema.
+2024-09-14 19:26:10,369 - INFO - Database initialized successfully.
+2024-09-14 19:26:10,369 - DEBUG - Database connection closed.
+2024-09-14 19:26:10,369 - INFO - Database initialized successfully.
+2024-09-14 19:26:10,369 - DEBUG - Initializing create_widgets method
+2024-09-14 19:26:10,371 - DEBUG - Configured Treeview column: Name
+2024-09-14 19:26:10,371 - DEBUG - Configured Treeview column: Category
+2024-09-14 19:26:10,371 - DEBUG - Configured Treeview column: Streak
+2024-09-14 19:26:10,371 - DEBUG - Configured Treeview column: Daily Completions
+2024-09-14 19:26:10,371 - DEBUG - Configured Treeview column: Recent Note
+2024-09-14 19:26:10,371 - DEBUG - Habit Treeview initialized and event bound
+2024-09-14 19:26:10,371 - DEBUG - Action buttons for habit management added
+2024-09-14 19:26:10,371 - DEBUG - Progress frame for habit tracking initialized
+2024-09-14 19:26:10,371 - DEBUG - UI Elements Created
+2024-09-14 19:26:10,371 - DEBUG - Initializing load_preferences method
+2024-09-14 19:26:10,371 - DEBUG - Window loaded with width: 966, height: 419, x: -2428, y: 208
+2024-09-14 19:26:10,371 - WARNING - Width configuration missing for column 'Name'
+2024-09-14 19:26:10,371 - WARNING - Position configuration missing for column 'Name'
+2024-09-14 19:26:10,371 - WARNING - Width configuration missing for column 'Category'
+2024-09-14 19:26:10,372 - WARNING - Position configuration missing for column 'Category'
+2024-09-14 19:26:10,372 - WARNING - Width configuration missing for column 'Streak'
+2024-09-14 19:26:10,372 - WARNING - Position configuration missing for column 'Streak'
+2024-09-14 19:26:10,372 - WARNING - Width configuration missing for column 'Daily Completions'
+2024-09-14 19:26:10,372 - WARNING - Position configuration missing for column 'Daily Completions'
+2024-09-14 19:26:10,372 - WARNING - Width configuration missing for column 'Recent Note'
+2024-09-14 19:26:10,372 - WARNING - Position configuration missing for column 'Recent Note'
+2024-09-14 19:26:10,372 - DEBUG - Preferences Loaded
+2024-09-14 19:26:10,372 - DEBUG - Initializing load_habits method
+2024-09-14 19:26:10,372 - ERROR - Error while loading habits: no such column: note
+2024-09-14 19:26:23,581 - DEBUG - Initializing schedule_notifications method
+2024-09-14 19:26:23,581 - DEBUG - Initializing notify method
+2024-09-14 19:26:23,581 - DEBUG - Notifications scheduled successfully.
+2024-09-14 19:26:23,581 - DEBUG - Notification Times: [8, 12, 20]
+2024-09-14 19:26:23,581 - INFO - notify noted time as: 2024-09-14 19:26:23.581823
+2024-09-14 19:26:23,581 - DEBUG - ------------------------------------------------------------
+2024-09-14 19:26:23,581 - INFO - notify noted target time as: 2024-09-14 08:00:00
+2024-09-14 19:26:23,581 - DEBUG - Initializing mainloop
+2024-09-14 19:26:23,582 - WARNING - 2024-09-14 19:26:23.581823 >= 2024-09-14 08:00:00
+2024-09-14 19:26:23,582 - DEBUG - ------------------------------------------------------------
+2024-09-14 19:26:23,582 - INFO - target_time now set to: 2024-09-15 08:00:00
+2024-09-14 19:26:27,099 - DEBUG - Initializing add_habit method
+2024-09-14 19:26:27,102 - INFO - Habit added: asdf - adf
+2024-09-14 19:26:27,102 - DEBUG - Initializing load_habits method
+2024-09-14 19:26:32,499 - DEBUG - Initializing add_habit method
+2024-09-14 19:26:32,501 - INFO - Habit added: asdfas - asdfasef
+2024-09-14 19:26:32,502 - DEBUG - Initializing load_habits method
+2024-09-14 19:26:33,918 - DEBUG - Initializing on_closing method
+2024-09-14 19:26:33,918 - DEBUG - Initializing save_preferences
+2024-09-14 19:26:33,918 - DEBUG - Window size and position saved: width=966, height=419, x=-2428, y=208
+2024-09-14 19:26:33,918 - WARNING - Column 'Name' not found in display columns. It might be hidden or removed.
+2024-09-14 19:26:33,918 - WARNING - Column 'Category' not found in display columns. It might be hidden or removed.
+2024-09-14 19:26:33,918 - WARNING - Column 'Streak' not found in display columns. It might be hidden or removed.
+2024-09-14 19:26:33,918 - WARNING - Column 'Daily Completions' not found in display columns. It might be hidden or removed.
+2024-09-14 19:26:33,918 - WARNING - Column 'Recent Note' not found in display columns. It might be hidden or removed.
+2024-09-14 19:26:33,919 - INFO - Updated config file with window size, position, and column configurations.
+2024-09-14 19:26:33,919 - INFO - Preferences Saved!
+2024-09-14 19:26:33,930 - DEBUG - Connection closed
+2024-09-14 19:26:33,930 - DEBUG - ------------------------------------------------------------
+2024-09-14 19:26:33,930 - DEBUG - ------------------------------------------------------------
+2024-09-14 19:30:20,140 - DEBUG - ------------------------------------------------------------
+2024-09-14 19:30:20,141 - DEBUG - ------------------------------------------------------------
+2024-09-14 19:30:20,141 - DEBUG - Establishing connection to habit_tracker.db
+2024-09-14 19:30:20,141 - DEBUG - ------------------------------------------------------------
+2024-09-14 19:30:20,141 - DEBUG - ------------------------------------------------------------
+2024-09-14 19:30:20,307 - DEBUG - ------------------------------------------------------------
+2024-09-14 19:30:20,307 - DEBUG - Initialized Habit Tracker App
+2024-09-14 19:30:20,307 - DEBUG - ------------------------------------------------------------
+2024-09-14 19:30:20,307 - DEBUG - Initializing database setup
+2024-09-14 19:30:20,308 - INFO - Database file exists. Ensuring schema is up to date.
+2024-09-14 19:30:20,308 - DEBUG - Ensured 'habits' table exists with the correct schema.
+2024-09-14 19:30:20,308 - DEBUG - Ensured 'completions' table exists with the correct schema.
+2024-09-14 19:30:20,308 - INFO - Database initialized successfully.
+2024-09-14 19:30:20,308 - DEBUG - Database connection closed.
+2024-09-14 19:30:20,308 - INFO - Database initialized successfully.
+2024-09-14 19:30:20,308 - DEBUG - Initializing create_widgets method
+2024-09-14 19:30:20,310 - DEBUG - Configured Treeview column: Name
+2024-09-14 19:30:20,310 - DEBUG - Configured Treeview column: Category
+2024-09-14 19:30:20,310 - DEBUG - Configured Treeview column: Streak
+2024-09-14 19:30:20,310 - DEBUG - Configured Treeview column: Daily Completions
+2024-09-14 19:30:20,310 - DEBUG - Configured Treeview column: Recent Note
+2024-09-14 19:30:20,310 - DEBUG - Habit Treeview initialized and event bound
+2024-09-14 19:30:20,310 - DEBUG - Action buttons for habit management added
+2024-09-14 19:30:20,310 - DEBUG - Progress frame for habit tracking initialized
+2024-09-14 19:30:20,310 - DEBUG - UI Elements Created
+2024-09-14 19:30:20,310 - DEBUG - Initializing load_preferences method
+2024-09-14 19:30:20,310 - DEBUG - Window loaded with width: 966, height: 419, x: -2428, y: 208
+2024-09-14 19:30:20,310 - WARNING - Width configuration missing for column 'Name'
+2024-09-14 19:30:20,310 - WARNING - Position configuration missing for column 'Name'
+2024-09-14 19:30:20,310 - WARNING - Width configuration missing for column 'Category'
+2024-09-14 19:30:20,310 - WARNING - Position configuration missing for column 'Category'
+2024-09-14 19:30:20,310 - WARNING - Width configuration missing for column 'Streak'
+2024-09-14 19:30:20,310 - WARNING - Position configuration missing for column 'Streak'
+2024-09-14 19:30:20,311 - WARNING - Width configuration missing for column 'Daily Completions'
+2024-09-14 19:30:20,311 - WARNING - Position configuration missing for column 'Daily Completions'
+2024-09-14 19:30:20,311 - WARNING - Width configuration missing for column 'Recent Note'
+2024-09-14 19:30:20,311 - WARNING - Position configuration missing for column 'Recent Note'
+2024-09-14 19:30:20,311 - DEBUG - Preferences Loaded
+2024-09-14 19:30:20,311 - DEBUG - Initializing load_habits method
+2024-09-14 19:30:20,311 - ERROR - Error while loading habits: no such column: note
+2024-09-14 19:30:35,552 - DEBUG - Initializing schedule_notifications method
+2024-09-14 19:30:35,553 - DEBUG - Initializing notify method
+2024-09-14 19:30:35,554 - DEBUG - Notifications scheduled successfully.
+2024-09-14 19:30:35,554 - DEBUG - Notification Times: [8, 12, 20]
+2024-09-14 19:30:35,554 - DEBUG - ------------------------------------------------------------
+2024-09-14 19:30:35,554 - INFO - notify noted time as: 2024-09-14 19:30:35.554253
+2024-09-14 19:30:35,554 - DEBUG - Initializing mainloop
+2024-09-14 19:30:35,554 - INFO - notify noted target time as: 2024-09-14 08:00:00
+2024-09-14 19:30:35,554 - DEBUG - ------------------------------------------------------------
+2024-09-14 19:30:35,554 - WARNING - 2024-09-14 19:30:35.554253 >= 2024-09-14 08:00:00
+2024-09-14 19:30:35,554 - INFO - target_time now set to: 2024-09-15 08:00:00
+2024-09-14 19:30:38,829 - DEBUG - Initializing add_habit method
+2024-09-14 19:30:38,830 - INFO - Habit added: asdf - adf
+2024-09-14 19:30:38,831 - DEBUG - Initializing load_habits method
+2024-09-14 19:30:42,049 - DEBUG - Initializing add_habit method
+2024-09-14 19:30:42,052 - INFO - Habit added: asd - ads
+2024-09-14 19:30:42,052 - DEBUG - Initializing load_habits method
+2024-09-14 19:30:44,288 - DEBUG - Initializing on_closing method
+2024-09-14 19:30:44,289 - DEBUG - Initializing save_preferences
+2024-09-14 19:30:44,289 - DEBUG - Window size and position saved: width=966, height=419, x=-2428, y=208
+2024-09-14 19:30:44,289 - WARNING - Column 'Name' not found in display columns. It might be hidden or removed.
+2024-09-14 19:30:44,289 - WARNING - Column 'Category' not found in display columns. It might be hidden or removed.
+2024-09-14 19:30:44,289 - WARNING - Column 'Streak' not found in display columns. It might be hidden or removed.
+2024-09-14 19:30:44,289 - WARNING - Column 'Daily Completions' not found in display columns. It might be hidden or removed.
+2024-09-14 19:30:44,289 - WARNING - Column 'Recent Note' not found in display columns. It might be hidden or removed.
+2024-09-14 19:30:44,290 - INFO - Updated config file with window size, position, and column configurations.
+2024-09-14 19:30:44,290 - INFO - Preferences Saved!
+2024-09-14 19:30:44,301 - DEBUG - Connection closed
+2024-09-14 19:30:44,301 - DEBUG - ------------------------------------------------------------
+2024-09-14 19:30:44,301 - DEBUG - ------------------------------------------------------------
+2024-09-14 19:37:59,571 - DEBUG - ------------------------------------------------------------
+2024-09-14 19:37:59,571 - DEBUG - ------------------------------------------------------------
+2024-09-14 19:37:59,571 - DEBUG - Establishing connection to habit_tracker.db
+2024-09-14 19:37:59,571 - DEBUG - ------------------------------------------------------------
+2024-09-14 19:37:59,571 - DEBUG - ------------------------------------------------------------
+2024-09-14 19:37:59,742 - DEBUG - ------------------------------------------------------------
+2024-09-14 19:37:59,742 - DEBUG - Initialized Habit Tracker App
+2024-09-14 19:37:59,742 - DEBUG - ------------------------------------------------------------
+2024-09-14 19:37:59,742 - DEBUG - Initializing database setup
+2024-09-14 19:37:59,742 - INFO - Database file exists. Ensuring schema is up to date.
+2024-09-14 19:37:59,742 - DEBUG - Ensured 'habits' table exists with the correct schema.
+2024-09-14 19:37:59,742 - DEBUG - Ensured 'completions' table exists with the correct schema.
+2024-09-14 19:37:59,742 - INFO - Database initialized successfully.
+2024-09-14 19:37:59,743 - DEBUG - Database connection closed.
+2024-09-14 19:37:59,743 - INFO - Database initialized successfully.
+2024-09-14 19:37:59,743 - DEBUG - Initializing create_widgets method
+2024-09-14 19:37:59,745 - DEBUG - Configured Treeview column: Name
+2024-09-14 19:37:59,745 - DEBUG - Configured Treeview column: Category
+2024-09-14 19:37:59,745 - DEBUG - Configured Treeview column: Streak
+2024-09-14 19:37:59,745 - DEBUG - Configured Treeview column: Daily Completions
+2024-09-14 19:37:59,745 - DEBUG - Configured Treeview column: Recent Note
+2024-09-14 19:37:59,745 - DEBUG - Habit Treeview initialized and event bound
+2024-09-14 19:37:59,745 - DEBUG - Action buttons for habit management added
+2024-09-14 19:37:59,745 - DEBUG - Progress frame for habit tracking initialized
+2024-09-14 19:37:59,745 - DEBUG - UI Elements Created
+2024-09-14 19:37:59,745 - DEBUG - Initializing load_preferences method
+2024-09-14 19:37:59,746 - DEBUG - Window loaded with width: 966, height: 419, x: -2428, y: 208
+2024-09-14 19:37:59,746 - WARNING - Width configuration missing for column 'Name'
+2024-09-14 19:37:59,746 - WARNING - Position configuration missing for column 'Name'
+2024-09-14 19:37:59,746 - WARNING - Width configuration missing for column 'Category'
+2024-09-14 19:37:59,746 - WARNING - Position configuration missing for column 'Category'
+2024-09-14 19:37:59,746 - WARNING - Width configuration missing for column 'Streak'
+2024-09-14 19:37:59,746 - WARNING - Position configuration missing for column 'Streak'
+2024-09-14 19:37:59,746 - WARNING - Width configuration missing for column 'Daily Completions'
+2024-09-14 19:37:59,746 - WARNING - Position configuration missing for column 'Daily Completions'
+2024-09-14 19:37:59,746 - WARNING - Width configuration missing for column 'Recent Note'
+2024-09-14 19:37:59,746 - WARNING - Position configuration missing for column 'Recent Note'
+2024-09-14 19:37:59,746 - DEBUG - Preferences Loaded
+2024-09-14 19:37:59,746 - DEBUG - Initializing load_habits method
+2024-09-14 19:37:59,746 - ERROR - Error while loading habits: no such column: note
+2024-09-14 19:38:04,178 - DEBUG - Initializing schedule_notifications method
+2024-09-14 19:38:04,179 - DEBUG - Initializing notify method
+2024-09-14 19:38:04,179 - DEBUG - Notifications scheduled successfully.
+2024-09-14 19:38:04,179 - DEBUG - Notification Times: [8, 12, 20]
+2024-09-14 19:38:04,180 - DEBUG - ------------------------------------------------------------
+2024-09-14 19:38:04,180 - INFO - notify noted time as: 2024-09-14 19:38:04.180199
+2024-09-14 19:38:04,180 - DEBUG - Initializing mainloop
+2024-09-14 19:38:04,180 - INFO - notify noted target time as: 2024-09-14 08:00:00
+2024-09-14 19:38:04,180 - DEBUG - ------------------------------------------------------------
+2024-09-14 19:38:04,180 - WARNING - 2024-09-14 19:38:04.180199 >= 2024-09-14 08:00:00
+2024-09-14 19:38:04,181 - INFO - target_time now set to: 2024-09-15 08:00:00
+2024-09-14 19:38:07,611 - DEBUG - Initializing add_habit method
+2024-09-14 19:38:07,615 - INFO - Habit added: asdf - afds
+2024-09-14 19:38:07,615 - DEBUG - Initializing load_habits method
+2024-09-14 19:38:12,031 - DEBUG - Initializing on_closing method
+2024-09-14 19:38:12,031 - DEBUG - Initializing save_preferences
+2024-09-14 19:38:12,031 - DEBUG - Window size and position saved: width=966, height=419, x=-2428, y=208
+2024-09-14 19:38:12,031 - WARNING - Column 'Name' not found in display columns. It might be hidden or removed.
+2024-09-14 19:38:12,031 - WARNING - Column 'Category' not found in display columns. It might be hidden or removed.
+2024-09-14 19:38:12,031 - WARNING - Column 'Streak' not found in display columns. It might be hidden or removed.
+2024-09-14 19:38:12,032 - WARNING - Column 'Daily Completions' not found in display columns. It might be hidden or removed.
+2024-09-14 19:38:12,032 - WARNING - Column 'Recent Note' not found in display columns. It might be hidden or removed.
+2024-09-14 19:38:12,033 - INFO - Updated config file with window size, position, and column configurations.
+2024-09-14 19:38:12,033 - INFO - Preferences Saved!
+2024-09-14 19:38:12,039 - DEBUG - Connection closed
+2024-09-14 19:38:12,039 - DEBUG - ------------------------------------------------------------
+2024-09-14 19:38:12,039 - DEBUG - ------------------------------------------------------------
+2024-09-14 19:39:50,790 - DEBUG - ------------------------------------------------------------
+2024-09-14 19:39:50,791 - DEBUG - Initialized Habit Tracker App
+2024-09-14 19:39:50,791 - DEBUG - ------------------------------------------------------------
+2024-09-14 19:39:50,791 - DEBUG - Initializing database setup
+2024-09-14 19:39:50,792 - INFO - Database file exists. Ensuring schema is up to date.
+2024-09-14 19:39:50,793 - DEBUG - Ensured 'habits' table exists with the correct schema.
+2024-09-14 19:39:50,793 - DEBUG - Ensured 'completions' table exists with the correct schema.
+2024-09-14 19:39:50,793 - INFO - Database initialized successfully.
+2024-09-14 19:39:50,793 - DEBUG - Database connection closed.
+2024-09-14 19:39:50,793 - INFO - Database initialized successfully.
+2024-09-14 19:39:50,793 - DEBUG - Initializing create_widgets method
+2024-09-14 19:39:50,795 - DEBUG - Configured Treeview column: Name
+2024-09-14 19:39:50,796 - DEBUG - Configured Treeview column: Category
+2024-09-14 19:39:50,796 - DEBUG - Configured Treeview column: Streak
+2024-09-14 19:39:50,796 - DEBUG - Configured Treeview column: Daily Completions
+2024-09-14 19:39:50,796 - DEBUG - Configured Treeview column: Recent Note
+2024-09-14 19:39:50,796 - DEBUG - Habit Treeview initialized and event bound
+2024-09-14 19:39:50,796 - DEBUG - Action buttons for habit management added
+2024-09-14 19:39:50,796 - DEBUG - Progress frame for habit tracking initialized
+2024-09-14 19:39:50,796 - DEBUG - UI Elements Created
+2024-09-14 19:39:50,796 - DEBUG - Initializing load_preferences method
+2024-09-14 19:39:50,796 - DEBUG - Window loaded with width: 966, height: 419, x: -2428, y: 208
+2024-09-14 19:39:50,796 - WARNING - Width configuration missing for column 'Name'
+2024-09-14 19:39:50,796 - WARNING - Position configuration missing for column 'Name'
+2024-09-14 19:39:50,796 - WARNING - Width configuration missing for column 'Category'
+2024-09-14 19:39:50,796 - WARNING - Position configuration missing for column 'Category'
+2024-09-14 19:39:50,796 - WARNING - Width configuration missing for column 'Streak'
+2024-09-14 19:39:50,796 - WARNING - Position configuration missing for column 'Streak'
+2024-09-14 19:39:50,796 - WARNING - Width configuration missing for column 'Daily Completions'
+2024-09-14 19:39:50,796 - WARNING - Position configuration missing for column 'Daily Completions'
+2024-09-14 19:39:50,796 - WARNING - Width configuration missing for column 'Recent Note'
+2024-09-14 19:39:50,796 - WARNING - Position configuration missing for column 'Recent Note'
+2024-09-14 19:39:50,796 - DEBUG - Preferences Loaded
+2024-09-14 19:39:50,796 - DEBUG - Initializing load_habits method
+2024-09-14 19:39:50,796 - ERROR - Error while loading habits: name 'cursor' is not defined
+2024-09-14 19:39:53,151 - DEBUG - Initializing schedule_notifications method
+2024-09-14 19:39:53,152 - DEBUG - Initializing notify method
+2024-09-14 19:39:53,152 - DEBUG - Notifications scheduled successfully.
+2024-09-14 19:39:53,152 - DEBUG - Notification Times: [8, 12, 20]
+2024-09-14 19:39:53,152 - INFO - notify noted time as: 2024-09-14 19:39:53.152487
+2024-09-14 19:39:53,152 - INFO - notify noted target time as: 2024-09-14 08:00:00
+2024-09-14 19:39:53,152 - WARNING - 2024-09-14 19:39:53.152487 >= 2024-09-14 08:00:00
+2024-09-14 19:39:53,152 - INFO - target_time now set to: 2024-09-15 08:00:00
+2024-09-14 19:39:53,152 - DEBUG - ------------------------------------------------------------
+2024-09-14 19:39:53,152 - DEBUG - Initializing mainloop
+2024-09-14 19:39:53,152 - DEBUG - ------------------------------------------------------------
+2024-09-14 19:39:56,226 - DEBUG - Initializing add_habit method
+2024-09-14 19:39:59,167 - DEBUG - Initializing on_closing method
+2024-09-14 19:39:59,167 - DEBUG - Initializing save_preferences
+2024-09-14 19:39:59,167 - DEBUG - Window size and position saved: width=966, height=419, x=-2428, y=208
+2024-09-14 19:39:59,167 - WARNING - Column 'Name' not found in display columns. It might be hidden or removed.
+2024-09-14 19:39:59,168 - WARNING - Column 'Category' not found in display columns. It might be hidden or removed.
+2024-09-14 19:39:59,168 - WARNING - Column 'Streak' not found in display columns. It might be hidden or removed.
+2024-09-14 19:39:59,168 - WARNING - Column 'Daily Completions' not found in display columns. It might be hidden or removed.
+2024-09-14 19:39:59,168 - WARNING - Column 'Recent Note' not found in display columns. It might be hidden or removed.
+2024-09-14 19:39:59,169 - INFO - Updated config file with window size, position, and column configurations.
+2024-09-14 19:39:59,169 - INFO - Preferences Saved!
+2024-09-14 19:40:38,214 - DEBUG - ------------------------------------------------------------
+2024-09-14 19:40:38,214 - DEBUG - Initialized Habit Tracker App
+2024-09-14 19:40:38,214 - DEBUG - ------------------------------------------------------------
+2024-09-14 19:40:38,214 - DEBUG - Initializing database setup
+2024-09-14 19:40:38,215 - INFO - Database file exists. Ensuring schema is up to date.
+2024-09-14 19:40:38,217 - DEBUG - Ensured 'habits' table exists with the correct schema.
+2024-09-14 19:40:38,217 - DEBUG - Ensured 'completions' table exists with the correct schema.
+2024-09-14 19:40:38,217 - INFO - Database initialized successfully.
+2024-09-14 19:40:38,217 - DEBUG - Database connection closed.
+2024-09-14 19:40:38,217 - INFO - Database initialized successfully.
+2024-09-14 19:40:38,217 - DEBUG - Initializing create_widgets method
+2024-09-14 19:40:38,219 - DEBUG - Configured Treeview column: Name
+2024-09-14 19:40:38,219 - DEBUG - Configured Treeview column: Category
+2024-09-14 19:40:38,219 - DEBUG - Configured Treeview column: Streak
+2024-09-14 19:40:38,219 - DEBUG - Configured Treeview column: Daily Completions
+2024-09-14 19:40:38,219 - DEBUG - Configured Treeview column: Recent Note
+2024-09-14 19:40:38,220 - DEBUG - Habit Treeview initialized and event bound
+2024-09-14 19:40:38,220 - DEBUG - Action buttons for habit management added
+2024-09-14 19:40:38,220 - DEBUG - Progress frame for habit tracking initialized
+2024-09-14 19:40:38,220 - DEBUG - UI Elements Created
+2024-09-14 19:40:38,220 - DEBUG - Initializing load_preferences method
+2024-09-14 19:40:38,220 - DEBUG - Window loaded with width: 966, height: 419, x: -2428, y: 208
+2024-09-14 19:40:38,220 - WARNING - Width configuration missing for column 'Name'
+2024-09-14 19:40:38,220 - WARNING - Position configuration missing for column 'Name'
+2024-09-14 19:40:38,220 - WARNING - Width configuration missing for column 'Category'
+2024-09-14 19:40:38,220 - WARNING - Position configuration missing for column 'Category'
+2024-09-14 19:40:38,220 - WARNING - Width configuration missing for column 'Streak'
+2024-09-14 19:40:38,220 - WARNING - Position configuration missing for column 'Streak'
+2024-09-14 19:40:38,220 - WARNING - Width configuration missing for column 'Daily Completions'
+2024-09-14 19:40:38,220 - WARNING - Position configuration missing for column 'Daily Completions'
+2024-09-14 19:40:38,220 - WARNING - Width configuration missing for column 'Recent Note'
+2024-09-14 19:40:38,220 - WARNING - Position configuration missing for column 'Recent Note'
+2024-09-14 19:40:38,220 - DEBUG - Preferences Loaded
+2024-09-14 19:40:38,220 - DEBUG - Initializing load_habits method
+2024-09-14 19:40:38,220 - ERROR - Error while loading habits: name 'cursor' is not defined
+2024-09-14 19:40:40,690 - DEBUG - Initializing schedule_notifications method
+2024-09-14 19:40:40,690 - DEBUG - Initializing notify method
+2024-09-14 19:40:40,690 - DEBUG - Notifications scheduled successfully.
+2024-09-14 19:40:40,691 - DEBUG - Notification Times: [8, 12, 20]
+2024-09-14 19:40:40,691 - INFO - notify noted time as: 2024-09-14 19:40:40.691138
+2024-09-14 19:40:40,691 - INFO - notify noted target time as: 2024-09-14 08:00:00
+2024-09-14 19:40:40,691 - WARNING - 2024-09-14 19:40:40.691138 >= 2024-09-14 08:00:00
+2024-09-14 19:40:40,691 - INFO - target_time now set to: 2024-09-15 08:00:00
+2024-09-14 19:40:40,691 - DEBUG - ------------------------------------------------------------
+2024-09-14 19:40:40,691 - DEBUG - Initializing mainloop
+2024-09-14 19:40:40,691 - DEBUG - ------------------------------------------------------------
+2024-09-14 19:40:43,665 - DEBUG - Initializing add_habit method
+2024-09-14 19:40:46,204 - DEBUG - Initializing on_closing method
+2024-09-14 19:40:46,204 - DEBUG - Initializing save_preferences
+2024-09-14 19:40:46,204 - DEBUG - Window size and position saved: width=966, height=419, x=-2428, y=208
+2024-09-14 19:40:46,204 - WARNING - Column 'Name' not found in display columns. It might be hidden or removed.
+2024-09-14 19:40:46,204 - WARNING - Column 'Category' not found in display columns. It might be hidden or removed.
+2024-09-14 19:40:46,204 - WARNING - Column 'Streak' not found in display columns. It might be hidden or removed.
+2024-09-14 19:40:46,204 - WARNING - Column 'Daily Completions' not found in display columns. It might be hidden or removed.
+2024-09-14 19:40:46,204 - WARNING - Column 'Recent Note' not found in display columns. It might be hidden or removed.
+2024-09-14 19:40:46,205 - INFO - Updated config file with window size, position, and column configurations.
+2024-09-14 19:40:46,206 - INFO - Preferences Saved!
+2024-09-14 19:41:11,995 - DEBUG - ------------------------------------------------------------
+2024-09-14 19:41:11,995 - DEBUG - Initialized Habit Tracker App
+2024-09-14 19:41:11,995 - DEBUG - ------------------------------------------------------------
+2024-09-14 19:41:11,995 - DEBUG - Initializing database setup
+2024-09-14 19:41:11,996 - INFO - Database file not found. Creating a new database.
+2024-09-14 19:41:11,998 - DEBUG - Ensured 'habits' table exists with the correct schema.
+2024-09-14 19:41:11,998 - DEBUG - Ensured 'completions' table exists with the correct schema.
+2024-09-14 19:41:11,998 - INFO - Database initialized successfully.
+2024-09-14 19:41:11,998 - DEBUG - Database connection closed.
+2024-09-14 19:41:11,998 - INFO - Database initialized successfully.
+2024-09-14 19:41:11,998 - DEBUG - Initializing create_widgets method
+2024-09-14 19:41:12,001 - DEBUG - Configured Treeview column: Name
+2024-09-14 19:41:12,001 - DEBUG - Configured Treeview column: Category
+2024-09-14 19:41:12,001 - DEBUG - Configured Treeview column: Streak
+2024-09-14 19:41:12,001 - DEBUG - Configured Treeview column: Daily Completions
+2024-09-14 19:41:12,001 - DEBUG - Configured Treeview column: Recent Note
+2024-09-14 19:41:12,001 - DEBUG - Habit Treeview initialized and event bound
+2024-09-14 19:41:12,001 - DEBUG - Action buttons for habit management added
+2024-09-14 19:41:12,001 - DEBUG - Progress frame for habit tracking initialized
+2024-09-14 19:41:12,001 - DEBUG - UI Elements Created
+2024-09-14 19:41:12,001 - DEBUG - Initializing load_preferences method
+2024-09-14 19:41:12,001 - DEBUG - Window loaded with width: 966, height: 419, x: -2428, y: 208
+2024-09-14 19:41:12,001 - WARNING - Width configuration missing for column 'Name'
+2024-09-14 19:41:12,001 - WARNING - Position configuration missing for column 'Name'
+2024-09-14 19:41:12,001 - WARNING - Width configuration missing for column 'Category'
+2024-09-14 19:41:12,001 - WARNING - Position configuration missing for column 'Category'
+2024-09-14 19:41:12,001 - WARNING - Width configuration missing for column 'Streak'
+2024-09-14 19:41:12,001 - WARNING - Position configuration missing for column 'Streak'
+2024-09-14 19:41:12,001 - WARNING - Width configuration missing for column 'Daily Completions'
+2024-09-14 19:41:12,001 - WARNING - Position configuration missing for column 'Daily Completions'
+2024-09-14 19:41:12,001 - WARNING - Width configuration missing for column 'Recent Note'
+2024-09-14 19:41:12,001 - WARNING - Position configuration missing for column 'Recent Note'
+2024-09-14 19:41:12,001 - DEBUG - Preferences Loaded
+2024-09-14 19:41:12,001 - DEBUG - Initializing load_habits method
+2024-09-14 19:41:12,001 - ERROR - Error while loading habits: name 'cursor' is not defined
+2024-09-14 19:41:13,549 - DEBUG - Initializing schedule_notifications method
+2024-09-14 19:41:13,550 - DEBUG - Initializing notify method
+2024-09-14 19:41:13,550 - DEBUG - Notifications scheduled successfully.
+2024-09-14 19:41:13,550 - DEBUG - Notification Times: [8, 12, 20]
+2024-09-14 19:41:13,550 - INFO - notify noted time as: 2024-09-14 19:41:13.550523
+2024-09-14 19:41:13,550 - INFO - notify noted target time as: 2024-09-14 08:00:00
+2024-09-14 19:41:13,550 - WARNING - 2024-09-14 19:41:13.550523 >= 2024-09-14 08:00:00
+2024-09-14 19:41:13,550 - INFO - target_time now set to: 2024-09-15 08:00:00
+2024-09-14 19:41:13,550 - DEBUG - ------------------------------------------------------------
+2024-09-14 19:41:13,550 - DEBUG - Initializing mainloop
+2024-09-14 19:41:13,550 - DEBUG - ------------------------------------------------------------
+2024-09-14 19:41:16,363 - DEBUG - Initializing add_habit method
+2024-09-14 19:41:18,942 - DEBUG - Initializing on_closing method
+2024-09-14 19:41:18,943 - DEBUG - Initializing save_preferences
+2024-09-14 19:41:18,943 - DEBUG - Window size and position saved: width=966, height=419, x=-2428, y=208
+2024-09-14 19:41:18,943 - WARNING - Column 'Name' not found in display columns. It might be hidden or removed.
+2024-09-14 19:41:18,943 - WARNING - Column 'Category' not found in display columns. It might be hidden or removed.
+2024-09-14 19:41:18,943 - WARNING - Column 'Streak' not found in display columns. It might be hidden or removed.
+2024-09-14 19:41:18,943 - WARNING - Column 'Daily Completions' not found in display columns. It might be hidden or removed.
+2024-09-14 19:41:18,943 - WARNING - Column 'Recent Note' not found in display columns. It might be hidden or removed.
+2024-09-14 19:41:18,944 - INFO - Updated config file with window size, position, and column configurations.
+2024-09-14 19:41:18,944 - INFO - Preferences Saved!
+2024-09-14 20:43:00,713 - DEBUG - ------------------------------------------------------------
+2024-09-14 20:43:00,713 - DEBUG - Initialized Habit Tracker App
+2024-09-14 20:43:00,713 - DEBUG - ------------------------------------------------------------
+2024-09-14 20:43:00,713 - DEBUG - Initializing database setup
+2024-09-14 20:43:00,714 - INFO - Database file exists. Ensuring schema is up to date.
+2024-09-14 20:43:00,716 - DEBUG - Ensured 'habits' table exists with the correct schema.
+2024-09-14 20:43:00,716 - DEBUG - Ensured 'completions' table exists with the correct schema.
+2024-09-14 20:43:00,716 - INFO - Database initialized successfully.
+2024-09-14 20:43:00,716 - DEBUG - Initializing database setup
+2024-09-14 20:43:00,716 - INFO - Database file exists. Ensuring schema is up to date.
+2024-09-14 20:43:00,716 - DEBUG - Ensured 'habits' table exists with the correct schema.
+2024-09-14 20:43:00,716 - DEBUG - Ensured 'completions' table exists with the correct schema.
+2024-09-14 20:43:00,716 - INFO - Database initialized successfully.
+2024-09-14 20:43:00,716 - INFO - Database initialized successfully.
+2024-09-14 20:43:00,716 - DEBUG - Initializing create_widgets method
+2024-09-14 20:43:00,719 - DEBUG - Configured Treeview column: Name
+2024-09-14 20:43:00,719 - DEBUG - Configured Treeview column: Category
+2024-09-14 20:43:00,719 - DEBUG - Configured Treeview column: Streak
+2024-09-14 20:43:00,719 - DEBUG - Configured Treeview column: Daily Completions
+2024-09-14 20:43:00,719 - DEBUG - Configured Treeview column: Recent Note
+2024-09-14 20:43:00,719 - DEBUG - Habit Treeview initialized and event bound
+2024-09-14 20:43:00,719 - DEBUG - Action buttons for habit management added
+2024-09-14 20:43:00,719 - DEBUG - Progress frame for habit tracking initialized
+2024-09-14 20:43:00,719 - DEBUG - UI Elements Created
+2024-09-14 20:43:00,719 - DEBUG - Initializing load_preferences method
+2024-09-14 20:43:00,719 - DEBUG - Window loaded with width: 966, height: 419, x: -2428, y: 208
+2024-09-14 20:43:00,719 - WARNING - Width configuration missing for column 'Name'
+2024-09-14 20:43:00,719 - WARNING - Position configuration missing for column 'Name'
+2024-09-14 20:43:00,719 - WARNING - Width configuration missing for column 'Category'
+2024-09-14 20:43:00,719 - WARNING - Position configuration missing for column 'Category'
+2024-09-14 20:43:00,719 - WARNING - Width configuration missing for column 'Streak'
+2024-09-14 20:43:00,719 - WARNING - Position configuration missing for column 'Streak'
+2024-09-14 20:43:00,719 - WARNING - Width configuration missing for column 'Daily Completions'
+2024-09-14 20:43:00,719 - WARNING - Position configuration missing for column 'Daily Completions'
+2024-09-14 20:43:00,719 - WARNING - Width configuration missing for column 'Recent Note'
+2024-09-14 20:43:00,719 - WARNING - Position configuration missing for column 'Recent Note'
+2024-09-14 20:43:00,719 - DEBUG - Preferences Loaded
+2024-09-14 20:43:00,719 - DEBUG - Initializing load_habits method
+2024-09-14 20:43:00,719 - ERROR - Error while loading habits: name 'cursor' is not defined
+2024-09-14 20:43:06,019 - DEBUG - Initializing schedule_notifications method
+2024-09-14 20:43:06,019 - DEBUG - Initializing notify method
+2024-09-14 20:43:06,019 - DEBUG - Notifications scheduled successfully.
+2024-09-14 20:43:06,019 - DEBUG - Notification Times: [8, 12, 20]
+2024-09-14 20:43:06,020 - DEBUG - ------------------------------------------------------------
+2024-09-14 20:43:06,020 - INFO - notify noted time as: 2024-09-14 20:43:06.020150
+2024-09-14 20:43:06,020 - DEBUG - Initializing mainloop
+2024-09-14 20:43:06,020 - INFO - notify noted target time as: 2024-09-14 08:00:00
+2024-09-14 20:43:06,020 - DEBUG - ------------------------------------------------------------
+2024-09-14 20:43:06,020 - WARNING - 2024-09-14 20:43:06.020150 >= 2024-09-14 08:00:00
+2024-09-14 20:43:06,020 - INFO - target_time now set to: 2024-09-15 08:00:00
+2024-09-14 20:43:09,592 - DEBUG - Initializing add_habit method
+2024-09-14 20:43:17,752 - DEBUG - Initializing on_closing method
+2024-09-14 20:43:17,752 - DEBUG - Initializing save_preferences
+2024-09-14 20:43:17,753 - DEBUG - Window size and position saved: width=966, height=419, x=-2428, y=208
+2024-09-14 20:43:17,753 - WARNING - Column 'Name' not found in display columns. It might be hidden or removed.
+2024-09-14 20:43:17,753 - WARNING - Column 'Category' not found in display columns. It might be hidden or removed.
+2024-09-14 20:43:17,753 - WARNING - Column 'Streak' not found in display columns. It might be hidden or removed.
+2024-09-14 20:43:17,753 - WARNING - Column 'Daily Completions' not found in display columns. It might be hidden or removed.
+2024-09-14 20:43:17,754 - WARNING - Column 'Recent Note' not found in display columns. It might be hidden or removed.
+2024-09-14 20:43:17,755 - INFO - Updated config file with window size, position, and column configurations.
+2024-09-14 20:43:17,755 - INFO - Preferences Saved!
+2024-09-14 20:44:08,634 - DEBUG - ------------------------------------------------------------
+2024-09-14 20:44:08,634 - DEBUG - Initialized Habit Tracker App
+2024-09-14 20:44:08,634 - DEBUG - ------------------------------------------------------------
+2024-09-14 20:44:08,634 - DEBUG - Initializing database setup
+2024-09-14 20:44:08,636 - INFO - Database file exists. Ensuring schema is up to date.
+2024-09-14 20:44:08,637 - DEBUG - Ensured 'habits' table exists with the correct schema.
+2024-09-14 20:44:08,638 - DEBUG - Ensured 'completions' table exists with the correct schema.
+2024-09-14 20:44:08,638 - INFO - Database initialized successfully.
+2024-09-14 20:44:08,638 - DEBUG - Initializing database setup
+2024-09-14 20:44:08,638 - INFO - Database file exists. Ensuring schema is up to date.
+2024-09-14 20:44:08,638 - DEBUG - Ensured 'habits' table exists with the correct schema.
+2024-09-14 20:44:08,638 - DEBUG - Ensured 'completions' table exists with the correct schema.
+2024-09-14 20:44:08,638 - INFO - Database initialized successfully.
+2024-09-14 20:44:08,638 - INFO - Database initialized successfully.
+2024-09-14 20:44:08,638 - DEBUG - Initializing create_widgets method
+2024-09-14 20:44:08,641 - DEBUG - Configured Treeview column: Name
+2024-09-14 20:44:08,641 - DEBUG - Configured Treeview column: Category
+2024-09-14 20:44:08,641 - DEBUG - Configured Treeview column: Streak
+2024-09-14 20:44:08,641 - DEBUG - Configured Treeview column: Daily Completions
+2024-09-14 20:44:08,641 - DEBUG - Configured Treeview column: Recent Note
+2024-09-14 20:44:08,641 - DEBUG - Habit Treeview initialized and event bound
+2024-09-14 20:44:08,641 - DEBUG - Action buttons for habit management added
+2024-09-14 20:44:08,641 - DEBUG - Progress frame for habit tracking initialized
+2024-09-14 20:44:08,642 - DEBUG - UI Elements Created
+2024-09-14 20:44:08,642 - DEBUG - Initializing load_preferences method
+2024-09-14 20:44:08,642 - DEBUG - Window loaded with width: 966, height: 419, x: -2428, y: 208
+2024-09-14 20:44:08,642 - WARNING - Width configuration missing for column 'Name'
+2024-09-14 20:44:08,642 - WARNING - Position configuration missing for column 'Name'
+2024-09-14 20:44:08,642 - WARNING - Width configuration missing for column 'Category'
+2024-09-14 20:44:08,642 - WARNING - Position configuration missing for column 'Category'
+2024-09-14 20:44:08,642 - WARNING - Width configuration missing for column 'Streak'
+2024-09-14 20:44:08,642 - WARNING - Position configuration missing for column 'Streak'
+2024-09-14 20:44:08,642 - WARNING - Width configuration missing for column 'Daily Completions'
+2024-09-14 20:44:08,642 - WARNING - Position configuration missing for column 'Daily Completions'
+2024-09-14 20:44:08,642 - WARNING - Width configuration missing for column 'Recent Note'
+2024-09-14 20:44:08,642 - WARNING - Position configuration missing for column 'Recent Note'
+2024-09-14 20:44:08,642 - DEBUG - Preferences Loaded
+2024-09-14 20:44:08,642 - DEBUG - Initializing load_habits method
+2024-09-14 20:44:08,642 - ERROR - Error while loading habits: name 'cursor' is not defined
+2024-09-14 20:44:10,577 - DEBUG - Initializing schedule_notifications method
+2024-09-14 20:44:10,577 - DEBUG - Initializing notify method
+2024-09-14 20:44:10,577 - DEBUG - Notifications scheduled successfully.
+2024-09-14 20:44:10,577 - DEBUG - Notification Times: [8, 12, 20]
+2024-09-14 20:44:10,577 - INFO - notify noted time as: 2024-09-14 20:44:10.577523
+2024-09-14 20:44:10,577 - INFO - notify noted target time as: 2024-09-14 08:00:00
+2024-09-14 20:44:10,577 - WARNING - 2024-09-14 20:44:10.577523 >= 2024-09-14 08:00:00
+2024-09-14 20:44:10,577 - INFO - target_time now set to: 2024-09-15 08:00:00
+2024-09-14 20:44:10,577 - DEBUG - ------------------------------------------------------------
+2024-09-14 20:44:10,577 - DEBUG - Initializing mainloop
+2024-09-14 20:44:10,577 - DEBUG - ------------------------------------------------------------
+2024-09-14 20:44:13,265 - DEBUG - Initializing add_habit method
+2024-09-14 20:44:13,267 - INFO - Habit added: asdf - asdf
+2024-09-14 20:44:13,267 - DEBUG - Initializing load_habits method
+2024-09-14 20:44:18,591 - DEBUG - Initializing on_closing method
+2024-09-14 20:44:18,591 - DEBUG - Initializing save_preferences
+2024-09-14 20:44:18,591 - DEBUG - Window size and position saved: width=966, height=419, x=-2428, y=208
+2024-09-14 20:44:18,591 - WARNING - Column 'Name' not found in display columns. It might be hidden or removed.
+2024-09-14 20:44:18,591 - WARNING - Column 'Category' not found in display columns. It might be hidden or removed.
+2024-09-14 20:44:18,591 - WARNING - Column 'Streak' not found in display columns. It might be hidden or removed.
+2024-09-14 20:44:18,591 - WARNING - Column 'Daily Completions' not found in display columns. It might be hidden or removed.
+2024-09-14 20:44:18,591 - WARNING - Column 'Recent Note' not found in display columns. It might be hidden or removed.
+2024-09-14 20:44:18,593 - INFO - Updated config file with window size, position, and column configurations.
+2024-09-14 20:44:18,593 - INFO - Preferences Saved!
+2024-09-14 20:44:59,550 - DEBUG - ------------------------------------------------------------
+2024-09-14 20:44:59,550 - DEBUG - Initialized Habit Tracker App
+2024-09-14 20:44:59,550 - DEBUG - ------------------------------------------------------------
+2024-09-14 20:44:59,551 - DEBUG - Initializing database setup
+2024-09-14 20:44:59,552 - INFO - Database file exists. Ensuring schema is up to date.
+2024-09-14 20:44:59,553 - DEBUG - Ensured 'habits' table exists with the correct schema.
+2024-09-14 20:44:59,553 - DEBUG - Ensured 'completions' table exists with the correct schema.
+2024-09-14 20:44:59,553 - INFO - Database initialized successfully.
+2024-09-14 20:44:59,553 - DEBUG - Initializing database setup
+2024-09-14 20:44:59,553 - INFO - Database file exists. Ensuring schema is up to date.
+2024-09-14 20:44:59,553 - DEBUG - Ensured 'habits' table exists with the correct schema.
+2024-09-14 20:44:59,553 - DEBUG - Ensured 'completions' table exists with the correct schema.
+2024-09-14 20:44:59,553 - INFO - Database initialized successfully.
+2024-09-14 20:44:59,553 - INFO - Database initialized successfully.
+2024-09-14 20:44:59,553 - DEBUG - Initializing create_widgets method
+2024-09-14 20:44:59,556 - DEBUG - Configured Treeview column: Name
+2024-09-14 20:44:59,556 - DEBUG - Configured Treeview column: Category
+2024-09-14 20:44:59,556 - DEBUG - Configured Treeview column: Streak
+2024-09-14 20:44:59,556 - DEBUG - Configured Treeview column: Daily Completions
+2024-09-14 20:44:59,556 - DEBUG - Configured Treeview column: Recent Note
+2024-09-14 20:44:59,556 - DEBUG - Habit Treeview initialized and event bound
+2024-09-14 20:44:59,556 - DEBUG - Action buttons for habit management added
+2024-09-14 20:44:59,556 - DEBUG - Progress frame for habit tracking initialized
+2024-09-14 20:44:59,556 - DEBUG - UI Elements Created
+2024-09-14 20:44:59,556 - DEBUG - Initializing load_preferences method
+2024-09-14 20:44:59,556 - DEBUG - Window loaded with width: 966, height: 419, x: -2428, y: 208
+2024-09-14 20:44:59,556 - WARNING - Width configuration missing for column 'Name'
+2024-09-14 20:44:59,556 - WARNING - Position configuration missing for column 'Name'
+2024-09-14 20:44:59,556 - WARNING - Width configuration missing for column 'Category'
+2024-09-14 20:44:59,556 - WARNING - Position configuration missing for column 'Category'
+2024-09-14 20:44:59,556 - WARNING - Width configuration missing for column 'Streak'
+2024-09-14 20:44:59,556 - WARNING - Position configuration missing for column 'Streak'
+2024-09-14 20:44:59,556 - WARNING - Width configuration missing for column 'Daily Completions'
+2024-09-14 20:44:59,556 - WARNING - Position configuration missing for column 'Daily Completions'
+2024-09-14 20:44:59,556 - WARNING - Width configuration missing for column 'Recent Note'
+2024-09-14 20:44:59,556 - WARNING - Position configuration missing for column 'Recent Note'
+2024-09-14 20:44:59,556 - DEBUG - Preferences Loaded
+2024-09-14 20:44:59,556 - DEBUG - Initializing load_habits method
+2024-09-14 20:44:59,557 - ERROR - Error while loading habits: name 'cursor' is not defined
+2024-09-14 20:45:01,794 - DEBUG - Initializing schedule_notifications method
+2024-09-14 20:45:01,794 - DEBUG - Initializing notify method
+2024-09-14 20:45:01,795 - DEBUG - Notifications scheduled successfully.
+2024-09-14 20:45:01,795 - DEBUG - Notification Times: [8, 12, 20]
+2024-09-14 20:45:01,795 - INFO - notify noted time as: 2024-09-14 20:45:01.795183
+2024-09-14 20:45:01,795 - INFO - notify noted target time as: 2024-09-14 08:00:00
+2024-09-14 20:45:01,795 - WARNING - 2024-09-14 20:45:01.795183 >= 2024-09-14 08:00:00
+2024-09-14 20:45:01,795 - INFO - target_time now set to: 2024-09-15 08:00:00
+2024-09-14 20:45:01,795 - DEBUG - ------------------------------------------------------------
+2024-09-14 20:45:01,795 - DEBUG - Initializing mainloop
+2024-09-14 20:45:01,795 - DEBUG - ------------------------------------------------------------
+2024-09-14 20:45:04,384 - DEBUG - Initializing add_habit method
+2024-09-14 20:45:04,388 - INFO - Habit added: asdf - asdf
+2024-09-14 20:45:04,388 - DEBUG - Initializing load_habits method
+2024-09-14 20:45:08,952 - DEBUG - Initializing on_closing method
+2024-09-14 20:45:08,952 - DEBUG - Initializing save_preferences
+2024-09-14 20:45:08,953 - DEBUG - Window size and position saved: width=966, height=419, x=-2428, y=208
+2024-09-14 20:45:08,953 - WARNING - Column 'Name' not found in display columns. It might be hidden or removed.
+2024-09-14 20:45:08,953 - WARNING - Column 'Category' not found in display columns. It might be hidden or removed.
+2024-09-14 20:45:08,953 - WARNING - Column 'Streak' not found in display columns. It might be hidden or removed.
+2024-09-14 20:45:08,953 - WARNING - Column 'Daily Completions' not found in display columns. It might be hidden or removed.
+2024-09-14 20:45:08,953 - WARNING - Column 'Recent Note' not found in display columns. It might be hidden or removed.
+2024-09-14 20:45:08,954 - INFO - Updated config file with window size, position, and column configurations.
+2024-09-14 20:45:08,954 - INFO - Preferences Saved!
+2024-09-14 20:45:35,224 - DEBUG - ------------------------------------------------------------
+2024-09-14 20:45:35,225 - DEBUG - Initialized Habit Tracker App
+2024-09-14 20:45:35,225 - DEBUG - ------------------------------------------------------------
+2024-09-14 20:45:35,225 - DEBUG - Initializing database setup
+2024-09-14 20:45:35,226 - INFO - Database file exists. Ensuring schema is up to date.
+2024-09-14 20:45:35,227 - DEBUG - Ensured 'habits' table exists with the correct schema.
+2024-09-14 20:45:35,227 - DEBUG - Ensured 'completions' table exists with the correct schema.
+2024-09-14 20:45:35,227 - INFO - Database initialized successfully.
+2024-09-14 20:45:35,227 - DEBUG - Initializing database setup
+2024-09-14 20:45:35,227 - INFO - Database file exists. Ensuring schema is up to date.
+2024-09-14 20:45:35,227 - DEBUG - Ensured 'habits' table exists with the correct schema.
+2024-09-14 20:45:35,227 - DEBUG - Ensured 'completions' table exists with the correct schema.
+2024-09-14 20:45:35,227 - INFO - Database initialized successfully.
+2024-09-14 20:45:35,227 - INFO - Database initialized successfully.
+2024-09-14 20:45:35,227 - DEBUG - Initializing create_widgets method
+2024-09-14 20:45:35,230 - DEBUG - Configured Treeview column: Name
+2024-09-14 20:45:35,230 - DEBUG - Configured Treeview column: Category
+2024-09-14 20:45:35,230 - DEBUG - Configured Treeview column: Streak
+2024-09-14 20:45:35,230 - DEBUG - Configured Treeview column: Daily Completions
+2024-09-14 20:45:35,230 - DEBUG - Configured Treeview column: Recent Note
+2024-09-14 20:45:35,230 - DEBUG - Habit Treeview initialized and event bound
+2024-09-14 20:45:35,230 - DEBUG - Action buttons for habit management added
+2024-09-14 20:45:35,231 - DEBUG - Progress frame for habit tracking initialized
+2024-09-14 20:45:35,231 - DEBUG - UI Elements Created
+2024-09-14 20:45:35,231 - DEBUG - Initializing load_preferences method
+2024-09-14 20:45:35,231 - DEBUG - Window loaded with width: 966, height: 419, x: -2428, y: 208
+2024-09-14 20:45:35,231 - WARNING - Width configuration missing for column 'Name'
+2024-09-14 20:45:35,231 - WARNING - Position configuration missing for column 'Name'
+2024-09-14 20:45:35,231 - WARNING - Width configuration missing for column 'Category'
+2024-09-14 20:45:35,231 - WARNING - Position configuration missing for column 'Category'
+2024-09-14 20:45:35,231 - WARNING - Width configuration missing for column 'Streak'
+2024-09-14 20:45:35,231 - WARNING - Position configuration missing for column 'Streak'
+2024-09-14 20:45:35,231 - WARNING - Width configuration missing for column 'Daily Completions'
+2024-09-14 20:45:35,231 - WARNING - Position configuration missing for column 'Daily Completions'
+2024-09-14 20:45:35,231 - WARNING - Width configuration missing for column 'Recent Note'
+2024-09-14 20:45:35,231 - WARNING - Position configuration missing for column 'Recent Note'
+2024-09-14 20:45:35,231 - DEBUG - Preferences Loaded
+2024-09-14 20:45:35,231 - DEBUG - Initializing load_habits method
+2024-09-14 20:45:35,231 - DEBUG - Completed fetching all habits, including recent notes.
+2024-09-14 20:45:35,231 - DEBUG - Initializing update_progress_bars method
+2024-09-14 20:45:35,231 - ERROR - Error while loading habits: name 'cursor' is not defined
+2024-09-14 20:45:37,943 - DEBUG - Initializing schedule_notifications method
+2024-09-14 20:45:37,943 - DEBUG - Initializing notify method
+2024-09-14 20:45:37,943 - DEBUG - Notifications scheduled successfully.
+2024-09-14 20:45:37,943 - DEBUG - Notification Times: [8, 12, 20]
+2024-09-14 20:45:37,943 - INFO - notify noted time as: 2024-09-14 20:45:37.943764
+2024-09-14 20:45:37,943 - INFO - notify noted target time as: 2024-09-14 08:00:00
+2024-09-14 20:45:37,943 - WARNING - 2024-09-14 20:45:37.943764 >= 2024-09-14 08:00:00
+2024-09-14 20:45:37,943 - INFO - target_time now set to: 2024-09-15 08:00:00
+2024-09-14 20:45:37,943 - DEBUG - ------------------------------------------------------------
+2024-09-14 20:45:37,943 - DEBUG - Initializing mainloop
+2024-09-14 20:45:37,944 - DEBUG - ------------------------------------------------------------
+2024-09-14 20:45:41,427 - DEBUG - Initializing on_habit_select method
+2024-09-14 20:45:43,402 - DEBUG - Initializing delete_habit method
+2024-09-14 20:45:48,674 - DEBUG - Initializing on_habit_select method
+2024-09-14 20:45:49,692 - DEBUG - Initializing delete_habit method
+2024-09-14 20:45:53,938 - DEBUG - Initializing on_closing method
+2024-09-14 20:45:53,938 - DEBUG - Initializing save_preferences
+2024-09-14 20:45:53,939 - DEBUG - Window size and position saved: width=966, height=419, x=-2428, y=208
+2024-09-14 20:45:53,939 - WARNING - Column 'Name' not found in display columns. It might be hidden or removed.
+2024-09-14 20:45:53,939 - WARNING - Column 'Category' not found in display columns. It might be hidden or removed.
+2024-09-14 20:45:53,939 - WARNING - Column 'Streak' not found in display columns. It might be hidden or removed.
+2024-09-14 20:45:53,939 - WARNING - Column 'Daily Completions' not found in display columns. It might be hidden or removed.
+2024-09-14 20:45:53,939 - WARNING - Column 'Recent Note' not found in display columns. It might be hidden or removed.
+2024-09-14 20:45:53,940 - INFO - Updated config file with window size, position, and column configurations.
+2024-09-14 20:45:53,940 - INFO - Preferences Saved!
+2024-09-14 20:47:47,481 - DEBUG - ------------------------------------------------------------
+2024-09-14 20:47:47,481 - DEBUG - Initialized Habit Tracker App
+2024-09-14 20:47:47,481 - DEBUG - ------------------------------------------------------------
+2024-09-14 20:47:47,481 - DEBUG - Initializing database setup
+2024-09-14 20:47:47,482 - INFO - Database file exists. Ensuring schema is up to date.
+2024-09-14 20:47:47,483 - DEBUG - Ensured 'habits' table exists with the correct schema.
+2024-09-14 20:47:47,483 - DEBUG - Ensured 'completions' table exists with the correct schema.
+2024-09-14 20:47:47,483 - INFO - Database initialized successfully.
+2024-09-14 20:47:47,483 - DEBUG - Initializing database setup
+2024-09-14 20:47:47,483 - INFO - Database file exists. Ensuring schema is up to date.
+2024-09-14 20:47:47,484 - DEBUG - Ensured 'habits' table exists with the correct schema.
+2024-09-14 20:47:47,484 - DEBUG - Ensured 'completions' table exists with the correct schema.
+2024-09-14 20:47:47,484 - INFO - Database initialized successfully.
+2024-09-14 20:47:47,484 - INFO - Database initialized successfully.
+2024-09-14 20:47:47,484 - DEBUG - Initializing create_widgets method
+2024-09-14 20:47:47,486 - DEBUG - Configured Treeview column: Name
+2024-09-14 20:47:47,486 - DEBUG - Configured Treeview column: Category
+2024-09-14 20:47:47,486 - DEBUG - Configured Treeview column: Streak
+2024-09-14 20:47:47,486 - DEBUG - Configured Treeview column: Daily Completions
+2024-09-14 20:47:47,486 - DEBUG - Configured Treeview column: Recent Note
+2024-09-14 20:47:47,486 - DEBUG - Habit Treeview initialized and event bound
+2024-09-14 20:47:47,486 - DEBUG - Action buttons for habit management added
+2024-09-14 20:47:47,486 - DEBUG - Progress frame for habit tracking initialized
+2024-09-14 20:47:47,486 - DEBUG - UI Elements Created
+2024-09-14 20:47:47,486 - DEBUG - Initializing load_preferences method
+2024-09-14 20:47:47,486 - DEBUG - Window loaded with width: 966, height: 419, x: -2428, y: 208
+2024-09-14 20:47:47,486 - WARNING - Width configuration missing for column 'Name'
+2024-09-14 20:47:47,486 - WARNING - Position configuration missing for column 'Name'
+2024-09-14 20:47:47,486 - WARNING - Width configuration missing for column 'Category'
+2024-09-14 20:47:47,486 - WARNING - Position configuration missing for column 'Category'
+2024-09-14 20:47:47,486 - WARNING - Width configuration missing for column 'Streak'
+2024-09-14 20:47:47,486 - WARNING - Position configuration missing for column 'Streak'
+2024-09-14 20:47:47,486 - WARNING - Width configuration missing for column 'Daily Completions'
+2024-09-14 20:47:47,486 - WARNING - Position configuration missing for column 'Daily Completions'
+2024-09-14 20:47:47,486 - WARNING - Width configuration missing for column 'Recent Note'
+2024-09-14 20:47:47,486 - WARNING - Position configuration missing for column 'Recent Note'
+2024-09-14 20:47:47,486 - DEBUG - Preferences Loaded
+2024-09-14 20:47:47,486 - DEBUG - Initializing load_habits method
+2024-09-14 20:47:47,487 - DEBUG - Completed fetching all habits, including recent notes.
+2024-09-14 20:47:47,487 - DEBUG - Initializing update_progress_bars method
+2024-09-14 20:47:47,487 - ERROR - Error while loading habits: name 'cursor' is not defined
+2024-09-14 20:47:49,428 - DEBUG - Initializing schedule_notifications method
+2024-09-14 20:47:49,428 - DEBUG - Initializing notify method
+2024-09-14 20:47:49,428 - DEBUG - Notifications scheduled successfully.
+2024-09-14 20:47:49,428 - DEBUG - Notification Times: [8, 12, 20]
+2024-09-14 20:47:49,428 - INFO - notify noted time as: 2024-09-14 20:47:49.428392
+2024-09-14 20:47:49,428 - DEBUG - ------------------------------------------------------------
+2024-09-14 20:47:49,428 - DEBUG - Initializing mainloop
+2024-09-14 20:47:49,428 - DEBUG - ------------------------------------------------------------
+2024-09-14 20:47:49,428 - INFO - notify noted target time as: 2024-09-14 08:00:00
+2024-09-14 20:47:49,428 - WARNING - 2024-09-14 20:47:49.428392 >= 2024-09-14 08:00:00
+2024-09-14 20:47:49,428 - INFO - target_time now set to: 2024-09-15 08:00:00
+2024-09-14 20:47:51,253 - DEBUG - Initializing on_habit_select method
+2024-09-14 20:47:52,499 - DEBUG - Initializing delete_habit method
+2024-09-14 20:47:53,897 - WARNING - asdf!
+2024-09-14 20:47:53,897 - DEBUG - Initializing load_habits method
+2024-09-14 20:47:53,897 - DEBUG - Completed fetching all habits, including recent notes.
+2024-09-14 20:47:53,897 - DEBUG - Initializing update_progress_bars method
+2024-09-14 20:47:53,900 - DEBUG - Initializing on_habit_select method
+2024-09-14 20:47:55,399 - DEBUG - Initializing on_habit_select method
+2024-09-14 20:47:56,682 - DEBUG - Initializing delete_habit method
+2024-09-14 20:47:58,337 - WARNING - asdf!
+2024-09-14 20:47:58,337 - DEBUG - Initializing load_habits method
+2024-09-14 20:47:58,337 - DEBUG - Completed fetching all habits, including recent notes.
+2024-09-14 20:47:58,337 - DEBUG - Initializing update_progress_bars method
+2024-09-14 20:47:58,337 - DEBUG - Initializing on_habit_select method
+2024-09-14 20:48:08,439 - DEBUG - Initializing add_habit method
+2024-09-14 20:48:08,442 - INFO - Habit added: test - test_cat
+2024-09-14 20:48:08,442 - DEBUG - Initializing load_habits method
+2024-09-14 20:48:08,442 - DEBUG - Completed fetching all habits, including recent notes.
+2024-09-14 20:48:08,442 - DEBUG - Initializing update_progress_bars method
+2024-09-14 20:48:10,269 - DEBUG - Initializing on_habit_select method
+2024-09-14 20:48:11,756 - DEBUG - Initializing mark_done method
+2024-09-14 20:48:21,877 - DEBUG - Initializing on_habit_select method
+2024-09-14 20:48:23,258 - DEBUG - Initializing mark_done method
+2024-09-14 20:48:33,909 - DEBUG - Initializing view_edit_notes method
+2024-09-14 20:48:33,910 - DEBUG - Displaying new window for view/edit on test
+2024-09-14 20:48:33,910 - DEBUG - Fetching Notes for Selected habit.
+2024-09-14 20:48:33,911 - DEBUG - Initializing listbox to display notes.
+2024-09-14 20:48:41,749 - DEBUG - Initializing on_habit_select method
+2024-09-14 20:48:43,985 - DEBUG - Initializing on_closing method
+2024-09-14 20:48:43,985 - DEBUG - Initializing save_preferences
+2024-09-14 20:48:43,986 - DEBUG - Window size and position saved: width=966, height=419, x=-2428, y=208
+2024-09-14 20:48:43,986 - WARNING - Column 'Name' not found in display columns. It might be hidden or removed.
+2024-09-14 20:48:43,986 - WARNING - Column 'Category' not found in display columns. It might be hidden or removed.
+2024-09-14 20:48:43,986 - WARNING - Column 'Streak' not found in display columns. It might be hidden or removed.
+2024-09-14 20:48:43,986 - WARNING - Column 'Daily Completions' not found in display columns. It might be hidden or removed.
+2024-09-14 20:48:43,986 - WARNING - Column 'Recent Note' not found in display columns. It might be hidden or removed.
+2024-09-14 20:48:43,987 - INFO - Updated config file with window size, position, and column configurations.
+2024-09-14 20:48:43,987 - INFO - Preferences Saved!
+2024-09-14 20:49:55,533 - DEBUG - ------------------------------------------------------------
+2024-09-14 20:49:55,533 - DEBUG - Initialized Habit Tracker App
+2024-09-14 20:49:55,534 - DEBUG - ------------------------------------------------------------
+2024-09-14 20:49:55,534 - DEBUG - Initializing database setup
+2024-09-14 20:49:55,535 - INFO - Database file exists. Ensuring schema is up to date.
+2024-09-14 20:49:55,536 - DEBUG - Ensured 'habits' table exists with the correct schema.
+2024-09-14 20:49:55,536 - DEBUG - Ensured 'completions' table exists with the correct schema.
+2024-09-14 20:49:55,536 - INFO - Database initialized successfully.
+2024-09-14 20:49:55,536 - DEBUG - Initializing database setup
+2024-09-14 20:49:55,536 - INFO - Database file exists. Ensuring schema is up to date.
+2024-09-14 20:49:55,536 - DEBUG - Ensured 'habits' table exists with the correct schema.
+2024-09-14 20:49:55,536 - DEBUG - Ensured 'completions' table exists with the correct schema.
+2024-09-14 20:49:55,536 - INFO - Database initialized successfully.
+2024-09-14 20:49:55,536 - INFO - Database initialized successfully.
+2024-09-14 20:49:55,536 - DEBUG - Initializing create_widgets method
+2024-09-14 20:49:55,538 - DEBUG - Configured Treeview column: Name
+2024-09-14 20:49:55,538 - DEBUG - Configured Treeview column: Category
+2024-09-14 20:49:55,538 - DEBUG - Configured Treeview column: Streak
+2024-09-14 20:49:55,538 - DEBUG - Configured Treeview column: Daily Completions
+2024-09-14 20:49:55,538 - DEBUG - Configured Treeview column: Recent Note
+2024-09-14 20:49:55,538 - DEBUG - Habit Treeview initialized and event bound
+2024-09-14 20:49:55,538 - DEBUG - Action buttons for habit management added
+2024-09-14 20:49:55,539 - DEBUG - Progress frame for habit tracking initialized
+2024-09-14 20:49:55,539 - DEBUG - UI Elements Created
+2024-09-14 20:49:55,539 - DEBUG - Initializing load_preferences method
+2024-09-14 20:49:55,539 - DEBUG - Window loaded with width: 966, height: 419, x: -2428, y: 208
+2024-09-14 20:49:55,539 - WARNING - Width configuration missing for column 'Name'
+2024-09-14 20:49:55,539 - WARNING - Position configuration missing for column 'Name'
+2024-09-14 20:49:55,539 - WARNING - Width configuration missing for column 'Category'
+2024-09-14 20:49:55,539 - WARNING - Position configuration missing for column 'Category'
+2024-09-14 20:49:55,539 - WARNING - Width configuration missing for column 'Streak'
+2024-09-14 20:49:55,539 - WARNING - Position configuration missing for column 'Streak'
+2024-09-14 20:49:55,539 - WARNING - Width configuration missing for column 'Daily Completions'
+2024-09-14 20:49:55,539 - WARNING - Position configuration missing for column 'Daily Completions'
+2024-09-14 20:49:55,539 - WARNING - Width configuration missing for column 'Recent Note'
+2024-09-14 20:49:55,539 - WARNING - Position configuration missing for column 'Recent Note'
+2024-09-14 20:49:55,539 - DEBUG - Preferences Loaded
+2024-09-14 20:49:55,539 - DEBUG - Initializing load_habits method
+2024-09-14 20:49:55,539 - DEBUG - Completed fetching all habits, including recent notes.
+2024-09-14 20:49:55,539 - DEBUG - Initializing update_progress_bars method
+2024-09-14 20:49:55,539 - DEBUG - Calculating total completions
+2024-09-14 20:49:55,539 - INFO - update_progress_bars: total_completions = 0
+2024-09-14 20:49:55,539 - DEBUG - Habits Loaded
+2024-09-14 20:49:55,539 - DEBUG - Initializing schedule_notifications method
+2024-09-14 20:49:55,539 - DEBUG - Initializing notify method
+2024-09-14 20:49:55,539 - DEBUG - Notifications scheduled successfully.
+2024-09-14 20:49:55,539 - DEBUG - Notification Times: [8, 12, 20]
+2024-09-14 20:49:55,539 - DEBUG - ------------------------------------------------------------
+2024-09-14 20:49:55,539 - INFO - notify noted time as: 2024-09-14 20:49:55.539907
+2024-09-14 20:49:55,539 - DEBUG - Initializing mainloop
+2024-09-14 20:49:55,539 - INFO - notify noted target time as: 2024-09-14 08:00:00
+2024-09-14 20:49:55,539 - DEBUG - ------------------------------------------------------------
+2024-09-14 20:49:55,540 - WARNING - 2024-09-14 20:49:55.539907 >= 2024-09-14 08:00:00
+2024-09-14 20:49:55,540 - INFO - target_time now set to: 2024-09-15 08:00:00
+2024-09-14 20:49:59,854 - DEBUG - Initializing on_habit_select method
+2024-09-14 20:50:01,194 - DEBUG - Initializing mark_done method
+2024-09-14 20:50:03,785 - DEBUG - Updated daily completions.
+2024-09-14 20:50:03,785 - DEBUG - Returned result: (None, 0) from last_completed habit: 3
+2024-09-14 20:50:03,785 - DEBUG - mark_done: last_completed = None
+2024-09-14 20:50:03,785 - DEBUG - mark_done: Habit record updated.
+2024-09-14 20:50:03,786 - DEBUG - Initializing load_habits method
+2024-09-14 20:50:03,786 - DEBUG - Completed fetching all habits, including recent notes.
+2024-09-14 20:50:03,786 - DEBUG - Initializing update_progress_bars method
+2024-09-14 20:50:03,786 - DEBUG - Calculating total completions
+2024-09-14 20:50:03,786 - INFO - update_progress_bars: total_completions = 1
+2024-09-14 20:50:05,834 - INFO - Habit marked as done for today! Current streak: 1 days.
+2024-09-14 20:50:05,834 - DEBUG - Initializing on_habit_select method
+2024-09-14 20:50:07,635 - DEBUG - Initializing view_edit_notes method
+2024-09-14 20:50:10,172 - WARNING - Selection Error: No habit selected.
+2024-09-14 20:50:11,202 - DEBUG - Initializing on_habit_select method
+2024-09-14 20:50:12,109 - DEBUG - Initializing view_edit_notes method
+2024-09-14 20:50:12,109 - DEBUG - Displaying new window for view/edit on test
+2024-09-14 20:50:12,109 - DEBUG - Fetching Notes for Selected habit.
+2024-09-14 20:50:12,110 - DEBUG - Initializing listbox to display notes.
+2024-09-14 20:50:12,110 - DEBUG - Populated listbox to display notes.
+2024-09-14 20:50:17,854 - DEBUG - Initializing edit_note method
+2024-09-14 20:50:19,228 - WARNING - Edit Error: No note selected to edit.
+2024-09-14 20:50:21,498 - DEBUG - Initializing edit_note method
+2024-09-14 20:50:31,380 - DEBUG - Updating note.id: 1 with new note
+2024-09-14 20:50:40,395 - DEBUG - Initializing on_habit_select method
+2024-09-14 20:50:42,547 - DEBUG - Initializing delete_habit method
+2024-09-14 20:50:44,287 - WARNING - test!
+2024-09-14 20:50:44,287 - DEBUG - Initializing load_habits method
+2024-09-14 20:50:44,287 - DEBUG - Completed fetching all habits, including recent notes.
+2024-09-14 20:50:44,287 - DEBUG - Initializing update_progress_bars method
+2024-09-14 20:50:44,288 - DEBUG - Initializing on_habit_select method
+2024-09-14 20:51:36,458 - DEBUG - Initializing add_habit method
+2024-09-14 20:51:36,462 - INFO - Habit added: Develop New Project - Coding
+2024-09-14 20:51:36,462 - DEBUG - Initializing load_habits method
+2024-09-14 20:51:36,462 - DEBUG - Completed fetching all habits, including recent notes.
+2024-09-14 20:51:36,462 - DEBUG - Initializing update_progress_bars method
+2024-09-14 20:51:36,462 - DEBUG - Calculating total completions
+2024-09-14 20:51:36,462 - INFO - update_progress_bars: total_completions = 0
+2024-09-14 20:51:41,276 - DEBUG - Initializing on_habit_select method
+2024-09-14 20:51:45,153 - DEBUG - Initializing view_edit_notes method
+2024-09-14 20:51:45,153 - DEBUG - Displaying new window for view/edit on Develop New Project
+2024-09-14 20:51:45,153 - DEBUG - Fetching Notes for Selected habit.
+2024-09-14 20:51:45,154 - DEBUG - Initializing listbox to display notes.
+2024-09-14 20:51:50,297 - DEBUG - Initializing add_note method
+2024-09-14 20:51:50,298 - DEBUG - Display window for Add Note.
+2024-09-14 20:52:10,698 - DEBUG - New note inserted.
+2024-09-14 20:52:20,682 - DEBUG - Initializing on_habit_select method
+2024-09-14 20:53:46,607 - DEBUG - Initializing on_habit_select method
+2024-09-14 20:54:22,346 - DEBUG - Initializing add_habit method
+2024-09-14 20:54:22,349 - INFO - Habit added: Use ChatGPT - Productivity
+2024-09-14 20:54:22,349 - DEBUG - Initializing load_habits method
+2024-09-14 20:54:22,349 - DEBUG - Completed fetching all habits, including recent notes.
+2024-09-14 20:54:22,349 - DEBUG - Initializing update_progress_bars method
+2024-09-14 20:54:22,350 - DEBUG - Calculating total completions
+2024-09-14 20:54:22,350 - INFO - update_progress_bars: total_completions = 1
+2024-09-14 20:54:22,350 - DEBUG - Calculating total completions
+2024-09-14 20:54:22,350 - INFO - update_progress_bars: total_completions = 0
+2024-09-14 20:54:22,351 - DEBUG - Initializing on_habit_select method
+2024-09-14 20:54:23,593 - DEBUG - Initializing on_habit_select method
+2024-09-14 20:54:25,015 - DEBUG - Initializing mark_done method
+2024-09-14 20:54:45,760 - DEBUG - Updated daily completions.
+2024-09-14 20:54:45,761 - DEBUG - Returned result: (None, 0) from last_completed habit: 5
+2024-09-14 20:54:45,761 - DEBUG - mark_done: last_completed = None
+2024-09-14 20:54:45,761 - DEBUG - mark_done: Habit record updated.
+2024-09-14 20:54:45,762 - DEBUG - Initializing load_habits method
+2024-09-14 20:54:45,762 - DEBUG - Completed fetching all habits, including recent notes.
+2024-09-14 20:54:45,762 - DEBUG - Initializing update_progress_bars method
+2024-09-14 20:54:45,763 - DEBUG - Calculating total completions
+2024-09-14 20:54:45,763 - INFO - update_progress_bars: total_completions = 1
+2024-09-14 20:54:45,763 - DEBUG - Calculating total completions
+2024-09-14 20:54:45,763 - INFO - update_progress_bars: total_completions = 1
+2024-09-14 20:54:46,967 - INFO - Habit marked as done for today! Current streak: 1 days.
+2024-09-14 20:54:46,967 - DEBUG - Initializing on_habit_select method
+2024-09-14 20:54:47,962 - DEBUG - Initializing on_habit_select method
+2024-09-14 20:54:49,383 - DEBUG - Initializing mark_done method
+2024-09-14 20:55:07,301 - DEBUG - Updated daily completions.
+2024-09-14 20:55:07,301 - DEBUG - Returned result: ('2024-09-14', 1) from last_completed habit: 5
+2024-09-14 20:55:07,302 - DEBUG - mark_done: last_completed = 2024-09-14
+2024-09-14 20:55:07,303 - DEBUG - Initializing load_habits method
+2024-09-14 20:55:07,303 - DEBUG - Completed fetching all habits, including recent notes.
+2024-09-14 20:55:07,303 - DEBUG - Initializing update_progress_bars method
+2024-09-14 20:55:07,303 - DEBUG - Calculating total completions
+2024-09-14 20:55:07,303 - INFO - update_progress_bars: total_completions = 1
+2024-09-14 20:55:07,304 - DEBUG - Calculating total completions
+2024-09-14 20:55:07,304 - INFO - update_progress_bars: total_completions = 2
+2024-09-14 20:55:08,919 - INFO - Habit marked as done for today! Current streak: 1 days.
+2024-09-14 20:55:08,919 - DEBUG - Initializing on_habit_select method
+2024-09-14 20:55:13,993 - DEBUG - Initializing on_habit_select method
+2024-09-14 20:55:15,673 - DEBUG - Initializing mark_done method
+2024-09-14 20:55:43,526 - DEBUG - Updated daily completions.
+2024-09-14 20:55:43,527 - DEBUG - Returned result: (None, 0) from last_completed habit: 4
+2024-09-14 20:55:43,527 - DEBUG - mark_done: last_completed = None
+2024-09-14 20:55:43,527 - DEBUG - mark_done: Habit record updated.
+2024-09-14 20:55:43,528 - DEBUG - Initializing load_habits method
+2024-09-14 20:55:43,528 - DEBUG - Completed fetching all habits, including recent notes.
+2024-09-14 20:55:43,528 - DEBUG - Initializing update_progress_bars method
+2024-09-14 20:55:43,528 - DEBUG - Calculating total completions
+2024-09-14 20:55:43,528 - INFO - update_progress_bars: total_completions = 2
+2024-09-14 20:55:43,529 - DEBUG - Calculating total completions
+2024-09-14 20:55:43,529 - INFO - update_progress_bars: total_completions = 2
+2024-09-14 20:55:46,289 - INFO - Habit marked as done for today! Current streak: 1 days.
+2024-09-14 20:55:46,289 - DEBUG - Initializing on_habit_select method
+2024-09-14 20:56:02,502 - DEBUG - Initializing on_closing method
+2024-09-14 20:56:02,503 - DEBUG - Initializing save_preferences
+2024-09-14 20:56:02,504 - DEBUG - Window size and position saved: width=966, height=419, x=-1788, y=-68
+2024-09-14 20:56:02,504 - WARNING - Column 'Name' not found in display columns. It might be hidden or removed.
+2024-09-14 20:56:02,504 - WARNING - Column 'Category' not found in display columns. It might be hidden or removed.
+2024-09-14 20:56:02,504 - WARNING - Column 'Streak' not found in display columns. It might be hidden or removed.
+2024-09-14 20:56:02,504 - WARNING - Column 'Daily Completions' not found in display columns. It might be hidden or removed.
+2024-09-14 20:56:02,504 - WARNING - Column 'Recent Note' not found in display columns. It might be hidden or removed.
+2024-09-14 20:56:02,505 - INFO - Updated config file with window size, position, and column configurations.
+2024-09-14 20:56:02,505 - INFO - Preferences Saved!
+2024-09-14 20:56:56,219 - DEBUG - ------------------------------------------------------------
+2024-09-14 20:56:56,219 - DEBUG - Initialized Habit Tracker App
+2024-09-14 20:56:56,219 - DEBUG - ------------------------------------------------------------
+2024-09-14 20:56:56,219 - DEBUG - Initializing database setup
+2024-09-14 20:56:56,221 - INFO - Database file exists. Ensuring schema is up to date.
+2024-09-14 20:56:56,222 - DEBUG - Ensured 'habits' table exists with the correct schema.
+2024-09-14 20:56:56,222 - DEBUG - Ensured 'completions' table exists with the correct schema.
+2024-09-14 20:56:56,222 - INFO - Database initialized successfully.
+2024-09-14 20:56:56,222 - DEBUG - Initializing database setup
+2024-09-14 20:56:56,222 - INFO - Database file exists. Ensuring schema is up to date.
+2024-09-14 20:56:56,222 - DEBUG - Ensured 'habits' table exists with the correct schema.
+2024-09-14 20:56:56,222 - DEBUG - Ensured 'completions' table exists with the correct schema.
+2024-09-14 20:56:56,222 - INFO - Database initialized successfully.
+2024-09-14 20:56:56,222 - INFO - Database initialized successfully.
+2024-09-14 20:56:56,222 - DEBUG - Initializing create_widgets method
+2024-09-14 20:56:56,224 - DEBUG - Configured Treeview column: Name
+2024-09-14 20:56:56,224 - DEBUG - Configured Treeview column: Category
+2024-09-14 20:56:56,224 - DEBUG - Configured Treeview column: Streak
+2024-09-14 20:56:56,224 - DEBUG - Configured Treeview column: Daily Completions
+2024-09-14 20:56:56,224 - DEBUG - Configured Treeview column: Recent Note
+2024-09-14 20:56:56,224 - DEBUG - Habit Treeview initialized and event bound
+2024-09-14 20:56:56,224 - DEBUG - Action buttons for habit management added
+2024-09-14 20:56:56,224 - DEBUG - Progress frame for habit tracking initialized
+2024-09-14 20:56:56,224 - DEBUG - UI Elements Created
+2024-09-14 20:56:56,224 - DEBUG - Initializing load_preferences method
+2024-09-14 20:56:56,225 - DEBUG - Window loaded with width: 966, height: 419, x: -1788, y: -68
+2024-09-14 20:56:56,225 - WARNING - Width configuration missing for column 'Name'
+2024-09-14 20:56:56,225 - WARNING - Position configuration missing for column 'Name'
+2024-09-14 20:56:56,225 - WARNING - Width configuration missing for column 'Category'
+2024-09-14 20:56:56,225 - WARNING - Position configuration missing for column 'Category'
+2024-09-14 20:56:56,225 - WARNING - Width configuration missing for column 'Streak'
+2024-09-14 20:56:56,225 - WARNING - Position configuration missing for column 'Streak'
+2024-09-14 20:56:56,225 - WARNING - Width configuration missing for column 'Daily Completions'
+2024-09-14 20:56:56,225 - WARNING - Position configuration missing for column 'Daily Completions'
+2024-09-14 20:56:56,225 - WARNING - Width configuration missing for column 'Recent Note'
+2024-09-14 20:56:56,225 - WARNING - Position configuration missing for column 'Recent Note'
+2024-09-14 20:56:56,225 - DEBUG - Preferences Loaded
+2024-09-14 20:56:56,225 - DEBUG - Initializing load_habits method
+2024-09-14 20:56:56,225 - DEBUG - Completed fetching all habits, including recent notes.
+2024-09-14 20:56:56,225 - DEBUG - Initializing update_progress_bars method
+2024-09-14 20:56:56,225 - DEBUG - Calculating total completions
+2024-09-14 20:56:56,225 - INFO - update_progress_bars: total_completions = 2
+2024-09-14 20:56:56,225 - DEBUG - Calculating total completions
+2024-09-14 20:56:56,225 - INFO - update_progress_bars: total_completions = 2
+2024-09-14 20:56:56,225 - DEBUG - Habits Loaded
+2024-09-14 20:56:56,225 - DEBUG - Initializing schedule_notifications method
+2024-09-14 20:56:56,225 - DEBUG - Initializing notify method
+2024-09-14 20:56:56,225 - DEBUG - Notifications scheduled successfully.
+2024-09-14 20:56:56,225 - DEBUG - Notification Times: [8, 12, 20]
+2024-09-14 20:56:56,225 - DEBUG - ------------------------------------------------------------
+2024-09-14 20:56:56,225 - INFO - notify noted time as: 2024-09-14 20:56:56.225821
+2024-09-14 20:56:56,225 - DEBUG - Initializing mainloop
+2024-09-14 20:56:56,225 - INFO - notify noted target time as: 2024-09-14 08:00:00
+2024-09-14 20:56:56,225 - DEBUG - ------------------------------------------------------------
+2024-09-14 20:56:56,225 - WARNING - 2024-09-14 20:56:56.225821 >= 2024-09-14 08:00:00
+2024-09-14 20:56:56,225 - INFO - target_time now set to: 2024-09-15 08:00:00
+2024-09-14 20:56:59,082 - DEBUG - Initializing on_habit_select method
+2024-09-14 20:57:00,406 - DEBUG - Initializing mark_done method
+2024-09-14 20:57:18,975 - DEBUG - Updated daily completions.
+2024-09-14 20:57:18,975 - DEBUG - Returned result: ('2024-09-14', 1) from last_completed habit: 5
+2024-09-14 20:57:18,975 - DEBUG - mark_done: last_completed = 2024-09-14
+2024-09-14 20:57:18,976 - DEBUG - Initializing load_habits method
+2024-09-14 20:57:18,976 - DEBUG - Completed fetching all habits, including recent notes.
+2024-09-14 20:57:18,976 - DEBUG - Initializing update_progress_bars method
+2024-09-14 20:57:18,976 - DEBUG - Calculating total completions
+2024-09-14 20:57:18,977 - INFO - update_progress_bars: total_completions = 2
+2024-09-14 20:57:18,977 - DEBUG - Calculating total completions
+2024-09-14 20:57:18,977 - INFO - update_progress_bars: total_completions = 3
+2024-09-14 20:57:20,901 - INFO - Habit marked as done for today! Current streak: 1 days.
+2024-09-14 20:57:20,901 - DEBUG - Initializing on_habit_select method
+2024-09-14 20:57:29,838 - DEBUG - Initializing on_closing method
+2024-09-14 20:57:29,838 - DEBUG - Initializing save_preferences
+2024-09-14 20:57:29,838 - DEBUG - Window size and position saved: width=966, height=419, x=-2104, y=-25
+2024-09-14 20:57:29,839 - WARNING - Column 'Name' not found in display columns. It might be hidden or removed.
+2024-09-14 20:57:29,839 - WARNING - Column 'Category' not found in display columns. It might be hidden or removed.
+2024-09-14 20:57:29,839 - WARNING - Column 'Streak' not found in display columns. It might be hidden or removed.
+2024-09-14 20:57:29,839 - WARNING - Column 'Daily Completions' not found in display columns. It might be hidden or removed.
+2024-09-14 20:57:29,839 - WARNING - Column 'Recent Note' not found in display columns. It might be hidden or removed.
+2024-09-14 20:57:29,840 - INFO - Updated config file with window size, position, and column configurations.
+2024-09-14 20:57:29,841 - INFO - Preferences Saved!
+2024-09-14 20:57:29,851 - DEBUG - Connection closed
+2024-09-14 20:57:29,851 - DEBUG - ------------------------------------------------------------
+2024-09-14 20:57:29,851 - DEBUG - ------------------------------------------------------------
+2024-09-14 20:57:53,861 - DEBUG - ------------------------------------------------------------
+2024-09-14 20:57:53,861 - DEBUG - Initialized Habit Tracker App
+2024-09-14 20:57:53,861 - DEBUG - ------------------------------------------------------------
+2024-09-14 20:57:53,861 - DEBUG - Initializing database setup
+2024-09-14 20:57:53,862 - INFO - Database file exists. Ensuring schema is up to date.
+2024-09-14 20:57:53,862 - DEBUG - Ensured 'habits' table exists with the correct schema.
+2024-09-14 20:57:53,862 - DEBUG - Ensured 'completions' table exists with the correct schema.
+2024-09-14 20:57:53,862 - INFO - Database initialized successfully.
+2024-09-14 20:57:53,862 - DEBUG - Initializing database setup
+2024-09-14 20:57:53,862 - INFO - Database file exists. Ensuring schema is up to date.
+2024-09-14 20:57:53,862 - DEBUG - Ensured 'habits' table exists with the correct schema.
+2024-09-14 20:57:53,862 - DEBUG - Ensured 'completions' table exists with the correct schema.
+2024-09-14 20:57:53,862 - INFO - Database initialized successfully.
+2024-09-14 20:57:53,862 - INFO - Database initialized successfully.
+2024-09-14 20:57:53,862 - DEBUG - Initializing create_widgets method
+2024-09-14 20:57:53,864 - DEBUG - Configured Treeview column: Name
+2024-09-14 20:57:53,864 - DEBUG - Configured Treeview column: Category
+2024-09-14 20:57:53,864 - DEBUG - Configured Treeview column: Streak
+2024-09-14 20:57:53,864 - DEBUG - Configured Treeview column: Daily Completions
+2024-09-14 20:57:53,864 - DEBUG - Configured Treeview column: Recent Note
+2024-09-14 20:57:53,864 - DEBUG - Habit Treeview initialized and event bound
+2024-09-14 20:57:53,865 - DEBUG - Action buttons for habit management added
+2024-09-14 20:57:53,865 - DEBUG - Progress frame for habit tracking initialized
+2024-09-14 20:57:53,865 - DEBUG - UI Elements Created
+2024-09-14 20:57:53,865 - DEBUG - Initializing load_preferences method
+2024-09-14 20:57:53,865 - DEBUG - Window loaded with width: 966, height: 419, x: -2104, y: -25
+2024-09-14 20:57:53,865 - WARNING - Width configuration missing for column 'Name'
+2024-09-14 20:57:53,865 - WARNING - Position configuration missing for column 'Name'
+2024-09-14 20:57:53,865 - WARNING - Width configuration missing for column 'Category'
+2024-09-14 20:57:53,865 - WARNING - Position configuration missing for column 'Category'
+2024-09-14 20:57:53,865 - WARNING - Width configuration missing for column 'Streak'
+2024-09-14 20:57:53,865 - WARNING - Position configuration missing for column 'Streak'
+2024-09-14 20:57:53,865 - WARNING - Width configuration missing for column 'Daily Completions'
+2024-09-14 20:57:53,865 - WARNING - Position configuration missing for column 'Daily Completions'
+2024-09-14 20:57:53,865 - WARNING - Width configuration missing for column 'Recent Note'
+2024-09-14 20:57:53,865 - WARNING - Position configuration missing for column 'Recent Note'
+2024-09-14 20:57:53,865 - DEBUG - Preferences Loaded
+2024-09-14 20:57:53,865 - DEBUG - Initializing load_habits method
+2024-09-14 20:57:53,865 - DEBUG - Completed fetching all habits, including recent notes.
+2024-09-14 20:57:53,865 - DEBUG - Initializing update_progress_bars method
+2024-09-14 20:57:53,865 - DEBUG - Calculating total completions
+2024-09-14 20:57:53,865 - INFO - update_progress_bars: total_completions = 2
+2024-09-14 20:57:53,865 - DEBUG - Calculating total completions
+2024-09-14 20:57:53,865 - INFO - update_progress_bars: total_completions = 3
+2024-09-14 20:57:53,865 - DEBUG - Habits Loaded
+2024-09-14 20:57:53,865 - DEBUG - Initializing schedule_notifications method
+2024-09-14 20:57:53,865 - DEBUG - Initializing notify method
+2024-09-14 20:57:53,866 - DEBUG - Notifications scheduled successfully.
+2024-09-14 20:57:53,866 - DEBUG - Notification Times: [8, 12, 20]
+2024-09-14 20:57:53,866 - DEBUG - ------------------------------------------------------------
+2024-09-14 20:57:53,866 - INFO - notify noted time as: 2024-09-14 20:57:53.866096
+2024-09-14 20:57:53,866 - DEBUG - Initializing mainloop
+2024-09-14 20:57:53,866 - INFO - notify noted target time as: 2024-09-14 08:00:00
+2024-09-14 20:57:53,866 - DEBUG - ------------------------------------------------------------
+2024-09-14 20:57:53,866 - WARNING - 2024-09-14 20:57:53.866096 >= 2024-09-14 08:00:00
+2024-09-14 20:57:53,866 - INFO - target_time now set to: 2024-09-15 08:00:00
+2024-09-14 20:58:25,182 - DEBUG - Initializing on_closing method
+2024-09-14 20:58:25,183 - DEBUG - Initializing save_preferences
+2024-09-14 20:58:25,184 - DEBUG - Window size and position saved: width=966, height=419, x=-1779, y=328
+2024-09-14 20:58:25,184 - WARNING - Column 'Name' not found in display columns. It might be hidden or removed.
+2024-09-14 20:58:25,184 - WARNING - Column 'Category' not found in display columns. It might be hidden or removed.
+2024-09-14 20:58:25,184 - WARNING - Column 'Streak' not found in display columns. It might be hidden or removed.
+2024-09-14 20:58:25,184 - WARNING - Column 'Daily Completions' not found in display columns. It might be hidden or removed.
+2024-09-14 20:58:25,184 - WARNING - Column 'Recent Note' not found in display columns. It might be hidden or removed.
+2024-09-14 20:58:25,185 - INFO - Updated config file with window size, position, and column configurations.
+2024-09-14 20:58:25,185 - INFO - Preferences Saved!
+2024-09-14 20:58:25,194 - DEBUG - Connection closed
+2024-09-14 20:58:25,194 - DEBUG - ------------------------------------------------------------
+2024-09-14 20:58:25,194 - DEBUG - ------------------------------------------------------------
+2024-09-14 21:01:48,957 - DEBUG - ------------------------------------------------------------
+2024-09-14 21:01:48,958 - DEBUG - Initialized Habit Tracker App
+2024-09-14 21:01:48,958 - DEBUG - ------------------------------------------------------------
+2024-09-14 21:01:48,958 - DEBUG - Initializing database setup
+2024-09-14 21:01:48,959 - INFO - Database file exists. Ensuring schema is up to date.
+2024-09-14 21:01:48,960 - DEBUG - Ensured 'habits' table exists with the correct schema.
+2024-09-14 21:01:48,960 - DEBUG - Ensured 'completions' table exists with the correct schema.
+2024-09-14 21:01:48,960 - INFO - Database initialized successfully.
+2024-09-14 21:01:48,960 - DEBUG - Initializing database setup
+2024-09-14 21:01:48,960 - INFO - Database file exists. Ensuring schema is up to date.
+2024-09-14 21:01:48,960 - DEBUG - Ensured 'habits' table exists with the correct schema.
+2024-09-14 21:01:48,960 - DEBUG - Ensured 'completions' table exists with the correct schema.
+2024-09-14 21:01:48,960 - INFO - Database initialized successfully.
+2024-09-14 21:01:48,960 - INFO - Database initialized successfully.
+2024-09-14 21:01:48,960 - DEBUG - Initializing create_widgets method
+2024-09-14 21:01:48,962 - DEBUG - Configured Treeview column: Name
+2024-09-14 21:01:48,962 - DEBUG - Configured Treeview column: Category
+2024-09-14 21:01:48,962 - DEBUG - Configured Treeview column: Streak
+2024-09-14 21:01:48,962 - DEBUG - Configured Treeview column: Daily Completions
+2024-09-14 21:01:48,962 - DEBUG - Configured Treeview column: Recent Note
+2024-09-14 21:01:48,962 - DEBUG - Habit Treeview initialized and event bound
+2024-09-14 21:01:48,962 - DEBUG - Action buttons for habit management added
+2024-09-14 21:01:48,963 - DEBUG - Progress frame for habit tracking initialized
+2024-09-14 21:01:48,963 - DEBUG - UI Elements Created
+2024-09-14 21:01:48,963 - DEBUG - Initializing load_preferences method
+2024-09-14 21:01:48,963 - DEBUG - Window loaded with width: 966, height: 419, x: -1779, y: 328
+2024-09-14 21:01:48,963 - WARNING - Width configuration missing for column 'Name'
+2024-09-14 21:01:48,963 - WARNING - Position configuration missing for column 'Name'
+2024-09-14 21:01:48,963 - WARNING - Width configuration missing for column 'Category'
+2024-09-14 21:01:48,963 - WARNING - Position configuration missing for column 'Category'
+2024-09-14 21:01:48,963 - WARNING - Width configuration missing for column 'Streak'
+2024-09-14 21:01:48,963 - WARNING - Position configuration missing for column 'Streak'
+2024-09-14 21:01:48,963 - WARNING - Width configuration missing for column 'Daily Completions'
+2024-09-14 21:01:48,963 - WARNING - Position configuration missing for column 'Daily Completions'
+2024-09-14 21:01:48,963 - WARNING - Width configuration missing for column 'Recent Note'
+2024-09-14 21:01:48,963 - WARNING - Position configuration missing for column 'Recent Note'
+2024-09-14 21:01:48,963 - DEBUG - Preferences Loaded
+2024-09-14 21:01:48,963 - DEBUG - Initializing load_habits method
+2024-09-14 21:01:48,963 - DEBUG - Completed fetching all habits, including recent notes.
+2024-09-14 21:01:48,963 - DEBUG - Initializing update_progress_bars method
+2024-09-14 21:01:48,963 - DEBUG - Calculating total completions
+2024-09-14 21:01:48,963 - INFO - update_progress_bars: total_completions = 2
+2024-09-14 21:01:48,963 - DEBUG - Calculating total completions
+2024-09-14 21:01:48,963 - INFO - update_progress_bars: total_completions = 3
+2024-09-14 21:01:48,963 - DEBUG - Habits Loaded
+2024-09-14 21:01:48,963 - DEBUG - Initializing schedule_notifications method
+2024-09-14 21:01:48,963 - DEBUG - Initializing notify method
+2024-09-14 21:01:48,963 - DEBUG - Notifications scheduled successfully.
+2024-09-14 21:01:48,963 - DEBUG - Notification Times: [8, 12, 20]
+2024-09-14 21:01:48,963 - DEBUG - ------------------------------------------------------------
+2024-09-14 21:01:48,963 - INFO - notify noted time as: 2024-09-14 21:01:48.963925
+2024-09-14 21:01:48,963 - DEBUG - Initializing mainloop
+2024-09-14 21:01:48,963 - INFO - notify noted target time as: 2024-09-14 08:00:00
+2024-09-14 21:01:48,963 - DEBUG - ------------------------------------------------------------
+2024-09-14 21:01:48,964 - WARNING - 2024-09-14 21:01:48.963925 >= 2024-09-14 08:00:00
+2024-09-14 21:01:48,964 - INFO - target_time now set to: 2024-09-15 08:00:00
+2024-09-14 21:01:58,863 - DEBUG - Initializing on_closing method
+2024-09-14 21:01:58,863 - DEBUG - Initializing save_preferences
+2024-09-14 21:01:58,863 - DEBUG - Window size and position saved: width=966, height=419, x=-1779, y=328
+2024-09-14 21:01:58,863 - WARNING - Column 'Name' not found in display columns. It might be hidden or removed.
+2024-09-14 21:01:58,863 - WARNING - Column 'Category' not found in display columns. It might be hidden or removed.
+2024-09-14 21:01:58,863 - WARNING - Column 'Streak' not found in display columns. It might be hidden or removed.
+2024-09-14 21:01:58,863 - WARNING - Column 'Daily Completions' not found in display columns. It might be hidden or removed.
+2024-09-14 21:01:58,864 - WARNING - Column 'Recent Note' not found in display columns. It might be hidden or removed.
+2024-09-14 21:01:58,864 - INFO - Updated config file with window size, position, and column configurations.
+2024-09-14 21:01:58,864 - INFO - Preferences Saved!
+2024-09-14 21:01:58,871 - DEBUG - Connection closed
+2024-09-14 21:01:58,871 - DEBUG - ------------------------------------------------------------
+2024-09-14 21:01:58,871 - DEBUG - ------------------------------------------------------------
+2024-09-14 21:02:16,504 - DEBUG - ------------------------------------------------------------
+2024-09-14 21:02:16,505 - DEBUG - Initialized Habit Tracker App
+2024-09-14 21:02:16,505 - DEBUG - ------------------------------------------------------------
+2024-09-14 21:02:16,505 - DEBUG - Initializing database setup
+2024-09-14 21:02:16,505 - INFO - Database file exists. Ensuring schema is up to date.
+2024-09-14 21:02:16,505 - DEBUG - Ensured 'habits' table exists with the correct schema.
+2024-09-14 21:02:16,505 - DEBUG - Ensured 'completions' table exists with the correct schema.
+2024-09-14 21:02:16,505 - INFO - Database initialized successfully.
+2024-09-14 21:02:16,505 - DEBUG - Initializing database setup
+2024-09-14 21:02:16,506 - INFO - Database file exists. Ensuring schema is up to date.
+2024-09-14 21:02:16,506 - DEBUG - Ensured 'habits' table exists with the correct schema.
+2024-09-14 21:02:16,506 - DEBUG - Ensured 'completions' table exists with the correct schema.
+2024-09-14 21:02:16,506 - INFO - Database initialized successfully.
+2024-09-14 21:02:16,506 - INFO - Database initialized successfully.
+2024-09-14 21:02:16,506 - DEBUG - Initializing create_widgets method
+2024-09-14 21:02:16,509 - DEBUG - Configured Treeview column: Name
+2024-09-14 21:02:16,509 - DEBUG - Configured Treeview column: Category
+2024-09-14 21:02:16,509 - DEBUG - Configured Treeview column: Streak
+2024-09-14 21:02:16,509 - DEBUG - Configured Treeview column: Daily Completions
+2024-09-14 21:02:16,509 - DEBUG - Configured Treeview column: Recent Note
+2024-09-14 21:02:16,509 - DEBUG - Habit Treeview initialized and event bound
+2024-09-14 21:02:16,509 - DEBUG - Action buttons for habit management added
+2024-09-14 21:02:16,509 - DEBUG - Progress frame for habit tracking initialized
+2024-09-14 21:02:16,509 - DEBUG - UI Elements Created
+2024-09-14 21:02:16,510 - DEBUG - Initializing load_preferences method
+2024-09-14 21:02:16,510 - DEBUG - Window loaded with width: 966, height: 419, x: -1779, y: 328
+2024-09-14 21:02:16,510 - WARNING - Width configuration missing for column 'Name'
+2024-09-14 21:02:16,510 - WARNING - Position configuration missing for column 'Name'
+2024-09-14 21:02:16,510 - WARNING - Width configuration missing for column 'Category'
+2024-09-14 21:02:16,510 - WARNING - Position configuration missing for column 'Category'
+2024-09-14 21:02:16,510 - WARNING - Width configuration missing for column 'Streak'
+2024-09-14 21:02:16,510 - WARNING - Position configuration missing for column 'Streak'
+2024-09-14 21:02:16,510 - WARNING - Width configuration missing for column 'Daily Completions'
+2024-09-14 21:02:16,510 - WARNING - Position configuration missing for column 'Daily Completions'
+2024-09-14 21:02:16,510 - WARNING - Width configuration missing for column 'Recent Note'
+2024-09-14 21:02:16,510 - WARNING - Position configuration missing for column 'Recent Note'
+2024-09-14 21:02:16,510 - DEBUG - Preferences Loaded
+2024-09-14 21:02:16,510 - DEBUG - Initializing load_habits method
+2024-09-14 21:02:16,510 - DEBUG - Completed fetching all habits, including recent notes.
+2024-09-14 21:02:16,510 - DEBUG - Initializing update_progress_bars method
+2024-09-14 21:02:16,510 - DEBUG - Calculating total completions
+2024-09-14 21:02:16,510 - INFO - update_progress_bars: total_completions = 2
+2024-09-14 21:02:16,510 - DEBUG - Calculating total completions
+2024-09-14 21:02:16,510 - INFO - update_progress_bars: total_completions = 3
+2024-09-14 21:02:16,510 - DEBUG - Habits Loaded
+2024-09-14 21:02:16,510 - DEBUG - Initializing schedule_notifications method
+2024-09-14 21:02:16,513 - DEBUG - Initializing notify method
+2024-09-14 21:02:16,513 - DEBUG - Notifications scheduled successfully.
+2024-09-14 21:02:16,513 - DEBUG - Notification Times: [8, 12, 20]
+2024-09-14 21:02:16,513 - DEBUG - ------------------------------------------------------------
+2024-09-14 21:02:16,513 - INFO - notify noted time as: 2024-09-14 21:02:16.513314
+2024-09-14 21:02:16,513 - DEBUG - Initializing mainloop
+2024-09-14 21:02:16,515 - DEBUG - ------------------------------------------------------------
+2024-09-14 21:02:16,515 - INFO - notify noted target time as: 2024-09-14 08:00:00
+2024-09-14 21:02:16,516 - WARNING - 2024-09-14 21:02:16.513314 >= 2024-09-14 08:00:00
+2024-09-14 21:02:16,516 - INFO - target_time now set to: 2024-09-15 08:00:00
+2024-09-14 21:02:19,960 - DEBUG - Initializing on_closing method
+2024-09-14 21:02:19,961 - DEBUG - Initializing save_preferences
+2024-09-14 21:02:19,961 - DEBUG - Window size and position saved: width=966, height=419, x=-1779, y=328
+2024-09-14 21:02:19,961 - WARNING - Column 'Name' not found in display columns. It might be hidden or removed.
+2024-09-14 21:02:19,961 - WARNING - Column 'Category' not found in display columns. It might be hidden or removed.
+2024-09-14 21:02:19,961 - WARNING - Column 'Streak' not found in display columns. It might be hidden or removed.
+2024-09-14 21:02:19,961 - WARNING - Column 'Daily Completions' not found in display columns. It might be hidden or removed.
+2024-09-14 21:02:19,961 - WARNING - Column 'Recent Note' not found in display columns. It might be hidden or removed.
+2024-09-14 21:02:19,961 - INFO - Updated config file with window size, position, and column configurations.
+2024-09-14 21:02:19,962 - INFO - Preferences Saved!
+2024-09-14 21:02:19,967 - DEBUG - Connection closed
+2024-09-14 21:02:19,967 - DEBUG - ------------------------------------------------------------
+2024-09-14 21:02:19,967 - DEBUG - ------------------------------------------------------------
+2024-09-14 21:09:27,288 - DEBUG - ------------------------------------------------------------
+2024-09-14 21:09:27,288 - DEBUG - Initialized Habit Tracker App
+2024-09-14 21:09:27,288 - DEBUG - ------------------------------------------------------------
+2024-09-14 21:09:27,288 - DEBUG - Initializing database setup
+2024-09-14 21:09:27,289 - INFO - Database file exists. Ensuring schema is up to date.
+2024-09-14 21:09:27,290 - DEBUG - Ensured 'habits' table exists with the correct schema.
+2024-09-14 21:09:27,290 - DEBUG - Ensured 'completions' table exists with the correct schema.
+2024-09-14 21:09:27,290 - INFO - Database initialized successfully.
+2024-09-14 21:09:27,290 - DEBUG - Initializing database setup
+2024-09-14 21:09:27,291 - INFO - Database file exists. Ensuring schema is up to date.
+2024-09-14 21:09:27,291 - DEBUG - Ensured 'habits' table exists with the correct schema.
+2024-09-14 21:09:27,291 - DEBUG - Ensured 'completions' table exists with the correct schema.
+2024-09-14 21:09:27,291 - INFO - Database initialized successfully.
+2024-09-14 21:09:27,291 - INFO - Database initialized successfully.
+2024-09-14 21:09:27,291 - DEBUG - Initializing create_widgets method
+2024-09-14 21:09:27,293 - DEBUG - Configured Treeview column: Name
+2024-09-14 21:09:27,293 - DEBUG - Configured Treeview column: Category
+2024-09-14 21:09:27,293 - DEBUG - Configured Treeview column: Streak
+2024-09-14 21:09:27,293 - DEBUG - Configured Treeview column: Daily Completions
+2024-09-14 21:09:27,293 - DEBUG - Configured Treeview column: Recent Note
+2024-09-14 21:09:27,293 - DEBUG - Habit Treeview initialized and event bound
+2024-09-14 21:09:27,293 - DEBUG - Action buttons for habit management added
+2024-09-14 21:09:27,293 - DEBUG - Progress frame for habit tracking initialized
+2024-09-14 21:09:27,293 - DEBUG - UI Elements Created
+2024-09-14 21:09:27,293 - DEBUG - Initializing load_preferences method
+2024-09-14 21:09:27,293 - DEBUG - Window loaded with width: 966, height: 419, x: -1779, y: 328
+2024-09-14 21:09:27,293 - WARNING - Width configuration missing for column 'Name'
+2024-09-14 21:09:27,293 - WARNING - Position configuration missing for column 'Name'
+2024-09-14 21:09:27,293 - WARNING - Width configuration missing for column 'Category'
+2024-09-14 21:09:27,293 - WARNING - Position configuration missing for column 'Category'
+2024-09-14 21:09:27,293 - WARNING - Width configuration missing for column 'Streak'
+2024-09-14 21:09:27,293 - WARNING - Position configuration missing for column 'Streak'
+2024-09-14 21:09:27,293 - WARNING - Width configuration missing for column 'Daily Completions'
+2024-09-14 21:09:27,293 - WARNING - Position configuration missing for column 'Daily Completions'
+2024-09-14 21:09:27,293 - WARNING - Width configuration missing for column 'Recent Note'
+2024-09-14 21:09:27,293 - WARNING - Position configuration missing for column 'Recent Note'
+2024-09-14 21:09:27,293 - DEBUG - Preferences Loaded
+2024-09-14 21:09:27,293 - DEBUG - Initializing load_habits method
+2024-09-14 21:09:27,294 - DEBUG - Fetched 2 habits from the database.
+2024-09-14 21:09:27,294 - DEBUG - Inserted habit: Develop New Project, Daily Completions: 0, Recent Note: the Habit tracker works for mac and windows.  This is my first cross platform between those os's.
+2024-09-14 21:09:27,294 - DEBUG - Inserted habit: Use ChatGPT, Daily Completions: 0, Recent Note: now I am seeing a bug.  it's not tracking completions in the counter.
+2024-09-14 21:09:27,294 - DEBUG - Initializing update_progress_bars method
+2024-09-14 21:09:27,294 - DEBUG - Calculating total completions
+2024-09-14 21:09:27,294 - INFO - update_progress_bars: total_completions = 2
+2024-09-14 21:09:27,294 - DEBUG - Calculating total completions
+2024-09-14 21:09:27,294 - INFO - update_progress_bars: total_completions = 3
+2024-09-14 21:09:27,294 - INFO - Successfully loaded all habits and updated the UI.
+2024-09-14 21:09:27,294 - DEBUG - Habits Loaded
+2024-09-14 21:09:27,294 - DEBUG - Initializing schedule_notifications method
+2024-09-14 21:09:27,294 - DEBUG - Initializing notify method
+2024-09-14 21:09:27,294 - DEBUG - Notifications scheduled successfully.
+2024-09-14 21:09:27,294 - DEBUG - Notification Times: [8, 12, 20]
+2024-09-14 21:09:27,294 - DEBUG - ------------------------------------------------------------
+2024-09-14 21:09:27,294 - INFO - notify noted time as: 2024-09-14 21:09:27.294606
+2024-09-14 21:09:27,294 - DEBUG - Initializing mainloop
+2024-09-14 21:09:27,294 - INFO - notify noted target time as: 2024-09-14 08:00:00
+2024-09-14 21:09:27,294 - DEBUG - ------------------------------------------------------------
+2024-09-14 21:09:27,294 - WARNING - 2024-09-14 21:09:27.294606 >= 2024-09-14 08:00:00
+2024-09-14 21:09:27,294 - INFO - target_time now set to: 2024-09-15 08:00:00
+2024-09-14 21:09:30,779 - DEBUG - Initializing on_habit_select method
+2024-09-14 21:09:31,936 - DEBUG - Initializing mark_done method
+2024-09-14 21:09:35,411 - DEBUG - Updated daily completions.
+2024-09-14 21:09:35,411 - DEBUG - Returned result: ('2024-09-14', 1) from last_completed habit: 4
+2024-09-14 21:09:35,411 - DEBUG - mark_done: last_completed = 2024-09-14
+2024-09-14 21:09:35,412 - DEBUG - Initializing load_habits method
+2024-09-14 21:09:35,412 - DEBUG - Fetched 2 habits from the database.
+2024-09-14 21:09:35,412 - DEBUG - Inserted habit: Develop New Project, Daily Completions: 0, Recent Note: test
+2024-09-14 21:09:35,412 - DEBUG - Inserted habit: Use ChatGPT, Daily Completions: 0, Recent Note: now I am seeing a bug.  it's not tracking completions in the counter.
+2024-09-14 21:09:35,412 - DEBUG - Initializing update_progress_bars method
+2024-09-14 21:09:35,412 - DEBUG - Calculating total completions
+2024-09-14 21:09:35,412 - INFO - update_progress_bars: total_completions = 3
+2024-09-14 21:09:35,412 - DEBUG - Calculating total completions
+2024-09-14 21:09:35,412 - INFO - update_progress_bars: total_completions = 3
+2024-09-14 21:09:35,413 - INFO - Successfully loaded all habits and updated the UI.
+2024-09-14 21:09:37,161 - INFO - Habit marked as done for today! Current streak: 1 days.
+2024-09-14 21:09:37,161 - DEBUG - Initializing on_habit_select method
+2024-09-14 21:09:39,397 - DEBUG - Initializing on_habit_select method
+2024-09-14 21:09:41,704 - DEBUG - Initializing mark_done method
+2024-09-14 21:09:44,680 - DEBUG - Updated daily completions.
+2024-09-14 21:09:44,680 - DEBUG - Returned result: ('2024-09-14', 1) from last_completed habit: 5
+2024-09-14 21:09:44,680 - DEBUG - mark_done: last_completed = 2024-09-14
+2024-09-14 21:09:44,681 - DEBUG - Initializing load_habits method
+2024-09-14 21:09:44,681 - DEBUG - Fetched 2 habits from the database.
+2024-09-14 21:09:44,681 - DEBUG - Inserted habit: Develop New Project, Daily Completions: 0, Recent Note: test
+2024-09-14 21:09:44,681 - DEBUG - Inserted habit: Use ChatGPT, Daily Completions: 0, Recent Note: test
+2024-09-14 21:09:44,681 - DEBUG - Initializing update_progress_bars method
+2024-09-14 21:09:44,681 - DEBUG - Calculating total completions
+2024-09-14 21:09:44,681 - INFO - update_progress_bars: total_completions = 3
+2024-09-14 21:09:44,681 - DEBUG - Calculating total completions
+2024-09-14 21:09:44,682 - INFO - update_progress_bars: total_completions = 4
+2024-09-14 21:09:44,682 - INFO - Successfully loaded all habits and updated the UI.
+2024-09-14 21:09:47,330 - INFO - Habit marked as done for today! Current streak: 1 days.
+2024-09-14 21:09:47,331 - DEBUG - Initializing on_habit_select method
+2024-09-14 21:09:48,879 - DEBUG - Initializing on_closing method
+2024-09-14 21:09:48,879 - DEBUG - Initializing save_preferences
+2024-09-14 21:09:48,879 - DEBUG - Window size and position saved: width=966, height=419, x=-1779, y=328
+2024-09-14 21:09:48,880 - WARNING - Column 'Name' not found in display columns. It might be hidden or removed.
+2024-09-14 21:09:48,880 - WARNING - Column 'Category' not found in display columns. It might be hidden or removed.
+2024-09-14 21:09:48,880 - WARNING - Column 'Streak' not found in display columns. It might be hidden or removed.
+2024-09-14 21:09:48,880 - WARNING - Column 'Daily Completions' not found in display columns. It might be hidden or removed.
+2024-09-14 21:09:48,880 - WARNING - Column 'Recent Note' not found in display columns. It might be hidden or removed.
+2024-09-14 21:09:48,882 - INFO - Updated config file with window size, position, and column configurations.
+2024-09-14 21:09:48,882 - INFO - Preferences Saved!
+2024-09-14 21:09:48,896 - DEBUG - Connection closed
+2024-09-14 21:09:48,896 - DEBUG - ------------------------------------------------------------
+2024-09-14 21:09:48,896 - DEBUG - ------------------------------------------------------------
+2024-09-14 21:09:51,733 - DEBUG - ------------------------------------------------------------
+2024-09-14 21:09:51,733 - DEBUG - Initialized Habit Tracker App
+2024-09-14 21:09:51,733 - DEBUG - ------------------------------------------------------------
+2024-09-14 21:09:51,733 - DEBUG - Initializing database setup
+2024-09-14 21:09:51,734 - INFO - Database file exists. Ensuring schema is up to date.
+2024-09-14 21:09:51,734 - DEBUG - Ensured 'habits' table exists with the correct schema.
+2024-09-14 21:09:51,734 - DEBUG - Ensured 'completions' table exists with the correct schema.
+2024-09-14 21:09:51,734 - INFO - Database initialized successfully.
+2024-09-14 21:09:51,734 - DEBUG - Initializing database setup
+2024-09-14 21:09:51,734 - INFO - Database file exists. Ensuring schema is up to date.
+2024-09-14 21:09:51,734 - DEBUG - Ensured 'habits' table exists with the correct schema.
+2024-09-14 21:09:51,734 - DEBUG - Ensured 'completions' table exists with the correct schema.
+2024-09-14 21:09:51,734 - INFO - Database initialized successfully.
+2024-09-14 21:09:51,734 - INFO - Database initialized successfully.
+2024-09-14 21:09:51,734 - DEBUG - Initializing create_widgets method
+2024-09-14 21:09:51,736 - DEBUG - Configured Treeview column: Name
+2024-09-14 21:09:51,736 - DEBUG - Configured Treeview column: Category
+2024-09-14 21:09:51,736 - DEBUG - Configured Treeview column: Streak
+2024-09-14 21:09:51,736 - DEBUG - Configured Treeview column: Daily Completions
+2024-09-14 21:09:51,736 - DEBUG - Configured Treeview column: Recent Note
+2024-09-14 21:09:51,736 - DEBUG - Habit Treeview initialized and event bound
+2024-09-14 21:09:51,736 - DEBUG - Action buttons for habit management added
+2024-09-14 21:09:51,736 - DEBUG - Progress frame for habit tracking initialized
+2024-09-14 21:09:51,736 - DEBUG - UI Elements Created
+2024-09-14 21:09:51,736 - DEBUG - Initializing load_preferences method
+2024-09-14 21:09:51,736 - DEBUG - Window loaded with width: 966, height: 419, x: -1779, y: 328
+2024-09-14 21:09:51,736 - WARNING - Width configuration missing for column 'Name'
+2024-09-14 21:09:51,736 - WARNING - Position configuration missing for column 'Name'
+2024-09-14 21:09:51,736 - WARNING - Width configuration missing for column 'Category'
+2024-09-14 21:09:51,736 - WARNING - Position configuration missing for column 'Category'
+2024-09-14 21:09:51,736 - WARNING - Width configuration missing for column 'Streak'
+2024-09-14 21:09:51,736 - WARNING - Position configuration missing for column 'Streak'
+2024-09-14 21:09:51,737 - WARNING - Width configuration missing for column 'Daily Completions'
+2024-09-14 21:09:51,737 - WARNING - Position configuration missing for column 'Daily Completions'
+2024-09-14 21:09:51,737 - WARNING - Width configuration missing for column 'Recent Note'
+2024-09-14 21:09:51,737 - WARNING - Position configuration missing for column 'Recent Note'
+2024-09-14 21:09:51,737 - DEBUG - Preferences Loaded
+2024-09-14 21:09:51,737 - DEBUG - Initializing load_habits method
+2024-09-14 21:09:51,737 - DEBUG - Fetched 2 habits from the database.
+2024-09-14 21:09:51,737 - DEBUG - Inserted habit: Develop New Project, Daily Completions: 0, Recent Note: test
+2024-09-14 21:09:51,737 - DEBUG - Inserted habit: Use ChatGPT, Daily Completions: 0, Recent Note: test
+2024-09-14 21:09:51,737 - DEBUG - Initializing update_progress_bars method
+2024-09-14 21:09:51,737 - DEBUG - Calculating total completions
+2024-09-14 21:09:51,737 - INFO - update_progress_bars: total_completions = 3
+2024-09-14 21:09:51,737 - DEBUG - Calculating total completions
+2024-09-14 21:09:51,737 - INFO - update_progress_bars: total_completions = 4
+2024-09-14 21:09:51,737 - INFO - Successfully loaded all habits and updated the UI.
+2024-09-14 21:09:51,737 - DEBUG - Habits Loaded
+2024-09-14 21:09:51,737 - DEBUG - Initializing schedule_notifications method
+2024-09-14 21:09:51,737 - DEBUG - Initializing notify method
+2024-09-14 21:09:51,737 - DEBUG - Notifications scheduled successfully.
+2024-09-14 21:09:51,737 - DEBUG - Notification Times: [8, 12, 20]
+2024-09-14 21:09:51,737 - DEBUG - ------------------------------------------------------------
+2024-09-14 21:09:51,737 - INFO - notify noted time as: 2024-09-14 21:09:51.737612
+2024-09-14 21:09:51,737 - DEBUG - Initializing mainloop
+2024-09-14 21:09:51,737 - INFO - notify noted target time as: 2024-09-14 08:00:00
+2024-09-14 21:09:51,737 - DEBUG - ------------------------------------------------------------
+2024-09-14 21:09:51,737 - WARNING - 2024-09-14 21:09:51.737612 >= 2024-09-14 08:00:00
+2024-09-14 21:09:51,737 - INFO - target_time now set to: 2024-09-15 08:00:00
+2024-09-14 21:09:55,449 - DEBUG - Initializing on_closing method
+2024-09-14 21:09:55,450 - DEBUG - Initializing save_preferences
+2024-09-14 21:09:55,450 - DEBUG - Window size and position saved: width=966, height=419, x=-1779, y=328
+2024-09-14 21:09:55,450 - WARNING - Column 'Name' not found in display columns. It might be hidden or removed.
+2024-09-14 21:09:55,450 - WARNING - Column 'Category' not found in display columns. It might be hidden or removed.
+2024-09-14 21:09:55,450 - WARNING - Column 'Streak' not found in display columns. It might be hidden or removed.
+2024-09-14 21:09:55,450 - WARNING - Column 'Daily Completions' not found in display columns. It might be hidden or removed.
+2024-09-14 21:09:55,450 - WARNING - Column 'Recent Note' not found in display columns. It might be hidden or removed.
+2024-09-14 21:09:55,450 - INFO - Updated config file with window size, position, and column configurations.
+2024-09-14 21:09:55,451 - INFO - Preferences Saved!
+2024-09-14 21:09:55,458 - DEBUG - Connection closed
+2024-09-14 21:09:55,458 - DEBUG - ------------------------------------------------------------
+2024-09-14 21:09:55,458 - DEBUG - ------------------------------------------------------------
+2024-09-14 21:10:15,267 - DEBUG - ------------------------------------------------------------
+2024-09-14 21:10:15,267 - DEBUG - Initialized Habit Tracker App
+2024-09-14 21:10:15,267 - DEBUG - ------------------------------------------------------------
+2024-09-14 21:10:15,267 - DEBUG - Initializing database setup
+2024-09-14 21:10:15,267 - INFO - Database file exists. Ensuring schema is up to date.
+2024-09-14 21:10:15,268 - DEBUG - Ensured 'habits' table exists with the correct schema.
+2024-09-14 21:10:15,268 - DEBUG - Ensured 'completions' table exists with the correct schema.
+2024-09-14 21:10:15,268 - INFO - Database initialized successfully.
+2024-09-14 21:10:15,268 - DEBUG - Initializing database setup
+2024-09-14 21:10:15,268 - INFO - Database file exists. Ensuring schema is up to date.
+2024-09-14 21:10:15,268 - DEBUG - Ensured 'habits' table exists with the correct schema.
+2024-09-14 21:10:15,268 - DEBUG - Ensured 'completions' table exists with the correct schema.
+2024-09-14 21:10:15,268 - INFO - Database initialized successfully.
+2024-09-14 21:10:15,268 - INFO - Database initialized successfully.
+2024-09-14 21:10:15,268 - DEBUG - Initializing create_widgets method
+2024-09-14 21:10:15,270 - DEBUG - Configured Treeview column: Name
+2024-09-14 21:10:15,270 - DEBUG - Configured Treeview column: Category
+2024-09-14 21:10:15,270 - DEBUG - Configured Treeview column: Streak
+2024-09-14 21:10:15,270 - DEBUG - Configured Treeview column: Daily Completions
+2024-09-14 21:10:15,270 - DEBUG - Configured Treeview column: Recent Note
+2024-09-14 21:10:15,270 - DEBUG - Habit Treeview initialized and event bound
+2024-09-14 21:10:15,270 - DEBUG - Action buttons for habit management added
+2024-09-14 21:10:15,270 - DEBUG - Progress frame for habit tracking initialized
+2024-09-14 21:10:15,270 - DEBUG - UI Elements Created
+2024-09-14 21:10:15,270 - DEBUG - Initializing load_preferences method
+2024-09-14 21:10:15,270 - DEBUG - Window loaded with width: 966, height: 419, x: -1779, y: 328
+2024-09-14 21:10:15,270 - WARNING - Width configuration missing for column 'Name'
+2024-09-14 21:10:15,270 - WARNING - Position configuration missing for column 'Name'
+2024-09-14 21:10:15,270 - WARNING - Width configuration missing for column 'Category'
+2024-09-14 21:10:15,270 - WARNING - Position configuration missing for column 'Category'
+2024-09-14 21:10:15,270 - WARNING - Width configuration missing for column 'Streak'
+2024-09-14 21:10:15,270 - WARNING - Position configuration missing for column 'Streak'
+2024-09-14 21:10:15,270 - WARNING - Width configuration missing for column 'Daily Completions'
+2024-09-14 21:10:15,270 - WARNING - Position configuration missing for column 'Daily Completions'
+2024-09-14 21:10:15,270 - WARNING - Width configuration missing for column 'Recent Note'
+2024-09-14 21:10:15,270 - WARNING - Position configuration missing for column 'Recent Note'
+2024-09-14 21:10:15,270 - DEBUG - Preferences Loaded
+2024-09-14 21:10:15,270 - DEBUG - Initializing load_habits method
+2024-09-14 21:10:15,270 - DEBUG - Fetched 2 habits from the database.
+2024-09-14 21:10:15,270 - DEBUG - Inserted habit: Develop New Project, Daily Completions: 0, Recent Note: test
+2024-09-14 21:10:15,271 - DEBUG - Inserted habit: Use ChatGPT, Daily Completions: 0, Recent Note: test
+2024-09-14 21:10:15,271 - DEBUG - Initializing update_progress_bars method
+2024-09-14 21:10:15,271 - DEBUG - Calculating total completions
+2024-09-14 21:10:15,271 - INFO - update_progress_bars: total_completions = 3
+2024-09-14 21:10:15,271 - DEBUG - Calculating total completions
+2024-09-14 21:10:15,271 - INFO - update_progress_bars: total_completions = 4
+2024-09-14 21:10:15,271 - INFO - Successfully loaded all habits and updated the UI.
+2024-09-14 21:10:15,271 - DEBUG - Habits Loaded
+2024-09-14 21:10:15,271 - DEBUG - Initializing schedule_notifications method
+2024-09-14 21:10:15,271 - DEBUG - Initializing notify method
+2024-09-14 21:10:15,271 - DEBUG - Notifications scheduled successfully.
+2024-09-14 21:10:15,271 - DEBUG - Notification Times: [8, 12, 20]
+2024-09-14 21:10:15,271 - DEBUG - ------------------------------------------------------------
+2024-09-14 21:10:15,271 - INFO - notify noted time as: 2024-09-14 21:10:15.271481
+2024-09-14 21:10:15,271 - DEBUG - Initializing mainloop
+2024-09-14 21:10:15,271 - INFO - notify noted target time as: 2024-09-14 08:00:00
+2024-09-14 21:10:15,271 - DEBUG - ------------------------------------------------------------
+2024-09-14 21:10:15,271 - WARNING - 2024-09-14 21:10:15.271481 >= 2024-09-14 08:00:00
+2024-09-14 21:10:15,271 - INFO - target_time now set to: 2024-09-15 08:00:00
+2024-09-14 21:10:52,573 - DEBUG - Initializing on_closing method
+2024-09-14 21:10:52,575 - DEBUG - Initializing save_preferences
+2024-09-14 21:10:52,575 - DEBUG - Window size and position saved: width=966, height=419, x=-1784, y=321
+2024-09-14 21:10:52,575 - WARNING - Column 'Name' not found in display columns. It might be hidden or removed.
+2024-09-14 21:10:52,575 - WARNING - Column 'Category' not found in display columns. It might be hidden or removed.
+2024-09-14 21:10:52,575 - WARNING - Column 'Streak' not found in display columns. It might be hidden or removed.
+2024-09-14 21:10:52,576 - WARNING - Column 'Daily Completions' not found in display columns. It might be hidden or removed.
+2024-09-14 21:10:52,576 - WARNING - Column 'Recent Note' not found in display columns. It might be hidden or removed.
+2024-09-14 21:10:52,577 - INFO - Updated config file with window size, position, and column configurations.
+2024-09-14 21:10:52,577 - INFO - Preferences Saved!
+2024-09-14 21:10:52,585 - DEBUG - Connection closed
+2024-09-14 21:10:52,585 - DEBUG - ------------------------------------------------------------
+2024-09-14 21:10:52,585 - DEBUG - ------------------------------------------------------------
+2024-09-14 21:14:28,826 - DEBUG - ------------------------------------------------------------
+2024-09-14 21:14:28,826 - DEBUG - Initialized Habit Tracker App
+2024-09-14 21:14:28,826 - DEBUG - ------------------------------------------------------------
+2024-09-14 21:14:28,826 - DEBUG - Initializing database setup
+2024-09-14 21:14:28,828 - INFO - Database file exists. Ensuring schema is up to date.
+2024-09-14 21:14:28,829 - DEBUG - Ensured 'habits' table exists with the correct schema.
+2024-09-14 21:14:28,829 - DEBUG - Ensured 'completions' table exists with the correct schema.
+2024-09-14 21:14:28,829 - INFO - Database initialized successfully.
+2024-09-14 21:14:28,829 - DEBUG - Initializing database setup
+2024-09-14 21:14:28,829 - INFO - Database file exists. Ensuring schema is up to date.
+2024-09-14 21:14:28,829 - DEBUG - Ensured 'habits' table exists with the correct schema.
+2024-09-14 21:14:28,829 - DEBUG - Ensured 'completions' table exists with the correct schema.
+2024-09-14 21:14:28,829 - INFO - Database initialized successfully.
+2024-09-14 21:14:28,829 - INFO - Database initialized successfully.
+2024-09-14 21:14:28,829 - DEBUG - Initializing create_widgets method
+2024-09-14 21:14:28,832 - DEBUG - Configured Treeview column: Name
+2024-09-14 21:14:28,832 - DEBUG - Configured Treeview column: Category
+2024-09-14 21:14:28,832 - DEBUG - Configured Treeview column: Streak
+2024-09-14 21:14:28,832 - DEBUG - Configured Treeview column: Daily Completions
+2024-09-14 21:14:28,832 - DEBUG - Configured Treeview column: Recent Note
+2024-09-14 21:14:28,832 - DEBUG - Habit Treeview initialized and event bound
+2024-09-14 21:14:28,832 - DEBUG - Action buttons for habit management added
+2024-09-14 21:14:28,832 - DEBUG - Progress frame for habit tracking initialized
+2024-09-14 21:14:28,832 - DEBUG - UI Elements Created
+2024-09-14 21:14:28,832 - DEBUG - Initializing load_preferences method
+2024-09-14 21:14:28,832 - DEBUG - Window loaded with width: 966, height: 419, x: -1784, y: 321
+2024-09-14 21:14:28,832 - WARNING - Width configuration missing for column 'Name'
+2024-09-14 21:14:28,832 - WARNING - Position configuration missing for column 'Name'
+2024-09-14 21:14:28,832 - WARNING - Width configuration missing for column 'Category'
+2024-09-14 21:14:28,832 - WARNING - Position configuration missing for column 'Category'
+2024-09-14 21:14:28,832 - WARNING - Width configuration missing for column 'Streak'
+2024-09-14 21:14:28,832 - WARNING - Position configuration missing for column 'Streak'
+2024-09-14 21:14:28,832 - WARNING - Width configuration missing for column 'Daily Completions'
+2024-09-14 21:14:28,832 - WARNING - Position configuration missing for column 'Daily Completions'
+2024-09-14 21:14:28,832 - WARNING - Width configuration missing for column 'Recent Note'
+2024-09-14 21:14:28,832 - WARNING - Position configuration missing for column 'Recent Note'
+2024-09-14 21:14:28,832 - DEBUG - Preferences Loaded
+2024-09-14 21:14:28,832 - DEBUG - Initializing load_habits method
+2024-09-14 21:14:28,833 - DEBUG - Fetched 2 habits from the database.
+2024-09-14 21:14:28,833 - DEBUG - Inserted habit: Develop New Project, Daily Completions: 0, Recent Note: test
+2024-09-14 21:14:28,833 - DEBUG - Inserted habit: Use ChatGPT, Daily Completions: 0, Recent Note: test
+2024-09-14 21:14:28,833 - DEBUG - Initializing update_progress_bars method
+2024-09-14 21:14:28,833 - DEBUG - Calculating total completions
+2024-09-14 21:14:28,833 - INFO - update_progress_bars: total_completions = 3
+2024-09-14 21:14:28,833 - DEBUG - Calculating total completions
+2024-09-14 21:14:28,833 - INFO - update_progress_bars: total_completions = 4
+2024-09-14 21:14:28,833 - INFO - Successfully loaded all habits and updated the UI.
+2024-09-14 21:14:28,833 - DEBUG - Habits Loaded
+2024-09-14 21:14:28,833 - DEBUG - Initializing schedule_notifications method
+2024-09-14 21:14:28,833 - DEBUG - Initializing notify method
+2024-09-14 21:14:28,833 - DEBUG - Notifications scheduled successfully.
+2024-09-14 21:14:28,833 - DEBUG - Notification Times: [8, 12, 20]
+2024-09-14 21:14:28,833 - DEBUG - ------------------------------------------------------------
+2024-09-14 21:14:28,834 - INFO - notify noted time as: 2024-09-14 21:14:28.834023
+2024-09-14 21:14:28,834 - DEBUG - Initializing mainloop
+2024-09-14 21:14:28,834 - DEBUG - ------------------------------------------------------------
+2024-09-14 21:14:28,834 - INFO - notify noted target time as: 2024-09-14 08:00:00
+2024-09-14 21:14:28,834 - WARNING - 2024-09-14 21:14:28.834023 >= 2024-09-14 08:00:00
+2024-09-14 21:14:28,834 - INFO - target_time now set to: 2024-09-15 08:00:00
+2024-09-14 21:14:31,725 - DEBUG - Initializing on_habit_select method
+2024-09-14 21:14:32,941 - DEBUG - Initializing mark_done method
+2024-09-14 21:14:35,636 - DEBUG - Updated daily completions.
+2024-09-14 21:14:35,636 - DEBUG - Returned result: ('2024-09-14', 1) from last_completed habit: 4
+2024-09-14 21:14:35,636 - DEBUG - mark_done: last_completed = 2024-09-14
+2024-09-14 21:14:35,636 - DEBUG - Initializing load_habits method
+2024-09-14 21:14:35,637 - DEBUG - Fetched 2 habits from the database.
+2024-09-14 21:14:35,637 - DEBUG - Inserted habit: Develop New Project, Daily Completions: 0, Recent Note: asdf
+2024-09-14 21:14:35,637 - DEBUG - Inserted habit: Use ChatGPT, Daily Completions: 0, Recent Note: test
+2024-09-14 21:14:35,637 - DEBUG - Initializing update_progress_bars method
+2024-09-14 21:14:35,637 - DEBUG - Calculating total completions
+2024-09-14 21:14:35,637 - INFO - update_progress_bars: total_completions = 4
+2024-09-14 21:14:35,637 - DEBUG - Calculating total completions
+2024-09-14 21:14:35,637 - INFO - update_progress_bars: total_completions = 4
+2024-09-14 21:14:35,637 - INFO - Successfully loaded all habits and updated the UI.
+2024-09-14 21:14:37,635 - INFO - Habit marked as done for today! Current streak: 1 days.
+2024-09-14 21:14:37,636 - DEBUG - Initializing on_habit_select method
+2024-09-14 21:14:39,777 - DEBUG - Initializing on_habit_select method
+2024-09-14 21:14:40,940 - DEBUG - Initializing mark_done method
+2024-09-14 21:14:44,099 - DEBUG - Updated daily completions.
+2024-09-14 21:14:44,100 - DEBUG - Returned result: ('2024-09-14', 1) from last_completed habit: 5
+2024-09-14 21:14:44,100 - DEBUG - mark_done: last_completed = 2024-09-14
+2024-09-14 21:14:44,100 - DEBUG - Initializing load_habits method
+2024-09-14 21:14:44,101 - DEBUG - Fetched 2 habits from the database.
+2024-09-14 21:14:44,101 - DEBUG - Inserted habit: Develop New Project, Daily Completions: 0, Recent Note: asdf
+2024-09-14 21:14:44,101 - DEBUG - Inserted habit: Use ChatGPT, Daily Completions: 0, Recent Note: fdsa
+2024-09-14 21:14:44,101 - DEBUG - Initializing update_progress_bars method
+2024-09-14 21:14:44,101 - DEBUG - Calculating total completions
+2024-09-14 21:14:44,101 - INFO - update_progress_bars: total_completions = 4
+2024-09-14 21:14:44,101 - DEBUG - Calculating total completions
+2024-09-14 21:14:44,101 - INFO - update_progress_bars: total_completions = 5
+2024-09-14 21:14:44,101 - INFO - Successfully loaded all habits and updated the UI.
+2024-09-14 21:14:46,222 - INFO - Habit marked as done for today! Current streak: 1 days.
+2024-09-14 21:14:46,223 - DEBUG - Initializing on_habit_select method
+2024-09-14 21:15:19,666 - DEBUG - Initializing on_closing method
+2024-09-14 21:15:19,668 - DEBUG - Initializing save_preferences
+2024-09-14 21:15:19,668 - DEBUG - Window size and position saved: width=966, height=419, x=-3330, y=386
+2024-09-14 21:15:19,669 - WARNING - Column 'Name' not found in display columns. It might be hidden or removed.
+2024-09-14 21:15:19,669 - WARNING - Column 'Category' not found in display columns. It might be hidden or removed.
+2024-09-14 21:15:19,669 - WARNING - Column 'Streak' not found in display columns. It might be hidden or removed.
+2024-09-14 21:15:19,669 - WARNING - Column 'Daily Completions' not found in display columns. It might be hidden or removed.
+2024-09-14 21:15:19,669 - WARNING - Column 'Recent Note' not found in display columns. It might be hidden or removed.
+2024-09-14 21:15:19,670 - INFO - Updated config file with window size, position, and column configurations.
+2024-09-14 21:15:19,670 - INFO - Preferences Saved!
+2024-09-14 21:15:19,680 - DEBUG - Connection closed
+2024-09-14 21:15:19,681 - DEBUG - ------------------------------------------------------------
+2024-09-14 21:15:19,681 - DEBUG - ------------------------------------------------------------
+2024-09-14 21:21:45,030 - DEBUG - ------------------------------------------------------------
+2024-09-14 21:21:45,030 - DEBUG - Initialized Habit Tracker App
+2024-09-14 21:21:45,030 - DEBUG - ------------------------------------------------------------
+2024-09-14 21:21:45,031 - DEBUG - Initializing database setup
+2024-09-14 21:21:45,032 - INFO - Database file exists. Ensuring schema is up to date.
+2024-09-14 21:21:45,033 - DEBUG - Ensured 'habits' table exists with the correct schema.
+2024-09-14 21:21:45,033 - DEBUG - Ensured 'completions' table exists with the correct schema.
+2024-09-14 21:21:45,033 - INFO - Database initialized successfully.
+2024-09-14 21:21:45,033 - DEBUG - Initializing database setup
+2024-09-14 21:21:45,033 - INFO - Database file exists. Ensuring schema is up to date.
+2024-09-14 21:21:45,033 - DEBUG - Ensured 'habits' table exists with the correct schema.
+2024-09-14 21:21:45,033 - DEBUG - Ensured 'completions' table exists with the correct schema.
+2024-09-14 21:21:45,033 - INFO - Database initialized successfully.
+2024-09-14 21:21:45,033 - INFO - Database initialized successfully.
+2024-09-14 21:21:45,033 - DEBUG - Initializing create_widgets method
+2024-09-14 21:21:45,035 - DEBUG - Configured Treeview column: Name
+2024-09-14 21:21:45,035 - DEBUG - Configured Treeview column: Category
+2024-09-14 21:21:45,035 - DEBUG - Configured Treeview column: Streak
+2024-09-14 21:21:45,035 - DEBUG - Configured Treeview column: Daily Completions
+2024-09-14 21:21:45,035 - DEBUG - Configured Treeview column: Recent Note
+2024-09-14 21:21:45,035 - DEBUG - Habit Treeview initialized and event bound
+2024-09-14 21:21:45,036 - DEBUG - Action buttons for habit management added
+2024-09-14 21:21:45,036 - DEBUG - Progress frame for habit tracking initialized
+2024-09-14 21:21:45,036 - DEBUG - UI Elements Created
+2024-09-14 21:21:45,036 - DEBUG - Initializing load_preferences method
+2024-09-14 21:21:45,036 - DEBUG - Window loaded with width: 966, height: 419, x: -3330, y: 386
+2024-09-14 21:21:45,036 - WARNING - Width configuration missing for column 'Name'
+2024-09-14 21:21:45,036 - WARNING - Position configuration missing for column 'Name'
+2024-09-14 21:21:45,036 - WARNING - Width configuration missing for column 'Category'
+2024-09-14 21:21:45,036 - WARNING - Position configuration missing for column 'Category'
+2024-09-14 21:21:45,036 - WARNING - Width configuration missing for column 'Streak'
+2024-09-14 21:21:45,036 - WARNING - Position configuration missing for column 'Streak'
+2024-09-14 21:21:45,036 - WARNING - Width configuration missing for column 'Daily Completions'
+2024-09-14 21:21:45,036 - WARNING - Position configuration missing for column 'Daily Completions'
+2024-09-14 21:21:45,036 - WARNING - Width configuration missing for column 'Recent Note'
+2024-09-14 21:21:45,036 - WARNING - Position configuration missing for column 'Recent Note'
+2024-09-14 21:21:45,036 - DEBUG - Preferences Loaded
+2024-09-14 21:21:45,036 - DEBUG - Initializing load_habits method
+2024-09-14 21:21:45,036 - DEBUG - Fetched habits data: [(4, 'Develop New Project', 'Coding', 1, 0, 'asdf'), (5, 'Use ChatGPT', 'Productivity', 1, 0, 'fdsa')]
+2024-09-14 21:21:45,036 - DEBUG - Fetched 2 habits from the database.
+2024-09-14 21:21:45,036 - DEBUG - Inserted habit: Develop New Project, Daily Completions: 0, Recent Note: asdf
+2024-09-14 21:21:45,036 - DEBUG - Inserted habit: Use ChatGPT, Daily Completions: 0, Recent Note: fdsa
+2024-09-14 21:21:45,036 - DEBUG - Initializing update_progress_bars method
+2024-09-14 21:21:45,036 - DEBUG - Calculating total completions
+2024-09-14 21:21:45,036 - INFO - update_progress_bars: total_completions = 4
+2024-09-14 21:21:45,036 - DEBUG - Calculating total completions
+2024-09-14 21:21:45,036 - INFO - update_progress_bars: total_completions = 5
+2024-09-14 21:21:45,036 - INFO - Successfully loaded all habits and updated the UI.
+2024-09-14 21:21:45,036 - DEBUG - Habits Loaded
+2024-09-14 21:21:45,036 - DEBUG - Initializing schedule_notifications method
+2024-09-14 21:21:45,037 - DEBUG - Initializing notify method
+2024-09-14 21:21:45,037 - DEBUG - Notifications scheduled successfully.
+2024-09-14 21:21:45,037 - DEBUG - Notification Times: [8, 12, 20]
+2024-09-14 21:21:45,037 - DEBUG - ------------------------------------------------------------
+2024-09-14 21:21:45,037 - INFO - notify noted time as: 2024-09-14 21:21:45.037178
+2024-09-14 21:21:45,037 - DEBUG - Initializing mainloop
+2024-09-14 21:21:45,037 - INFO - notify noted target time as: 2024-09-14 08:00:00
+2024-09-14 21:21:45,037 - DEBUG - ------------------------------------------------------------
+2024-09-14 21:21:45,037 - WARNING - 2024-09-14 21:21:45.037178 >= 2024-09-14 08:00:00
+2024-09-14 21:21:45,037 - INFO - target_time now set to: 2024-09-15 08:00:00
+2024-09-14 21:21:47,624 - DEBUG - Initializing on_habit_select method
+2024-09-14 21:21:48,713 - DEBUG - Initializing mark_done method
+2024-09-14 21:21:54,615 - DEBUG - Updated daily completions.
+2024-09-14 21:21:54,615 - DEBUG - Returned result: ('2024-09-14', 1) from last_completed habit: 5
+2024-09-14 21:21:54,615 - DEBUG - mark_done: last_completed = 2024-09-14
+2024-09-14 21:21:54,615 - DEBUG - Initializing load_habits method
+2024-09-14 21:21:54,615 - DEBUG - Fetched habits data: [(4, 'Develop New Project', 'Coding', 1, 0, 'asdf'), (5, 'Use ChatGPT', 'Productivity', 1, 0, 'still fucking with this')]
+2024-09-14 21:21:54,615 - DEBUG - Fetched 2 habits from the database.
+2024-09-14 21:21:54,615 - DEBUG - Inserted habit: Develop New Project, Daily Completions: 0, Recent Note: asdf
+2024-09-14 21:21:54,615 - DEBUG - Inserted habit: Use ChatGPT, Daily Completions: 0, Recent Note: still fucking with this
+2024-09-14 21:21:54,615 - DEBUG - Initializing update_progress_bars method
+2024-09-14 21:21:54,616 - DEBUG - Calculating total completions
+2024-09-14 21:21:54,616 - INFO - update_progress_bars: total_completions = 4
+2024-09-14 21:21:54,616 - DEBUG - Calculating total completions
+2024-09-14 21:21:54,616 - INFO - update_progress_bars: total_completions = 6
+2024-09-14 21:21:54,616 - INFO - Successfully loaded all habits and updated the UI.
+2024-09-14 21:21:57,814 - INFO - Habit marked as done for today! Current streak: 1 days.
+2024-09-14 21:21:57,814 - DEBUG - Initializing on_habit_select method
+2024-09-14 21:21:59,367 - DEBUG - Initializing on_habit_select method
+2024-09-14 21:22:00,727 - DEBUG - Initializing mark_done method
+2024-09-14 21:22:15,194 - DEBUG - Updated daily completions.
+2024-09-14 21:22:15,194 - DEBUG - Returned result: ('2024-09-14', 1) from last_completed habit: 4
+2024-09-14 21:22:15,194 - DEBUG - mark_done: last_completed = 2024-09-14
+2024-09-14 21:22:15,195 - DEBUG - Initializing load_habits method
+2024-09-14 21:22:15,195 - DEBUG - Fetched habits data: [(4, 'Develop New Project', 'Coding', 1, 0, 'daily completions are not being counted in the column'), (5, 'Use ChatGPT', 'Productivity', 1, 0, 'still fucking with this')]
+2024-09-14 21:22:15,195 - DEBUG - Fetched 2 habits from the database.
+2024-09-14 21:22:15,195 - DEBUG - Inserted habit: Develop New Project, Daily Completions: 0, Recent Note: daily completions are not being counted in the column
+2024-09-14 21:22:15,195 - DEBUG - Inserted habit: Use ChatGPT, Daily Completions: 0, Recent Note: still fucking with this
+2024-09-14 21:22:15,195 - DEBUG - Initializing update_progress_bars method
+2024-09-14 21:22:15,195 - DEBUG - Calculating total completions
+2024-09-14 21:22:15,195 - INFO - update_progress_bars: total_completions = 5
+2024-09-14 21:22:15,196 - DEBUG - Calculating total completions
+2024-09-14 21:22:15,196 - INFO - update_progress_bars: total_completions = 6
+2024-09-14 21:22:15,196 - INFO - Successfully loaded all habits and updated the UI.
+2024-09-14 21:22:17,437 - INFO - Habit marked as done for today! Current streak: 1 days.
+2024-09-14 21:22:17,438 - DEBUG - Initializing on_habit_select method
+2024-09-14 21:23:21,166 - DEBUG - Initializing on_closing method
+2024-09-14 21:23:21,168 - DEBUG - Initializing save_preferences
+2024-09-14 21:23:21,169 - DEBUG - Window size and position saved: width=966, height=419, x=-3288, y=352
+2024-09-14 21:23:21,169 - WARNING - Column 'Name' not found in display columns. It might be hidden or removed.
+2024-09-14 21:23:21,169 - WARNING - Column 'Category' not found in display columns. It might be hidden or removed.
+2024-09-14 21:23:21,169 - WARNING - Column 'Streak' not found in display columns. It might be hidden or removed.
+2024-09-14 21:23:21,169 - WARNING - Column 'Daily Completions' not found in display columns. It might be hidden or removed.
+2024-09-14 21:23:21,169 - WARNING - Column 'Recent Note' not found in display columns. It might be hidden or removed.
+2024-09-14 21:23:21,170 - INFO - Updated config file with window size, position, and column configurations.
+2024-09-14 21:23:21,171 - INFO - Preferences Saved!
+2024-09-14 21:23:21,179 - DEBUG - Connection closed
+2024-09-14 21:23:21,179 - DEBUG - ------------------------------------------------------------
+2024-09-14 21:23:21,179 - DEBUG - ------------------------------------------------------------
+2024-09-14 21:30:09,478 - DEBUG - ------------------------------------------------------------
+2024-09-14 21:30:09,479 - DEBUG - Initialized Habit Tracker App
+2024-09-14 21:30:09,479 - DEBUG - ------------------------------------------------------------
+2024-09-14 21:30:09,479 - DEBUG - Initializing database setup
+2024-09-14 21:30:09,480 - INFO - Database file exists. Ensuring schema is up to date.
+2024-09-14 21:30:09,481 - DEBUG - Ensured 'habits' table exists with the correct schema.
+2024-09-14 21:30:09,481 - DEBUG - Ensured 'completions' table exists with the correct schema.
+2024-09-14 21:30:09,481 - INFO - Database initialized successfully.
+2024-09-14 21:30:09,481 - DEBUG - Initializing database setup
+2024-09-14 21:30:09,481 - INFO - Database file exists. Ensuring schema is up to date.
+2024-09-14 21:30:09,481 - DEBUG - Ensured 'habits' table exists with the correct schema.
+2024-09-14 21:30:09,481 - DEBUG - Ensured 'completions' table exists with the correct schema.
+2024-09-14 21:30:09,481 - INFO - Database initialized successfully.
+2024-09-14 21:30:09,481 - INFO - Database initialized successfully.
+2024-09-14 21:30:09,481 - DEBUG - Initializing create_widgets method
+2024-09-14 21:30:09,483 - DEBUG - Configured Treeview column: Name
+2024-09-14 21:30:09,483 - DEBUG - Configured Treeview column: Category
+2024-09-14 21:30:09,483 - DEBUG - Configured Treeview column: Streak
+2024-09-14 21:30:09,483 - DEBUG - Configured Treeview column: Daily Completions
+2024-09-14 21:30:09,483 - DEBUG - Configured Treeview column: Recent Note
+2024-09-14 21:30:09,483 - DEBUG - Habit Treeview initialized and event bound
+2024-09-14 21:30:09,484 - DEBUG - Action buttons for habit management added
+2024-09-14 21:30:09,484 - DEBUG - Progress frame for habit tracking initialized
+2024-09-14 21:30:09,484 - DEBUG - UI Elements Created
+2024-09-14 21:30:09,484 - DEBUG - Initializing load_preferences method
+2024-09-14 21:30:09,484 - DEBUG - Window loaded with width: 966, height: 419, x: -3288, y: 352
+2024-09-14 21:30:09,484 - WARNING - Width configuration missing for column 'Name'
+2024-09-14 21:30:09,484 - WARNING - Position configuration missing for column 'Name'
+2024-09-14 21:30:09,484 - WARNING - Width configuration missing for column 'Category'
+2024-09-14 21:30:09,484 - WARNING - Position configuration missing for column 'Category'
+2024-09-14 21:30:09,484 - WARNING - Width configuration missing for column 'Streak'
+2024-09-14 21:30:09,484 - WARNING - Position configuration missing for column 'Streak'
+2024-09-14 21:30:09,484 - WARNING - Width configuration missing for column 'Daily Completions'
+2024-09-14 21:30:09,484 - WARNING - Position configuration missing for column 'Daily Completions'
+2024-09-14 21:30:09,484 - WARNING - Width configuration missing for column 'Recent Note'
+2024-09-14 21:30:09,484 - WARNING - Position configuration missing for column 'Recent Note'
+2024-09-14 21:30:09,484 - DEBUG - Preferences Loaded
+2024-09-14 21:30:09,484 - DEBUG - Initializing load_habits method
+2024-09-14 21:30:09,484 - DEBUG - Fetched habits data: [(4, 'Develop New Project', 'Coding', 1, 0, 'daily completions are not being counted in the column'), (5, 'Use ChatGPT', 'Productivity', 1, 0, 'still fucking with this')]
+2024-09-14 21:30:09,484 - DEBUG - Fetched 2 habits from the database.
+2024-09-14 21:30:09,484 - DEBUG - Inserted habit: Develop New Project, Daily Completions: 0, Recent Note: daily completions are not being counted in the column
+2024-09-14 21:30:09,484 - DEBUG - Inserted habit: Use ChatGPT, Daily Completions: 0, Recent Note: still fucking with this
+2024-09-14 21:30:09,484 - DEBUG - Initializing update_progress_bars method
+2024-09-14 21:30:09,484 - DEBUG - Calculating total completions
+2024-09-14 21:30:09,484 - INFO - update_progress_bars: total_completions = 5
+2024-09-14 21:30:09,485 - DEBUG - Calculating total completions
+2024-09-14 21:30:09,485 - INFO - update_progress_bars: total_completions = 6
+2024-09-14 21:30:09,485 - INFO - Successfully loaded all habits and updated the UI.
+2024-09-14 21:30:09,485 - DEBUG - Habits Loaded
+2024-09-14 21:30:09,485 - DEBUG - Initializing schedule_notifications method
+2024-09-14 21:30:09,485 - DEBUG - Initializing notify method
+2024-09-14 21:30:09,485 - DEBUG - Notifications scheduled successfully.
+2024-09-14 21:30:09,485 - DEBUG - Notification Times: [8, 12, 20]
+2024-09-14 21:30:09,485 - INFO - notify noted time as: 2024-09-14 21:30:09.485292
+2024-09-14 21:30:09,485 - DEBUG - ------------------------------------------------------------
+2024-09-14 21:30:09,485 - INFO - notify noted target time as: 2024-09-14 08:00:00
+2024-09-14 21:30:09,485 - DEBUG - Initializing mainloop
+2024-09-14 21:30:09,485 - WARNING - 2024-09-14 21:30:09.485292 >= 2024-09-14 08:00:00
+2024-09-14 21:30:09,485 - DEBUG - ------------------------------------------------------------
+2024-09-14 21:30:09,485 - INFO - target_time now set to: 2024-09-15 08:00:00
+2024-09-14 21:30:12,830 - DEBUG - Initializing on_habit_select method
+2024-09-14 21:30:14,202 - DEBUG - Initializing mark_done method
+2024-09-14 21:30:18,595 - DEBUG - Updated daily completions.
+2024-09-14 21:30:18,595 - DEBUG - Returned result: ('2024-09-14', 1) from last_completed habit: 4
+2024-09-14 21:30:18,595 - DEBUG - mark_done: last_completed = 2024-09-14
+2024-09-14 21:30:18,596 - DEBUG - Initializing load_habits method
+2024-09-14 21:30:18,597 - DEBUG - Fetched habits data: [(4, 'Develop New Project', 'Coding', 1, 0, 'are we done yet?'), (5, 'Use ChatGPT', 'Productivity', 1, 0, 'still fucking with this')]
+2024-09-14 21:30:18,597 - DEBUG - Fetched 2 habits from the database.
+2024-09-14 21:30:18,597 - DEBUG - Inserted habit: Develop New Project, Daily Completions: 0, Recent Note: are we done yet?
+2024-09-14 21:30:18,597 - DEBUG - Inserted habit: Use ChatGPT, Daily Completions: 0, Recent Note: still fucking with this
+2024-09-14 21:30:18,597 - DEBUG - Initializing update_progress_bars method
+2024-09-14 21:30:18,597 - DEBUG - Calculating total completions
+2024-09-14 21:30:18,597 - INFO - update_progress_bars: total_completions = 6
+2024-09-14 21:30:18,597 - DEBUG - Calculating total completions
+2024-09-14 21:30:18,597 - INFO - update_progress_bars: total_completions = 6
+2024-09-14 21:30:18,598 - INFO - Successfully loaded all habits and updated the UI.
+2024-09-14 21:30:21,077 - INFO - Habit marked as done for today! Current streak: 1 days.
+2024-09-14 21:30:21,077 - DEBUG - Initializing on_habit_select method
+2024-09-14 21:30:22,362 - DEBUG - Initializing on_habit_select method
+2024-09-14 21:30:23,633 - DEBUG - Initializing mark_done method
+2024-09-14 21:30:29,143 - DEBUG - Updated daily completions.
+2024-09-14 21:30:29,143 - DEBUG - Returned result: ('2024-09-14', 1) from last_completed habit: 5
+2024-09-14 21:30:29,143 - DEBUG - mark_done: last_completed = 2024-09-14
+2024-09-14 21:30:29,144 - DEBUG - Initializing load_habits method
+2024-09-14 21:30:29,144 - DEBUG - Fetched habits data: [(4, 'Develop New Project', 'Coding', 1, 0, 'are we done yet?'), (5, 'Use ChatGPT', 'Productivity', 1, 0, "nope, we're still broken")]
+2024-09-14 21:30:29,144 - DEBUG - Fetched 2 habits from the database.
+2024-09-14 21:30:29,144 - DEBUG - Inserted habit: Develop New Project, Daily Completions: 0, Recent Note: are we done yet?
+2024-09-14 21:30:29,144 - DEBUG - Inserted habit: Use ChatGPT, Daily Completions: 0, Recent Note: nope, we're still broken
+2024-09-14 21:30:29,144 - DEBUG - Initializing update_progress_bars method
+2024-09-14 21:30:29,144 - DEBUG - Calculating total completions
+2024-09-14 21:30:29,144 - INFO - update_progress_bars: total_completions = 6
+2024-09-14 21:30:29,145 - DEBUG - Calculating total completions
+2024-09-14 21:30:29,145 - INFO - update_progress_bars: total_completions = 7
+2024-09-14 21:30:29,145 - INFO - Successfully loaded all habits and updated the UI.
+2024-09-14 21:30:32,341 - INFO - Habit marked as done for today! Current streak: 1 days.
+2024-09-14 21:30:32,343 - DEBUG - Initializing on_habit_select method
+2024-09-14 21:30:34,871 - DEBUG - Initializing on_closing method
+2024-09-14 21:30:34,871 - DEBUG - Initializing save_preferences
+2024-09-14 21:30:34,872 - DEBUG - Window size and position saved: width=966, height=419, x=-3288, y=352
+2024-09-14 21:30:34,872 - WARNING - Column 'Name' not found in display columns. It might be hidden or removed.
+2024-09-14 21:30:34,872 - WARNING - Column 'Category' not found in display columns. It might be hidden or removed.
+2024-09-14 21:30:34,872 - WARNING - Column 'Streak' not found in display columns. It might be hidden or removed.
+2024-09-14 21:30:34,872 - WARNING - Column 'Daily Completions' not found in display columns. It might be hidden or removed.
+2024-09-14 21:30:34,872 - WARNING - Column 'Recent Note' not found in display columns. It might be hidden or removed.
+2024-09-14 21:30:34,873 - INFO - Updated config file with window size, position, and column configurations.
+2024-09-14 21:30:34,874 - INFO - Preferences Saved!
+2024-09-14 21:30:34,882 - DEBUG - Connection closed
+2024-09-14 21:30:34,883 - DEBUG - ------------------------------------------------------------
+2024-09-14 21:30:34,883 - DEBUG - ------------------------------------------------------------
+2024-09-14 21:30:38,069 - DEBUG - ------------------------------------------------------------
+2024-09-14 21:30:38,069 - DEBUG - Initialized Habit Tracker App
+2024-09-14 21:30:38,069 - DEBUG - ------------------------------------------------------------
+2024-09-14 21:30:38,069 - DEBUG - Initializing database setup
+2024-09-14 21:30:38,070 - INFO - Database file exists. Ensuring schema is up to date.
+2024-09-14 21:30:38,070 - DEBUG - Ensured 'habits' table exists with the correct schema.
+2024-09-14 21:30:38,070 - DEBUG - Ensured 'completions' table exists with the correct schema.
+2024-09-14 21:30:38,070 - INFO - Database initialized successfully.
+2024-09-14 21:30:38,070 - DEBUG - Initializing database setup
+2024-09-14 21:30:38,070 - INFO - Database file exists. Ensuring schema is up to date.
+2024-09-14 21:30:38,070 - DEBUG - Ensured 'habits' table exists with the correct schema.
+2024-09-14 21:30:38,070 - DEBUG - Ensured 'completions' table exists with the correct schema.
+2024-09-14 21:30:38,070 - INFO - Database initialized successfully.
+2024-09-14 21:30:38,070 - INFO - Database initialized successfully.
+2024-09-14 21:30:38,070 - DEBUG - Initializing create_widgets method
+2024-09-14 21:30:38,072 - DEBUG - Configured Treeview column: Name
+2024-09-14 21:30:38,072 - DEBUG - Configured Treeview column: Category
+2024-09-14 21:30:38,072 - DEBUG - Configured Treeview column: Streak
+2024-09-14 21:30:38,072 - DEBUG - Configured Treeview column: Daily Completions
+2024-09-14 21:30:38,072 - DEBUG - Configured Treeview column: Recent Note
+2024-09-14 21:30:38,072 - DEBUG - Habit Treeview initialized and event bound
+2024-09-14 21:30:38,073 - DEBUG - Action buttons for habit management added
+2024-09-14 21:30:38,073 - DEBUG - Progress frame for habit tracking initialized
+2024-09-14 21:30:38,073 - DEBUG - UI Elements Created
+2024-09-14 21:30:38,073 - DEBUG - Initializing load_preferences method
+2024-09-14 21:30:38,073 - DEBUG - Window loaded with width: 966, height: 419, x: -3288, y: 352
+2024-09-14 21:30:38,073 - WARNING - Width configuration missing for column 'Name'
+2024-09-14 21:30:38,073 - WARNING - Position configuration missing for column 'Name'
+2024-09-14 21:30:38,073 - WARNING - Width configuration missing for column 'Category'
+2024-09-14 21:30:38,073 - WARNING - Position configuration missing for column 'Category'
+2024-09-14 21:30:38,073 - WARNING - Width configuration missing for column 'Streak'
+2024-09-14 21:30:38,073 - WARNING - Position configuration missing for column 'Streak'
+2024-09-14 21:30:38,073 - WARNING - Width configuration missing for column 'Daily Completions'
+2024-09-14 21:30:38,073 - WARNING - Position configuration missing for column 'Daily Completions'
+2024-09-14 21:30:38,073 - WARNING - Width configuration missing for column 'Recent Note'
+2024-09-14 21:30:38,073 - WARNING - Position configuration missing for column 'Recent Note'
+2024-09-14 21:30:38,073 - DEBUG - Preferences Loaded
+2024-09-14 21:30:38,073 - DEBUG - Initializing load_habits method
+2024-09-14 21:30:38,073 - DEBUG - Fetched habits data: [(4, 'Develop New Project', 'Coding', 1, 0, 'are we done yet?'), (5, 'Use ChatGPT', 'Productivity', 1, 0, "nope, we're still broken")]
+2024-09-14 21:30:38,073 - DEBUG - Fetched 2 habits from the database.
+2024-09-14 21:30:38,073 - DEBUG - Inserted habit: Develop New Project, Daily Completions: 0, Recent Note: are we done yet?
+2024-09-14 21:30:38,073 - DEBUG - Inserted habit: Use ChatGPT, Daily Completions: 0, Recent Note: nope, we're still broken
+2024-09-14 21:30:38,073 - DEBUG - Initializing update_progress_bars method
+2024-09-14 21:30:38,073 - DEBUG - Calculating total completions
+2024-09-14 21:30:38,073 - INFO - update_progress_bars: total_completions = 6
+2024-09-14 21:30:38,073 - DEBUG - Calculating total completions
+2024-09-14 21:30:38,074 - INFO - update_progress_bars: total_completions = 7
+2024-09-14 21:30:38,074 - INFO - Successfully loaded all habits and updated the UI.
+2024-09-14 21:30:38,074 - DEBUG - Habits Loaded
+2024-09-14 21:30:38,074 - DEBUG - Initializing schedule_notifications method
+2024-09-14 21:30:38,074 - DEBUG - Initializing notify method
+2024-09-14 21:30:38,074 - DEBUG - Notifications scheduled successfully.
+2024-09-14 21:30:38,074 - DEBUG - Notification Times: [8, 12, 20]
+2024-09-14 21:30:38,074 - DEBUG - ------------------------------------------------------------
+2024-09-14 21:30:38,074 - DEBUG - Initializing mainloop
+2024-09-14 21:30:38,074 - INFO - notify noted time as: 2024-09-14 21:30:38.074345
+2024-09-14 21:30:38,074 - DEBUG - ------------------------------------------------------------
+2024-09-14 21:30:38,074 - INFO - notify noted target time as: 2024-09-14 08:00:00
+2024-09-14 21:30:38,075 - WARNING - 2024-09-14 21:30:38.074345 >= 2024-09-14 08:00:00
+2024-09-14 21:30:38,075 - INFO - target_time now set to: 2024-09-15 08:00:00
+2024-09-14 21:30:42,659 - DEBUG - Initializing on_habit_select method
+2024-09-14 21:30:44,810 - DEBUG - Initializing on_habit_select method
+2024-09-14 21:30:46,738 - DEBUG - Initializing mark_done method
+2024-09-14 21:30:52,108 - DEBUG - Updated daily completions.
+2024-09-14 21:30:52,109 - DEBUG - Returned result: ('2024-09-14', 1) from last_completed habit: 4
+2024-09-14 21:30:52,109 - DEBUG - mark_done: last_completed = 2024-09-14
+2024-09-14 21:30:52,110 - DEBUG - Initializing load_habits method
+2024-09-14 21:30:52,110 - DEBUG - Fetched habits data: [(4, 'Develop New Project', 'Coding', 1, 0, "doesn't update on restart"), (5, 'Use ChatGPT', 'Productivity', 1, 0, "nope, we're still broken")]
+2024-09-14 21:30:52,110 - DEBUG - Fetched 2 habits from the database.
+2024-09-14 21:30:52,110 - DEBUG - Inserted habit: Develop New Project, Daily Completions: 0, Recent Note: doesn't update on restart
+2024-09-14 21:30:52,110 - DEBUG - Inserted habit: Use ChatGPT, Daily Completions: 0, Recent Note: nope, we're still broken
+2024-09-14 21:30:52,110 - DEBUG - Initializing update_progress_bars method
+2024-09-14 21:30:52,110 - DEBUG - Calculating total completions
+2024-09-14 21:30:52,110 - INFO - update_progress_bars: total_completions = 7
+2024-09-14 21:30:52,111 - DEBUG - Calculating total completions
+2024-09-14 21:30:52,111 - INFO - update_progress_bars: total_completions = 7
+2024-09-14 21:30:52,111 - INFO - Successfully loaded all habits and updated the UI.
+2024-09-14 21:30:54,975 - INFO - Habit marked as done for today! Current streak: 1 days.
+2024-09-14 21:30:54,975 - DEBUG - Initializing on_habit_select method
+2024-09-14 21:30:59,591 - DEBUG - Initializing on_habit_select method
+2024-09-14 21:31:00,514 - DEBUG - Initializing mark_done method
+2024-09-14 21:31:06,138 - DEBUG - Updated daily completions.
+2024-09-14 21:31:06,138 - DEBUG - Returned result: ('2024-09-14', 1) from last_completed habit: 5
+2024-09-14 21:31:06,138 - DEBUG - mark_done: last_completed = 2024-09-14
+2024-09-14 21:31:06,139 - DEBUG - Initializing load_habits method
+2024-09-14 21:31:06,139 - DEBUG - Fetched habits data: [(4, 'Develop New Project', 'Coding', 1, 0, "doesn't update on restart"), (5, 'Use ChatGPT', 'Productivity', 1, 0, 'chatgpt is failing')]
+2024-09-14 21:31:06,139 - DEBUG - Fetched 2 habits from the database.
+2024-09-14 21:31:06,139 - DEBUG - Inserted habit: Develop New Project, Daily Completions: 0, Recent Note: doesn't update on restart
+2024-09-14 21:31:06,139 - DEBUG - Inserted habit: Use ChatGPT, Daily Completions: 0, Recent Note: chatgpt is failing
+2024-09-14 21:31:06,139 - DEBUG - Initializing update_progress_bars method
+2024-09-14 21:31:06,139 - DEBUG - Calculating total completions
+2024-09-14 21:31:06,139 - INFO - update_progress_bars: total_completions = 7
+2024-09-14 21:31:06,140 - DEBUG - Calculating total completions
+2024-09-14 21:31:06,140 - INFO - update_progress_bars: total_completions = 8
+2024-09-14 21:31:06,140 - INFO - Successfully loaded all habits and updated the UI.
+2024-09-14 21:31:08,243 - INFO - Habit marked as done for today! Current streak: 1 days.
+2024-09-14 21:31:08,243 - DEBUG - Initializing on_habit_select method
+2024-09-14 21:34:40,273 - DEBUG - Initializing on_closing method
+2024-09-14 21:34:40,275 - DEBUG - Initializing save_preferences
+2024-09-14 21:34:40,277 - DEBUG - Window size and position saved: width=838, height=419, x=-3224, y=73
+2024-09-14 21:34:40,277 - WARNING - Column 'Name' not found in display columns. It might be hidden or removed.
+2024-09-14 21:34:40,277 - WARNING - Column 'Category' not found in display columns. It might be hidden or removed.
+2024-09-14 21:34:40,277 - WARNING - Column 'Streak' not found in display columns. It might be hidden or removed.
+2024-09-14 21:34:40,277 - WARNING - Column 'Daily Completions' not found in display columns. It might be hidden or removed.
+2024-09-14 21:34:40,277 - WARNING - Column 'Recent Note' not found in display columns. It might be hidden or removed.
+2024-09-14 21:34:40,279 - INFO - Updated config file with window size, position, and column configurations.
+2024-09-14 21:34:40,279 - INFO - Preferences Saved!
+2024-09-14 21:34:40,287 - DEBUG - Connection closed
+2024-09-14 21:34:40,287 - DEBUG - ------------------------------------------------------------
+2024-09-14 21:34:40,288 - DEBUG - ------------------------------------------------------------
+2024-09-14 21:37:17,285 - DEBUG - ------------------------------------------------------------
+2024-09-14 21:37:17,286 - DEBUG - Initialized Habit Tracker App
+2024-09-14 21:37:17,286 - DEBUG - ------------------------------------------------------------
+2024-09-14 21:37:17,286 - DEBUG - Initializing database setup
+2024-09-14 21:37:17,287 - INFO - Database file exists. Ensuring schema is up to date.
+2024-09-14 21:37:17,288 - DEBUG - Ensured 'habits' table exists with the correct schema.
+2024-09-14 21:37:17,288 - DEBUG - Ensured 'completions' table exists with the correct schema.
+2024-09-14 21:37:17,288 - INFO - Database initialized successfully.
+2024-09-14 21:37:17,288 - DEBUG - Initializing database setup
+2024-09-14 21:37:17,288 - INFO - Database file exists. Ensuring schema is up to date.
+2024-09-14 21:37:17,288 - DEBUG - Ensured 'habits' table exists with the correct schema.
+2024-09-14 21:37:17,288 - DEBUG - Ensured 'completions' table exists with the correct schema.
+2024-09-14 21:37:17,288 - INFO - Database initialized successfully.
+2024-09-14 21:37:17,288 - INFO - Database initialized successfully.
+2024-09-14 21:37:17,288 - DEBUG - Initializing create_widgets method
+2024-09-14 21:37:17,290 - DEBUG - Configured Treeview column: Name
+2024-09-14 21:37:17,290 - DEBUG - Configured Treeview column: Category
+2024-09-14 21:37:17,290 - DEBUG - Configured Treeview column: Streak
+2024-09-14 21:37:17,290 - DEBUG - Configured Treeview column: Daily Completions
+2024-09-14 21:37:17,290 - DEBUG - Configured Treeview column: Recent Note
+2024-09-14 21:37:17,290 - DEBUG - Habit Treeview initialized and event bound
+2024-09-14 21:37:17,291 - DEBUG - Action buttons for habit management added
+2024-09-14 21:37:17,291 - DEBUG - Progress frame for habit tracking initialized
+2024-09-14 21:37:17,291 - DEBUG - UI Elements Created
+2024-09-14 21:37:17,291 - DEBUG - Initializing load_preferences method
+2024-09-14 21:37:17,291 - DEBUG - Window loaded with width: 838, height: 419, x: -3224, y: 73
+2024-09-14 21:37:17,291 - WARNING - Width configuration missing for column 'Name'
+2024-09-14 21:37:17,291 - WARNING - Position configuration missing for column 'Name'
+2024-09-14 21:37:17,291 - WARNING - Width configuration missing for column 'Category'
+2024-09-14 21:37:17,291 - WARNING - Position configuration missing for column 'Category'
+2024-09-14 21:37:17,291 - WARNING - Width configuration missing for column 'Streak'
+2024-09-14 21:37:17,291 - WARNING - Position configuration missing for column 'Streak'
+2024-09-14 21:37:17,291 - WARNING - Width configuration missing for column 'Daily Completions'
+2024-09-14 21:37:17,291 - WARNING - Position configuration missing for column 'Daily Completions'
+2024-09-14 21:37:17,291 - WARNING - Width configuration missing for column 'Recent Note'
+2024-09-14 21:37:17,291 - WARNING - Position configuration missing for column 'Recent Note'
+2024-09-14 21:37:17,291 - DEBUG - Preferences Loaded
+2024-09-14 21:37:17,291 - DEBUG - Initializing load_habits method
+2024-09-14 21:37:17,291 - DEBUG - Fetched habits data: [(4, 'Develop New Project', 'Coding', 1, 0, "doesn't update on restart"), (5, 'Use ChatGPT', 'Productivity', 1, 0, 'chatgpt is failing')]
+2024-09-14 21:37:17,291 - DEBUG - Fetched 2 habits from the database.
+2024-09-14 21:37:17,291 - DEBUG - Inserted habit: Develop New Project, Daily Completions: 0, Recent Note: doesn't update on restart
+2024-09-14 21:37:17,291 - DEBUG - Inserted habit: Use ChatGPT, Daily Completions: 0, Recent Note: chatgpt is failing
+2024-09-14 21:37:17,291 - DEBUG - Initializing update_progress_bars method
+2024-09-14 21:37:17,291 - DEBUG - Calculating total completions
+2024-09-14 21:37:17,292 - INFO - update_progress_bars: total_completions = 7
+2024-09-14 21:37:17,292 - DEBUG - Calculating total completions
+2024-09-14 21:37:17,292 - INFO - update_progress_bars: total_completions = 8
+2024-09-14 21:37:17,292 - INFO - Successfully loaded all habits and updated the UI.
+2024-09-14 21:37:17,292 - DEBUG - Habits Loaded
+2024-09-14 21:37:17,292 - DEBUG - Initializing schedule_notifications method
+2024-09-14 21:37:17,292 - DEBUG - Initializing notify method
+2024-09-14 21:37:17,292 - DEBUG - Notifications scheduled successfully.
+2024-09-14 21:37:17,292 - DEBUG - Notification Times: [8, 12, 20]
+2024-09-14 21:37:17,292 - DEBUG - ------------------------------------------------------------
+2024-09-14 21:37:17,292 - INFO - notify noted time as: 2024-09-14 21:37:17.292446
+2024-09-14 21:37:17,292 - DEBUG - Initializing mainloop
+2024-09-14 21:37:17,292 - INFO - notify noted target time as: 2024-09-14 08:00:00
+2024-09-14 21:37:17,292 - DEBUG - ------------------------------------------------------------
+2024-09-14 21:37:17,292 - WARNING - 2024-09-14 21:37:17.292446 >= 2024-09-14 08:00:00
+2024-09-14 21:37:17,292 - INFO - target_time now set to: 2024-09-15 08:00:00
+2024-09-14 21:37:19,706 - DEBUG - Initializing on_habit_select method
+2024-09-14 21:37:20,922 - DEBUG - Initializing mark_done method
+2024-09-14 21:37:34,389 - DEBUG - Inserted completion record for habit_id: 4 on 2024-09-14.
+2024-09-14 21:37:34,390 - DEBUG - Fetched last_completed: 2024-09-14 and streak: 1 for habit_id: 4
+2024-09-14 21:37:34,390 - INFO - No streak update required for habit_id: 4 since it's already marked done today.
+2024-09-14 21:37:34,390 - INFO - Database changes committed successfully.
+2024-09-14 21:37:34,390 - DEBUG - Initializing load_habits method
+2024-09-14 21:37:34,391 - DEBUG - Fetched habits data: [(4, 'Develop New Project', 'Coding', 1, 0, 'v0.5.21 implementation test'), (5, 'Use ChatGPT', 'Productivity', 1, 0, 'chatgpt is failing')]
+2024-09-14 21:37:34,391 - DEBUG - Fetched 2 habits from the database.
+2024-09-14 21:37:34,391 - DEBUG - Inserted habit: Develop New Project, Daily Completions: 0, Recent Note: v0.5.21 implementation test
+2024-09-14 21:37:34,391 - DEBUG - Inserted habit: Use ChatGPT, Daily Completions: 0, Recent Note: chatgpt is failing
+2024-09-14 21:37:34,391 - DEBUG - Initializing update_progress_bars method
+2024-09-14 21:37:34,391 - DEBUG - Calculating total completions
+2024-09-14 21:37:34,391 - INFO - update_progress_bars: total_completions = 8
+2024-09-14 21:37:34,392 - DEBUG - Calculating total completions
+2024-09-14 21:37:34,392 - INFO - update_progress_bars: total_completions = 8
+2024-09-14 21:37:34,392 - INFO - Successfully loaded all habits and updated the UI.
+2024-09-14 21:37:36,161 - INFO - Habit marked as done for today! Current streak: 1 days.
+2024-09-14 21:37:36,161 - DEBUG - Exiting mark_done method.
+2024-09-14 21:37:36,161 - DEBUG - Initializing on_habit_select method
+2024-09-14 21:37:39,391 - DEBUG - Initializing on_habit_select method
+2024-09-14 21:37:41,453 - DEBUG - Initializing mark_done method
+2024-09-14 21:37:46,116 - DEBUG - Inserted completion record for habit_id: 5 on 2024-09-14.
+2024-09-14 21:37:46,117 - DEBUG - Fetched last_completed: 2024-09-14 and streak: 1 for habit_id: 5
+2024-09-14 21:37:46,117 - INFO - No streak update required for habit_id: 5 since it's already marked done today.
+2024-09-14 21:37:46,117 - INFO - Database changes committed successfully.
+2024-09-14 21:37:46,117 - DEBUG - Initializing load_habits method
+2024-09-14 21:37:46,118 - DEBUG - Fetched habits data: [(4, 'Develop New Project', 'Coding', 1, 0, 'v0.5.21 implementation test'), (5, 'Use ChatGPT', 'Productivity', 1, 0, "doesn't seem to work")]
+2024-09-14 21:37:46,118 - DEBUG - Fetched 2 habits from the database.
+2024-09-14 21:37:46,118 - DEBUG - Inserted habit: Develop New Project, Daily Completions: 0, Recent Note: v0.5.21 implementation test
+2024-09-14 21:37:46,118 - DEBUG - Inserted habit: Use ChatGPT, Daily Completions: 0, Recent Note: doesn't seem to work
+2024-09-14 21:37:46,118 - DEBUG - Initializing update_progress_bars method
+2024-09-14 21:37:46,118 - DEBUG - Calculating total completions
+2024-09-14 21:37:46,118 - INFO - update_progress_bars: total_completions = 8
+2024-09-14 21:37:46,118 - DEBUG - Calculating total completions
+2024-09-14 21:37:46,118 - INFO - update_progress_bars: total_completions = 9
+2024-09-14 21:37:46,119 - INFO - Successfully loaded all habits and updated the UI.
+2024-09-14 21:37:47,523 - INFO - Habit marked as done for today! Current streak: 1 days.
+2024-09-14 21:37:47,523 - DEBUG - Exiting mark_done method.
+2024-09-14 21:37:47,524 - DEBUG - Initializing on_habit_select method
+2024-09-14 21:37:57,127 - DEBUG - Initializing add_habit method
+2024-09-14 21:37:57,128 - INFO - Habit added: new-habit - testing
+2024-09-14 21:37:57,128 - DEBUG - Initializing load_habits method
+2024-09-14 21:37:57,128 - DEBUG - Fetched habits data: [(4, 'Develop New Project', 'Coding', 1, 0, 'v0.5.21 implementation test'), (5, 'Use ChatGPT', 'Productivity', 1, 0, "doesn't seem to work"), (6, 'new-habit', 'testing', 0, 0, None)]
+2024-09-14 21:37:57,128 - DEBUG - Fetched 3 habits from the database.
+2024-09-14 21:37:57,128 - DEBUG - Inserted habit: Develop New Project, Daily Completions: 0, Recent Note: v0.5.21 implementation test
+2024-09-14 21:37:57,128 - DEBUG - Inserted habit: Use ChatGPT, Daily Completions: 0, Recent Note: doesn't seem to work
+2024-09-14 21:37:57,128 - DEBUG - Inserted habit: new-habit, Daily Completions: 0, Recent Note: 
+2024-09-14 21:37:57,128 - DEBUG - Initializing update_progress_bars method
+2024-09-14 21:37:57,128 - DEBUG - Calculating total completions
+2024-09-14 21:37:57,128 - INFO - update_progress_bars: total_completions = 8
+2024-09-14 21:37:57,129 - DEBUG - Calculating total completions
+2024-09-14 21:37:57,129 - INFO - update_progress_bars: total_completions = 9
+2024-09-14 21:37:57,129 - DEBUG - Calculating total completions
+2024-09-14 21:37:57,129 - INFO - update_progress_bars: total_completions = 0
+2024-09-14 21:37:57,129 - INFO - Successfully loaded all habits and updated the UI.
+2024-09-14 21:38:02,059 - DEBUG - Initializing on_habit_select method
+2024-09-14 21:38:03,121 - DEBUG - Initializing mark_done method
+2024-09-14 21:38:08,292 - DEBUG - Inserted completion record for habit_id: 6 on 2024-09-14.
+2024-09-14 21:38:08,292 - DEBUG - Fetched last_completed: None and streak: 0 for habit_id: 6
+2024-09-14 21:38:08,292 - INFO - Reset streak for habit_id: 6 to 1.
+2024-09-14 21:38:08,292 - DEBUG - Updated habit record for habit_id: 6 with streak: 1 and last_completed: 2024-09-14.
+2024-09-14 21:38:08,293 - INFO - Database changes committed successfully.
+2024-09-14 21:38:08,293 - DEBUG - Initializing load_habits method
+2024-09-14 21:38:08,294 - DEBUG - Fetched habits data: [(4, 'Develop New Project', 'Coding', 1, 0, 'v0.5.21 implementation test'), (5, 'Use ChatGPT', 'Productivity', 1, 0, "doesn't seem to work"), (6, 'new-habit', 'testing', 1, 0, 'new habit completed')]
+2024-09-14 21:38:08,294 - DEBUG - Fetched 3 habits from the database.
+2024-09-14 21:38:08,294 - DEBUG - Inserted habit: Develop New Project, Daily Completions: 0, Recent Note: v0.5.21 implementation test
+2024-09-14 21:38:08,294 - DEBUG - Inserted habit: Use ChatGPT, Daily Completions: 0, Recent Note: doesn't seem to work
+2024-09-14 21:38:08,294 - DEBUG - Inserted habit: new-habit, Daily Completions: 0, Recent Note: new habit completed
+2024-09-14 21:38:08,294 - DEBUG - Initializing update_progress_bars method
+2024-09-14 21:38:08,294 - DEBUG - Calculating total completions
+2024-09-14 21:38:08,294 - INFO - update_progress_bars: total_completions = 8
+2024-09-14 21:38:08,295 - DEBUG - Calculating total completions
+2024-09-14 21:38:08,295 - INFO - update_progress_bars: total_completions = 9
+2024-09-14 21:38:08,295 - DEBUG - Calculating total completions
+2024-09-14 21:38:08,295 - INFO - update_progress_bars: total_completions = 1
+2024-09-14 21:38:08,295 - INFO - Successfully loaded all habits and updated the UI.
+2024-09-14 21:38:10,995 - INFO - Habit marked as done for today! Current streak: 1 days.
+2024-09-14 21:38:10,996 - DEBUG - Exiting mark_done method.
+2024-09-14 21:38:10,996 - DEBUG - Initializing on_habit_select method
+2024-09-14 21:38:13,696 - DEBUG - Initializing on_closing method
+2024-09-14 21:38:13,696 - DEBUG - Initializing save_preferences
+2024-09-14 21:38:13,696 - DEBUG - Window size and position saved: width=838, height=419, x=-3224, y=73
+2024-09-14 21:38:13,697 - WARNING - Column 'Name' not found in display columns. It might be hidden or removed.
+2024-09-14 21:38:13,697 - WARNING - Column 'Category' not found in display columns. It might be hidden or removed.
+2024-09-14 21:38:13,697 - WARNING - Column 'Streak' not found in display columns. It might be hidden or removed.
+2024-09-14 21:38:13,697 - WARNING - Column 'Daily Completions' not found in display columns. It might be hidden or removed.
+2024-09-14 21:38:13,697 - WARNING - Column 'Recent Note' not found in display columns. It might be hidden or removed.
+2024-09-14 21:38:13,698 - INFO - Updated config file with window size, position, and column configurations.
+2024-09-14 21:38:13,698 - INFO - Preferences Saved!
+2024-09-14 21:38:13,704 - DEBUG - Connection closed
+2024-09-14 21:38:13,704 - DEBUG - ------------------------------------------------------------
+2024-09-14 21:38:13,704 - DEBUG - ------------------------------------------------------------
+2024-09-14 21:43:03,652 - DEBUG - ------------------------------------------------------------
+2024-09-14 21:43:03,653 - DEBUG - Initialized Habit Tracker App
+2024-09-14 21:43:03,653 - DEBUG - ------------------------------------------------------------
+2024-09-14 21:43:03,653 - DEBUG - Initializing database setup
+2024-09-14 21:43:03,654 - INFO - Database file exists. Ensuring schema is up to date.
+2024-09-14 21:43:03,655 - DEBUG - Ensured 'habits' table exists with the correct schema.
+2024-09-14 21:43:03,655 - DEBUG - Ensured 'completions' table exists with the correct schema.
+2024-09-14 21:43:03,655 - INFO - Database initialized successfully.
+2024-09-14 21:43:03,655 - DEBUG - Initializing database setup
+2024-09-14 21:43:03,655 - INFO - Database file exists. Ensuring schema is up to date.
+2024-09-14 21:43:03,655 - DEBUG - Ensured 'habits' table exists with the correct schema.
+2024-09-14 21:43:03,655 - DEBUG - Ensured 'completions' table exists with the correct schema.
+2024-09-14 21:43:03,655 - INFO - Database initialized successfully.
+2024-09-14 21:43:03,655 - INFO - Database initialized successfully.
+2024-09-14 21:43:03,655 - DEBUG - Initializing create_widgets method
+2024-09-14 21:43:03,658 - DEBUG - Configured Treeview column: Name
+2024-09-14 21:43:03,658 - DEBUG - Configured Treeview column: Category
+2024-09-14 21:43:03,658 - DEBUG - Configured Treeview column: Streak
+2024-09-14 21:43:03,658 - DEBUG - Configured Treeview column: Daily Completions
+2024-09-14 21:43:03,658 - DEBUG - Configured Treeview column: Recent Note
+2024-09-14 21:43:03,658 - ERROR - Error while creating UI elements: 'HabitTrackerApp' object has no attribute 'on_habit_select'
+2024-09-14 22:06:06,728 - DEBUG - ------------------------------------------------------------
+2024-09-14 22:06:06,729 - DEBUG - Initialized Habit Tracker App
+2024-09-14 22:06:06,729 - DEBUG - ------------------------------------------------------------
+2024-09-14 22:06:06,729 - DEBUG - Initializing database setup
+2024-09-14 22:06:06,730 - INFO - Database file exists. Ensuring schema is up to date.
+2024-09-14 22:06:06,731 - DEBUG - Ensured 'habits' table exists with the correct schema.
+2024-09-14 22:06:06,731 - DEBUG - Ensured 'completions' table exists with the correct schema.
+2024-09-14 22:06:06,731 - INFO - Database initialized successfully.
+2024-09-14 22:06:06,731 - DEBUG - Initializing database setup
+2024-09-14 22:06:06,731 - INFO - Database file exists. Ensuring schema is up to date.
+2024-09-14 22:06:06,732 - DEBUG - Ensured 'habits' table exists with the correct schema.
+2024-09-14 22:06:06,732 - DEBUG - Ensured 'completions' table exists with the correct schema.
+2024-09-14 22:06:06,732 - INFO - Database initialized successfully.
+2024-09-14 22:06:06,732 - INFO - Database initialized successfully.
+2024-09-14 22:06:06,732 - DEBUG - Initializing create_widgets method
+2024-09-14 22:06:06,734 - DEBUG - Configured Treeview column: Name
+2024-09-14 22:06:06,735 - DEBUG - Configured Treeview column: Category
+2024-09-14 22:06:06,735 - DEBUG - Configured Treeview column: Streak
+2024-09-14 22:06:06,735 - DEBUG - Configured Treeview column: Daily Completions
+2024-09-14 22:06:06,735 - DEBUG - Configured Treeview column: Recent Note
+2024-09-14 22:06:06,735 - ERROR - Error while creating UI elements: 'HabitTrackerApp' object has no attribute 'on_habit_select'
