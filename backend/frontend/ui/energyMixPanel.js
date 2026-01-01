@@ -1,3 +1,5 @@
+import { parseFocusMinutes } from "../time-utils.js";
+
 const PALETTE = [
   "#ff6f61",
   "#36c2cf",
@@ -66,6 +68,22 @@ export function aggregateTimeLogs(timeLogs = {}, activeTimers = {}, now = new Da
   return totals;
 }
 
+function aggregateCompletionMinutes(habits = [], timeLogs = {}) {
+  const totals = {};
+  const loggedDates = new Set(Object.keys(timeLogs || {}));
+  habits.forEach((habit) => {
+    (habit.completions || []).forEach((completion) => {
+      const completionDate = completion?.date;
+      if (completionDate && loggedDates.has(completionDate)) return;
+      const minutes = parseFocusMinutes(completion?.note);
+      if (minutes <= 0) return;
+      const key = String(habit.id);
+      totals[key] = (totals[key] || 0) + minutes;
+    });
+  });
+  return totals;
+}
+
 export function normalizeEntries({
   habits = [],
   timeLogs = {},
@@ -74,12 +92,13 @@ export function normalizeEntries({
   mockEntries = DEFAULT_MOCK_ENTRIES,
 }) {
   const totals = aggregateTimeLogs(timeLogs, activeTimers, now);
+  const completionTotals = aggregateCompletionMinutes(habits, timeLogs);
   const entries = habits
     .map((habit) => ({
       habitId: habit.id,
       name: habit.name || `Habit ${habit.id}`,
       category: habit.category || "Uncategorized",
-      durationMinutes: totals[String(habit.id)] || 0,
+      durationMinutes: (totals[String(habit.id)] || 0) + (completionTotals[String(habit.id)] || 0),
       frequency: (habit.completions || []).length,
     }));
 
@@ -152,20 +171,22 @@ export function buildEnergyMixModel({
   const coercedChartMode = coerceChartMode(chartMode);
   const coercedValueMode = coerceValueMode(valueMode);
   const entries = normalizeEntries({ habits, timeLogs, activeTimers, now, mockEntries });
-  const categorySeries = buildCategorySeries(entries, coercedValueMode);
-  const habitSeries = buildHabitSeries(entries, coercedValueMode);
-  const groupedSeries = buildGroupedSeries(entries, coercedValueMode);
+  const seriesEntries =
+    coercedValueMode === "duration" ? entries.filter((entry) => entry.durationMinutes > 0) : entries;
+  const categorySeries = buildCategorySeries(seriesEntries, coercedValueMode);
+  const habitSeries = buildHabitSeries(seriesEntries, coercedValueMode);
+  const groupedSeries = buildGroupedSeries(seriesEntries, coercedValueMode);
   const total = habitSeries.reduce((sum, entry) => sum + entry.value, 0);
 
   return {
-    entries,
+    entries: seriesEntries,
     categorySeries,
     habitSeries,
     groupedSeries,
     total,
     chartMode: coercedChartMode,
     valueMode: coercedValueMode,
-    hasData: entries.length > 0,
+    hasData: seriesEntries.length > 0,
   };
 }
 
@@ -453,6 +474,16 @@ export function createEnergyMixPanel(elements = {}, helpers = {}) {
     if (categoryLegend) {
       categoryLegend.innerHTML = `<p class="meta">${message}</p>`;
     }
+    if (chartCenterValue) {
+      chartCenterValue.textContent = "";
+      chartCenterValue.removeAttribute("aria-label");
+    }
+    if (chartCenterLabel) {
+      chartCenterLabel.textContent = "";
+    }
+    if (chartTotalPill) {
+      chartTotalPill.textContent = "";
+    }
   }
 
   function updateLastUpdated() {
@@ -495,10 +526,6 @@ export function createEnergyMixPanel(elements = {}, helpers = {}) {
     if (!model.hasData) {
       renderEmptyState("No data available");
       return;
-    }
-
-    if (model.total === 0 && model.valueMode !== "frequency") {
-      renderModel = buildEnergyMixModel({ ...baseConfig, valueMode: "frequency" });
     }
 
     const renderFormat = (value) =>

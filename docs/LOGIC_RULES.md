@@ -91,3 +91,34 @@ A Task (Habit) has no explicit state. It is either present in the system or it i
 
 - When clocked and a planned duration exists, progress **must** be calculated as `worked_minutes / planned_minutes`.
 - When clocked and no planned duration exists, progress **must** assume an 8-hour (480 minute) base.
+
+---
+
+## Time Tracking Rules (Authoritative)
+
+### Source of Truth
+
+- All time tracking **must** be persisted in the backend database.
+- Client-side storage **must not** be the authoritative source for habit time or workday time.
+- Any derived time summaries displayed in UI panels **must** be backed by persisted records.
+
+### Habit Time Tracking
+
+- Habit focus time **must** be recorded as persisted, accumulated minutes per habit and date.
+- Habit duration **must** be reconstructible solely from persisted records (not local storage).
+- Completion notes **may** include time text, but notes **must not** be the only source of persisted time.
+
+### Workday Time Tracking
+
+- Workday planned and worked minutes **must** be persisted per day.
+- Workday-derived summaries **must** be reproducible from stored workday records without local-only data.
+
+### Consistency Requirements
+
+- Time totals displayed across panels (Energy Mix, Time Glide, Focus summaries) **must** reconcile to the same persisted time records.
+- If both habit time logs and workday logs exist, the system **must** define and document whether totals are expected to reconcile exactly or represent different scopes.
+
+### Current Implementation Gap (Noncompliant)
+
+- Habit time logs and active timers are currently stored client-side (local storage), not in the database.
+- Duration metrics in the Energy Mix panel can therefore diverge from backend data and appear inconsistent after refresh.

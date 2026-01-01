@@ -35,6 +35,11 @@ Edge & Empty States
 	•	Input: null, empty arrays, malformed objects, incomplete payloads
 	•	Output: blank panels, warnings, hidden charts, disabled interactions
 
+Time Tracking (DB-backed)
+	•	Time logs must be persisted and retrievable from the database (not local storage)
+	•	Aggregation must be reproducible from persisted records (per habit and per day)
+	•	Time summaries must be consistent across UI panels when sourced from the same records
+
 Global Exposure
 	•	If a method or variable is exposed globally (e.g., window.updateEnergyMixData), it must:
 	•	Be testable for existence

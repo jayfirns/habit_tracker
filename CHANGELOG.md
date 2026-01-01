@@ -82,6 +82,15 @@ This document tracks significant changes, features, and fixes implemented throug
 
 -   **Migration**: Added `backend/migrate_workday_state.py` to add `workday_date` column to existing databases.
 
+### Energy Mix Duration Calculation
+
+-   **Feature**: Energy Mix duration view now includes minutes parsed from completion notes (e.g., "20m focus") when dedicated time logs are absent for a given day.
+-   **Refactor**: The duration view in the Energy Mix panel now exclusively shows habits with logged time, presenting an empty state if no durations are recorded, rather than falling back to a frequency view.
+-   **Tests**: Added comprehensive unit tests for the updated duration aggregation logic, covering time logs, active timers, and note parsing.
+-   **Docs**: Updated `LOGIC_RULES.md`, `TESTING_MANDATES.md`, and `panels/EnergyMixPanel.md` to document the new authoritative time tracking rules, the current client-side implementation gap, and the intended behavior of the duration view.
+
+
+
 
 
 ### Fixed

@@ -136,6 +136,7 @@ test("test_update_energy_mix_data_with_empty_input_shows_empty_state", () => {
 test("test_window_updateEnergyMixData_exposed_for_dev", () => {
   const { panel, chartCenterValue, chartContainer } = setupPanel();
 
+  panel.setValueMode("frequency");
   panel.render(initialData);
   const firstStamp = chartContainer.getAttribute("data-last-updated");
 
@@ -165,4 +166,38 @@ test("test_duration_badge_excludes_minutes_suffix", () => {
   assert.equal(chartCenterValue.textContent, "2h 42m");
   assert.ok(!combined.toLowerCase().includes("minutes"));
   assert.ok(!chartTotalPill.textContent.toLowerCase().includes("minutes"));
+});
+
+test("test_duration_toggle_shows_empty_state_when_total_zero", () => {
+  // 1. Setup
+  const {
+    panel,
+    chartCenterValue,
+    chartCenterLabel,
+    chartTotalPill,
+    valueToggleContainer,
+    chartContainer,
+  } = setupPanel();
+  const expectedEmptyState = "No data available";
+  const data = {
+    habits: [
+      { id: 1, name: "Alpha", category: "Focus", completions: [{}] },
+      { id: 2, name: "Beta", category: "Focus", completions: [{}] },
+    ],
+    timeLogs: {},
+    activeTimers: {},
+  };
+
+  // 2. Act
+  panel.setValueMode("duration");
+  panel.render(data);
+
+  // 3. Assert
+  assert.match(chartContainer.textContent, new RegExp(expectedEmptyState, "i"));
+  assert.equal(chartCenterValue.textContent, "");
+  assert.equal(chartCenterLabel.textContent, "");
+  assert.equal(chartTotalPill.textContent, "");
+  assert.ok(
+    valueToggleContainer.querySelector('[data-value-mode="duration"]').classList.contains("active"),
+  );
 });
