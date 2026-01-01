@@ -1,7 +1,7 @@
 from datetime import date
 from typing import List, Optional, Tuple
 
-from sqlalchemy import delete, or_, select
+from sqlalchemy import delete, func, or_, select
 from sqlalchemy.orm import Session, selectinload
 
 import models
@@ -68,6 +68,9 @@ def delete_habit(db: Session, habit_id: int) -> bool:
             models.habit_milestone_table.c.habit_id == habit_id
         )
     )
+    db.execute(
+        delete(models.HabitTimeLog).where(models.HabitTimeLog.habit_id == habit_id)
+    )
     db.delete(habit)
     db.commit()
     return True
@@ -120,6 +123,82 @@ def list_completions(db: Session, habit_id: int) -> List[models.Completion]:
         .order_by(models.Completion.date)
     )
     return db.scalars(statement).all()
+
+
+def create_habit_time_log(
+    db: Session, habit_id: int, time_log_in: schemas.HabitTimeLogCreate
+) -> Optional[models.HabitTimeLog]:
+    habit = db.get(models.Habit, habit_id)
+    if habit is None:
+        return None
+
+    time_log = db.scalars(
+        select(models.HabitTimeLog).where(
+            models.HabitTimeLog.habit_id == habit_id,
+            models.HabitTimeLog.log_date == time_log_in.log_date,
+        )
+    ).first()
+    if time_log is None:
+        time_log = models.HabitTimeLog(
+            habit_id=habit_id,
+            log_date=time_log_in.log_date,
+            minutes=time_log_in.minutes,
+            source=time_log_in.source,
+        )
+    else:
+        time_log.minutes = time_log_in.minutes
+        time_log.source = time_log_in.source
+    db.add(time_log)
+    db.commit()
+    db.refresh(time_log)
+    return time_log
+
+
+def list_habit_time_logs(
+    db: Session,
+    habit_id: int,
+    start_date: Optional[date] = None,
+    end_date: Optional[date] = None,
+) -> List[models.HabitTimeLog]:
+    statement = select(models.HabitTimeLog).where(models.HabitTimeLog.habit_id == habit_id)
+    if start_date is not None:
+        statement = statement.where(models.HabitTimeLog.log_date >= start_date)
+    if end_date is not None:
+        statement = statement.where(models.HabitTimeLog.log_date <= end_date)
+    statement = statement.order_by(models.HabitTimeLog.log_date)
+    return db.scalars(statement).all()
+
+
+def list_all_time_logs(
+    db: Session,
+    start_date: Optional[date] = None,
+    end_date: Optional[date] = None,
+) -> List[models.HabitTimeLog]:
+    statement = select(models.HabitTimeLog)
+    if start_date is not None:
+        statement = statement.where(models.HabitTimeLog.log_date >= start_date)
+    if end_date is not None:
+        statement = statement.where(models.HabitTimeLog.log_date <= end_date)
+    statement = statement.order_by(models.HabitTimeLog.log_date)
+    return db.scalars(statement).all()
+
+
+def get_habit_time_totals(
+    db: Session,
+    start_date: Optional[date] = None,
+    end_date: Optional[date] = None,
+) -> dict[int, int]:
+    statement = select(
+        models.HabitTimeLog.habit_id,
+        func.sum(models.HabitTimeLog.minutes),
+    )
+    if start_date is not None:
+        statement = statement.where(models.HabitTimeLog.log_date >= start_date)
+    if end_date is not None:
+        statement = statement.where(models.HabitTimeLog.log_date <= end_date)
+    statement = statement.group_by(models.HabitTimeLog.habit_id)
+    results = db.execute(statement).all()
+    return {habit_id: int(total or 0) for habit_id, total in results}
 
 
 # Milestone CRUD

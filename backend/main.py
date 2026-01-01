@@ -1,5 +1,6 @@
 import logging
 import time
+from datetime import date
 from pathlib import Path
 
 from fastapi import Depends, FastAPI, HTTPException, Response, status
@@ -101,6 +102,56 @@ def list_completions(habit_id: int, db: Session = Depends(get_db)):
     if habit is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Habit not found")
     return crud.list_completions(db, habit_id)
+
+
+@app.post(
+    "/habits/{habit_id}/time-logs",
+    response_model=schemas.HabitTimeLogRead,
+    status_code=status.HTTP_201_CREATED,
+)
+def create_time_log(
+    habit_id: int,
+    time_log: schemas.HabitTimeLogCreate,
+    db: Session = Depends(get_db),
+):
+    created = crud.create_habit_time_log(db, habit_id, time_log)
+    if created is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Habit not found")
+    return created
+
+
+@app.get(
+    "/habits/{habit_id}/time-logs",
+    response_model=list[schemas.HabitTimeLogRead],
+)
+def list_time_logs(
+    habit_id: int,
+    start_date: date | None = None,
+    end_date: date | None = None,
+    db: Session = Depends(get_db),
+):
+    habit = crud.get_habit(db, habit_id)
+    if habit is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Habit not found")
+    return crud.list_habit_time_logs(db, habit_id, start_date=start_date, end_date=end_date)
+
+
+@app.get("/time-logs/totals", response_model=dict[int, int])
+def get_time_totals(
+    start_date: date | None = None,
+    end_date: date | None = None,
+    db: Session = Depends(get_db),
+):
+    return crud.get_habit_time_totals(db, start_date=start_date, end_date=end_date)
+
+
+@app.get("/time-logs", response_model=list[schemas.HabitTimeLogRead])
+def list_all_time_logs(
+    start_date: date | None = None,
+    end_date: date | None = None,
+    db: Session = Depends(get_db),
+):
+    return crud.list_all_time_logs(db, start_date=start_date, end_date=end_date)
 
 
 @app.get("/milestones", response_model=list[schemas.MilestoneRead])

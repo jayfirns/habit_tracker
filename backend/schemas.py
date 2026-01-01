@@ -65,6 +65,23 @@ class CompletionRead(CompletionBase):
     model_config = ConfigDict(from_attributes=True)
 
 
+class HabitTimeLogBase(BaseModel):
+    log_date: datetime.date
+    minutes: int = Field(..., ge=0)
+    source: str
+
+
+class HabitTimeLogCreate(HabitTimeLogBase):
+    pass
+
+
+class HabitTimeLogRead(HabitTimeLogBase):
+    id: int
+    habit_id: int
+
+    model_config = ConfigDict(from_attributes=True)
+
+
 class HabitRead(HabitBase):
     id: int
     streak: int

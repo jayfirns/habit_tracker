@@ -1,5 +1,3 @@
-import { parseFocusMinutes } from "../time-utils.js";
-
 const PALETTE = [
   "#ff6f61",
   "#36c2cf",
@@ -68,22 +66,6 @@ export function aggregateTimeLogs(timeLogs = {}, activeTimers = {}, now = new Da
   return totals;
 }
 
-function aggregateCompletionMinutes(habits = [], timeLogs = {}) {
-  const totals = {};
-  const loggedDates = new Set(Object.keys(timeLogs || {}));
-  habits.forEach((habit) => {
-    (habit.completions || []).forEach((completion) => {
-      const completionDate = completion?.date;
-      if (completionDate && loggedDates.has(completionDate)) return;
-      const minutes = parseFocusMinutes(completion?.note);
-      if (minutes <= 0) return;
-      const key = String(habit.id);
-      totals[key] = (totals[key] || 0) + minutes;
-    });
-  });
-  return totals;
-}
-
 export function normalizeEntries({
   habits = [],
   timeLogs = {},
@@ -92,13 +74,12 @@ export function normalizeEntries({
   mockEntries = DEFAULT_MOCK_ENTRIES,
 }) {
   const totals = aggregateTimeLogs(timeLogs, activeTimers, now);
-  const completionTotals = aggregateCompletionMinutes(habits, timeLogs);
   const entries = habits
     .map((habit) => ({
       habitId: habit.id,
       name: habit.name || `Habit ${habit.id}`,
       category: habit.category || "Uncategorized",
-      durationMinutes: (totals[String(habit.id)] || 0) + (completionTotals[String(habit.id)] || 0),
+      durationMinutes: totals[String(habit.id)] || 0,
       frequency: (habit.completions || []).length,
     }));
 

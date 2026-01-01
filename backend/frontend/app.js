@@ -95,7 +95,6 @@ const state = {
   editingMilestoneScope: "quarter",
   milestoneHabitSelection: new Set(),
   timeLogs: {},
-  manualLogs: {},
   workday: {
     workdayDate: null,
     plannedStart: "09:00",
@@ -266,25 +265,25 @@ async function saveWorkdayConfig() {
   }
 }
 
-function loadTimeLogs() {
-  state.timeLogs = loadJson("focusos-time-logs", {});
+async function loadTimeLogs() {
   const today = todayKey();
-  const todayLogs = state.timeLogs?.[today] || {};
-  state.timeLogs = { [today]: todayLogs };
-  saveTimeLogs();
+  try {
+    const logs = await apiClient.listTimeLogs({ startDate: today, endDate: today });
+    const dayLogs = {};
+    logs.forEach((log) => {
+      const habitId = Number(log.habit_id);
+      dayLogs[habitId] = (dayLogs[habitId] || 0) + Math.max(0, log.minutes || 0);
+    });
+    state.timeLogs = { [today]: dayLogs };
+  } catch (err) {
+    console.warn("Failed to load time logs", err);
+    state.timeLogs = { [today]: {} };
+  }
 }
 
-function loadManualLogs() {
-  state.manualLogs = loadJson("focusos-manual-logs", {});
-}
+function saveTimeLogs() {}
 
-function saveManualLogs() {
-  saveJson("focusos-manual-logs", state.manualLogs);
-}
-
-function saveTimeLogs() {
-  saveJson("focusos-time-logs", state.timeLogs);
-}
+function saveManualLogs() {}
 
 function loadActiveTimers() {
   state.activeTimers = loadJson("focusos-active-timers", {});
@@ -299,7 +298,7 @@ async function loadHabits() {
   try {
     const data = await apiClient.listHabits();
     state.habits = data;
-    rebuildTimeLogsFromCompletions();
+    await loadTimeLogs();
     populateHabitOptions();
     renderHabits();
     renderCompletions();
@@ -601,7 +600,7 @@ function addHabitMinutes(habitId, minutes) {
   const key = todayKey();
   if (!state.timeLogs[key]) state.timeLogs[key] = {};
   state.timeLogs[key][habitId] = (state.timeLogs[key][habitId] || 0) + minutes;
-  saveTimeLogs();
+  void persistTimeLog(habitId, state.timeLogs[key][habitId], "timer");
 }
 
 function toggleHabitTimer(habitId) {
@@ -667,12 +666,9 @@ function adjustHabitMinutes(habitId) {
   if (Number.isNaN(value) || value < 0) return;
   stopHabitTimer(habitId);
   const today = todayKey();
-  if (!state.manualLogs[today]) state.manualLogs[today] = {};
-  state.manualLogs[today][habitId] = value;
-  saveManualLogs();
   if (!state.timeLogs[today]) state.timeLogs[today] = {};
   state.timeLogs[today][habitId] = value;
-  saveTimeLogs();
+  void persistTimeLog(habitId, value, "manual");
   const node = habitCardRefs.get(habitId);
   if (node) refreshHabitTimeDisplay(habitId, node);
   renderDashboard();
@@ -726,25 +722,17 @@ function collectHabitsWithTodayCompletions(habits = state.habits) {
   return ids;
 }
 
-function rebuildTimeLogsFromCompletions() {
-  const today = todayKey();
-  const logs = {};
-  state.habits.forEach((habit) => {
-    (habit.completions || []).forEach((c) => {
-      if (c.date === today) {
-        const minutes = parseFocusMinutes(c.note);
-        if (minutes > 0) {
-          logs[habit.id] = (logs[habit.id] || 0) + minutes;
-        }
-      }
-    });
-  });
-  const manual = state.manualLogs?.[today] || {};
-  Object.entries(manual).forEach(([habitId, minutes]) => {
-    logs[habitId] = minutes;
-  });
-  state.timeLogs[today] = logs;
-  saveTimeLogs();
+async function persistTimeLog(habitId, minutes, source) {
+  const payload = {
+    log_date: todayKey(),
+    minutes: Math.max(0, Math.floor(minutes)),
+    source,
+  };
+  try {
+    await apiClient.createTimeLog(habitId, payload);
+  } catch (err) {
+    console.warn("Failed to persist time log", err);
+  }
 }
 
 function latestCompletionNote(habitId, dateKey, habits = state.habits) {
@@ -757,9 +745,7 @@ function latestCompletionNote(habitId, dateKey, habits = state.habits) {
   return last?.note || null;
 }
 
-loadTimeLogs();
 loadWorkdayConfig();
-loadManualLogs();
 loadActiveTimers();
 loadHabits();
 loadMilestones();

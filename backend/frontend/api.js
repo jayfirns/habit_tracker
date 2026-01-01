@@ -23,6 +23,22 @@ export function makeApi(baseUrl) {
     deleteHabit: (id) => request(`/habits/${id}`, { method: "DELETE" }),
     completeHabit: (id, payload) =>
       request(`/habits/${id}/complete`, { method: "POST", body: JSON.stringify(payload) }),
+    createTimeLog: (id, payload) =>
+      request(`/habits/${id}/time-logs`, { method: "POST", body: JSON.stringify(payload) }),
+    listTimeLogs: ({ startDate, endDate } = {}) => {
+      const params = new URLSearchParams();
+      if (startDate) params.set("start_date", startDate);
+      if (endDate) params.set("end_date", endDate);
+      const query = params.toString();
+      return request(`/time-logs${query ? `?${query}` : ""}`);
+    },
+    listTimeLogTotals: ({ startDate, endDate } = {}) => {
+      const params = new URLSearchParams();
+      if (startDate) params.set("start_date", startDate);
+      if (endDate) params.set("end_date", endDate);
+      const query = params.toString();
+      return request(`/time-logs/totals${query ? `?${query}` : ""}`);
+    },
     listMilestones: () => request("/milestones"),
     createMilestone: (payload) =>
       request("/milestones", { method: "POST", body: JSON.stringify(payload) }),

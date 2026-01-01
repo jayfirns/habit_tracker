@@ -89,6 +89,15 @@ This document tracks significant changes, features, and fixes implemented throug
 -   **Tests**: Added comprehensive unit tests for the updated duration aggregation logic, covering time logs, active timers, and note parsing.
 -   **Docs**: Updated `LOGIC_RULES.md`, `TESTING_MANDATES.md`, and `panels/EnergyMixPanel.md` to document the new authoritative time tracking rules, the current client-side implementation gap, and the intended behavior of the duration view.
 
+### Backend Persistence for Time Logs
+
+-   **Feature**: Migrated habit time tracking from client-side local storage to the backend database.
+-   **Backend**: Introduced `HabitTimeLog` model and corresponding API endpoints (`/time-logs`, `/time-logs/totals`, `/habits/{id}/time-logs`) to create, list, and aggregate persisted time logs.
+-   **Frontend**: Refactored `app.js` and `api.js` to use the new backend endpoints, making the database the single source of truth for habit durations.
+-   **Refactor**: Removed client-side logic for manual log handling and time aggregation from completion notes, simplifying the frontend and centralizing business logic in the backend.
+-   **Tests**: Added backend API tests for the new time log endpoints.
+-   **Docs**: Updated `panels/EnergyMixPanel.md` to reflect the new backend-driven persistence for time logs.
+
 
 
 

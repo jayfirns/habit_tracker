@@ -60,13 +60,11 @@ Additional derived fields:
 ## Persistence + Data Sources (Current)
 
 - **Habits + completions** come from the backend API (SQLite tables `habits`, `completions`).
-- **Duration minutes are not stored in the database.** There is no duration column in `habits` or `completions`.
-- **Time logs** are stored client-side in local storage under `focusos-time-logs` (per-day minutes by habit id).
-- **Manual overrides** are stored in local storage under `focusos-manual-logs`.
-- **Active timers** are stored in local storage under `focusos-active-timers` until stopped.
-- **Completion notes** may include focus durations (e.g., “20m focus”) and are parsed for duration unless a time log exists for the same date.
+- **Habit time logs** are persisted in the backend (`habit_time_logs` table) via `/habits/{id}/time-logs`.
+- **Time log totals** are available via `/time-logs/totals`; date-filtered lists via `/time-logs`.
+- **Active timers** are still client-side until stopped, then persisted as time logs.
 
-If local storage contains prior time logs for the same habit id, the Duration view will display those minutes even after a refresh. This can appear disconnected from the most recently completed habit when the new habit has no time logs or note minutes yet.
+If a habit has no persisted time logs for the selected date range, it will not appear in the Duration series.
 
 ## Metric Definitions (Current + Intended)
 
@@ -77,7 +75,6 @@ If local storage contains prior time logs for the same habit id, the Duration vi
 **Duration**
 - Intended to measure: accumulated focus minutes per habit.
 - Current sources: `timeLogs` (manual/timer minutes) plus `activeTimers` elapsed minutes, aggregated per habit.
-- Completion notes that include focus time (e.g., “20m focus”, “1h 05m focus”) are also included unless a time log exists for the same date.
 - Habits without time tracking contribute `0` duration minutes; there is no explicit “time-enabled” flag in the habit model.
 - **Clarified intent:** Duration views should exclude habits with zero minutes; zero-minute habits should appear only in Frequency views.
 
@@ -115,7 +112,6 @@ Development Notes
 ### How duration is currently calculated
 - `aggregateTimeLogs()` sums minutes across all `timeLogs` day buckets and adds elapsed minutes from `activeTimers`.
 - `normalizeEntries()` assigns `durationMinutes` per habit from aggregated time logs; `frequency` is the completion count.
-- Completion notes with focus time are included unless a time log exists for the same date.
 - `buildEnergyMixModel()` aggregates totals from `durationMinutes` (duration mode) or `frequency` (frequency mode).
 
 ### Why Duration shows an empty state today

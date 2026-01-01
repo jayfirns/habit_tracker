@@ -1,4 +1,4 @@
-from sqlalchemy import JSON, Column, ForeignKey, Integer, String
+from sqlalchemy import JSON, Column, Date, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
 from database import Base  # Absolute import for standalone execution
@@ -29,6 +29,11 @@ class Habit(Base):
         cascade="all, delete-orphan",
         order_by="Completion.date",
     )
+    time_logs = relationship(
+        "HabitTimeLog",
+        back_populates="habit",
+        cascade="all, delete-orphan",
+    )
     milestones = relationship("Milestone", secondary=habit_milestone_table, back_populates="habits")
 
 class Completion(Base):
@@ -40,6 +45,17 @@ class Completion(Base):
     note = Column(String)
 
     habit = relationship("Habit", back_populates="completions")
+
+class HabitTimeLog(Base):
+    __tablename__ = "habit_time_logs"
+
+    id = Column(Integer, primary_key=True, index=True)
+    habit_id = Column(Integer, ForeignKey("habits.id", ondelete="CASCADE"))
+    log_date = Column(Date, nullable=False)
+    minutes = Column(Integer, nullable=False)
+    source = Column(String, nullable=False)
+
+    habit = relationship("Habit", back_populates="time_logs")
 
 
 class Milestone(Base):
