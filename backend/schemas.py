@@ -82,6 +82,17 @@ class HabitTimeLogRead(HabitTimeLogBase):
     model_config = ConfigDict(from_attributes=True)
 
 
+class HabitTimerStart(BaseModel):
+    started_at_ms: int
+
+
+class HabitTimerRead(HabitTimerStart):
+    id: int
+    habit_id: int
+
+    model_config = ConfigDict(from_attributes=True)
+
+
 class HabitRead(HabitBase):
     id: int
     streak: int

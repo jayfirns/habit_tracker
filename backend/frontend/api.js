@@ -39,6 +39,10 @@ export function makeApi(baseUrl) {
       const query = params.toString();
       return request(`/time-logs/totals${query ? `?${query}` : ""}`);
     },
+    startHabitTimer: (id, payload) =>
+      request(`/habits/${id}/timer/start`, { method: "POST", body: JSON.stringify(payload) }),
+    stopHabitTimer: (id) => request(`/habits/${id}/timer/stop`, { method: "POST" }),
+    listActiveTimers: () => request("/timers"),
     listMilestones: () => request("/milestones"),
     createMilestone: (payload) =>
       request("/milestones", { method: "POST", body: JSON.stringify(payload) }),

@@ -98,6 +98,14 @@ This document tracks significant changes, features, and fixes implemented throug
 -   **Tests**: Added backend API tests for the new time log endpoints.
 -   **Docs**: Updated `panels/EnergyMixPanel.md` to reflect the new backend-driven persistence for time logs.
 
+### Backend Persistence for Active Timers
+
+-   **Feature**: Migrated active habit timers from client-side local storage to the backend database for cross-device synchronization.
+-   **Backend**: Introduced `HabitTimer` model and corresponding API endpoints (`/timers`, `/habits/{id}/timer/start`, `/habits/{id}/timer/stop`) to manage active timers.
+-   **Frontend**: Refactored `app.js` and `api.js` to use the new backend endpoints for starting, stopping, and loading active timers.
+-   **Tests**: Added backend API tests for the new active timer endpoints.
+-   **Docs**: Updated `LOGIC_RULES.md`, `TESTING_MANDATES.md`, and `panels/EnergyMixPanel.md` to reflect that active timers are now persisted in the backend.
+
 
 
 

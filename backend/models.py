@@ -34,6 +34,11 @@ class Habit(Base):
         back_populates="habit",
         cascade="all, delete-orphan",
     )
+    timers = relationship(
+        "HabitTimer",
+        back_populates="habit",
+        cascade="all, delete-orphan",
+    )
     milestones = relationship("Milestone", secondary=habit_milestone_table, back_populates="habits")
 
 class Completion(Base):
@@ -56,6 +61,15 @@ class HabitTimeLog(Base):
     source = Column(String, nullable=False)
 
     habit = relationship("Habit", back_populates="time_logs")
+
+class HabitTimer(Base):
+    __tablename__ = "habit_timers"
+
+    id = Column(Integer, primary_key=True, index=True)
+    habit_id = Column(Integer, ForeignKey("habits.id", ondelete="CASCADE"), unique=True)
+    started_at_ms = Column(Integer, nullable=False)
+
+    habit = relationship("Habit", back_populates="timers")
 
 
 class Milestone(Base):

@@ -71,6 +71,9 @@ def delete_habit(db: Session, habit_id: int) -> bool:
     db.execute(
         delete(models.HabitTimeLog).where(models.HabitTimeLog.habit_id == habit_id)
     )
+    db.execute(
+        delete(models.HabitTimer).where(models.HabitTimer.habit_id == habit_id)
+    )
     db.delete(habit)
     db.commit()
     return True
@@ -180,6 +183,45 @@ def list_all_time_logs(
     if end_date is not None:
         statement = statement.where(models.HabitTimeLog.log_date <= end_date)
     statement = statement.order_by(models.HabitTimeLog.log_date)
+    return db.scalars(statement).all()
+
+
+def start_habit_timer(
+    db: Session, habit_id: int, timer_in: schemas.HabitTimerStart
+) -> Optional[models.HabitTimer]:
+    habit = db.get(models.Habit, habit_id)
+    if habit is None:
+        return None
+
+    timer = db.scalars(
+        select(models.HabitTimer).where(models.HabitTimer.habit_id == habit_id)
+    ).first()
+    if timer is None:
+        timer = models.HabitTimer(
+            habit_id=habit_id,
+            started_at_ms=timer_in.started_at_ms,
+        )
+    else:
+        timer.started_at_ms = timer_in.started_at_ms
+    db.add(timer)
+    db.commit()
+    db.refresh(timer)
+    return timer
+
+
+def stop_habit_timer(db: Session, habit_id: int) -> bool:
+    timer = db.scalars(
+        select(models.HabitTimer).where(models.HabitTimer.habit_id == habit_id)
+    ).first()
+    if timer is None:
+        return False
+    db.delete(timer)
+    db.commit()
+    return True
+
+
+def list_active_habit_timers(db: Session) -> List[models.HabitTimer]:
+    statement = select(models.HabitTimer).order_by(models.HabitTimer.habit_id)
     return db.scalars(statement).all()
 
 

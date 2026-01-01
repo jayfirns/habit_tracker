@@ -285,19 +285,27 @@ function saveTimeLogs() {}
 
 function saveManualLogs() {}
 
-function loadActiveTimers() {
-  state.activeTimers = loadJson("focusos-active-timers", {});
+async function loadActiveTimers() {
+  try {
+    const timers = await apiClient.listActiveTimers();
+    state.activeTimers = timers.reduce((acc, timer) => {
+      acc[timer.habit_id] = { start: timer.started_at_ms };
+      return acc;
+    }, {});
+  } catch (err) {
+    console.warn("Failed to load active timers", err);
+    state.activeTimers = {};
+  }
 }
 
-function saveActiveTimers() {
-  saveJson("focusos-active-timers", state.activeTimers);
-}
+function saveActiveTimers() {}
 
 async function loadHabits() {
   setStatus("Loading...");
   try {
     const data = await apiClient.listHabits();
     state.habits = data;
+    await loadActiveTimers();
     await loadTimeLogs();
     populateHabitOptions();
     renderHabits();
@@ -609,13 +617,14 @@ function toggleHabitTimer(habitId) {
     const minutes = Math.max(1, Math.round((Date.now() - timer.start) / 60000));
     addHabitMinutes(habitId, minutes);
     delete state.activeTimers[habitId];
-    saveActiveTimers();
+    void apiClient.stopHabitTimer(habitId);
     const node = habitCardRefs.get(habitId);
     if (node) refreshHabitTimeDisplay(habitId, node);
     return;
   }
-  state.activeTimers[habitId] = { start: Date.now() };
-  saveActiveTimers();
+  const startedAt = Date.now();
+  state.activeTimers[habitId] = { start: startedAt };
+  void apiClient.startHabitTimer(habitId, { started_at_ms: startedAt });
   const node = habitCardRefs.get(habitId);
   if (node) refreshHabitTimeDisplay(habitId, node);
 }
@@ -626,7 +635,7 @@ function stopHabitTimer(habitId) {
   const minutes = Math.max(1, Math.round((Date.now() - timer.start) / 60000));
   addHabitMinutes(habitId, minutes);
   delete state.activeTimers[habitId];
-  saveActiveTimers();
+  void apiClient.stopHabitTimer(habitId);
   const node = habitCardRefs.get(habitId);
   if (node) refreshHabitTimeDisplay(habitId, node);
   return minutes;
@@ -746,7 +755,6 @@ function latestCompletionNote(habitId, dateKey, habits = state.habits) {
 }
 
 loadWorkdayConfig();
-loadActiveTimers();
 loadHabits();
 loadMilestones();
 loadReflections();

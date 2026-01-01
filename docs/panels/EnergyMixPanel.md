@@ -62,7 +62,7 @@ Additional derived fields:
 - **Habits + completions** come from the backend API (SQLite tables `habits`, `completions`).
 - **Habit time logs** are persisted in the backend (`habit_time_logs` table) via `/habits/{id}/time-logs`.
 - **Time log totals** are available via `/time-logs/totals`; date-filtered lists via `/time-logs`.
-- **Active timers** are still client-side until stopped, then persisted as time logs.
+- **Active timers** are persisted in the backend (`habit_timers` table) and loaded on refresh for cross-device visibility.
 
 If a habit has no persisted time logs for the selected date range, it will not appear in the Duration series.
 

@@ -39,6 +39,7 @@ Time Tracking (DB-backed)
 	•	Time logs must be persisted and retrievable from the database (not local storage)
 	•	Aggregation must be reproducible from persisted records (per habit and per day)
 	•	Time summaries must be consistent across UI panels when sourced from the same records
+	•	Active timers must be persisted and visible across devices after refresh
 
 Global Exposure
 	•	If a method or variable is exposed globally (e.g., window.updateEnergyMixData), it must:

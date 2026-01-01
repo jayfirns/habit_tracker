@@ -118,6 +118,12 @@ A Task (Habit) has no explicit state. It is either present in the system or it i
 - Time totals displayed across panels (Energy Mix, Time Glide, Focus summaries) **must** reconcile to the same persisted time records.
 - If both habit time logs and workday logs exist, the system **must** define and document whether totals are expected to reconcile exactly or represent different scopes.
 
+### Active Timers (Cross-Device)
+
+- Active habit timers **must** be persisted with a start timestamp in the backend database.
+- Refreshing the app on another device **must** reflect any running timers for the same habit.
+- Stopping a timer **must** clear the persisted active timer and write a time log for the elapsed minutes.
+
 ### Current Implementation Gap (Noncompliant)
 
 - Habit time logs and active timers are currently stored client-side (local storage), not in the database.

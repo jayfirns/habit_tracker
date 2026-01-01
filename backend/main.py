@@ -154,6 +154,35 @@ def list_all_time_logs(
     return crud.list_all_time_logs(db, start_date=start_date, end_date=end_date)
 
 
+@app.post(
+    "/habits/{habit_id}/timer/start",
+    response_model=schemas.HabitTimerRead,
+    status_code=status.HTTP_201_CREATED,
+)
+def start_habit_timer(
+    habit_id: int,
+    timer: schemas.HabitTimerStart,
+    db: Session = Depends(get_db),
+):
+    started = crud.start_habit_timer(db, habit_id, timer)
+    if started is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Habit not found")
+    return started
+
+
+@app.post("/habits/{habit_id}/timer/stop", status_code=status.HTTP_204_NO_CONTENT)
+def stop_habit_timer(habit_id: int, db: Session = Depends(get_db)):
+    stopped = crud.stop_habit_timer(db, habit_id)
+    if not stopped:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Timer not found")
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+
+@app.get("/timers", response_model=list[schemas.HabitTimerRead])
+def list_active_timers(db: Session = Depends(get_db)):
+    return crud.list_active_habit_timers(db)
+
+
 @app.get("/milestones", response_model=list[schemas.MilestoneRead])
 def list_milestones(db: Session = Depends(get_db)):
     return crud.list_milestones(db)
