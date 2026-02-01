@@ -124,7 +124,9 @@ A Task (Habit) has no explicit state. It is either present in the system or it i
 - Refreshing the app on another device **must** reflect any running timers for the same habit.
 - Stopping a timer **must** clear the persisted active timer and write a time log for the elapsed minutes.
 
-### Current Implementation Gap (Noncompliant)
+### Current Implementation Status
 
-- Habit time logs and active timers are currently stored client-side (local storage), not in the database.
-- Duration metrics in the Energy Mix panel can therefore diverge from backend data and appear inconsistent after refresh.
+- **Backend**: Habit time logs and active timers are correctly persisted in the backend database (`habit_time_logs` and `habit_timers` tables).
+- **Frontend Integration Bug**: The frontend timer functions (`toggleHabitTimer`, `stopHabitTimer` in `app.js`) use fire-and-forget API calls (`void apiClient.startHabitTimer(...)`) without awaiting or error handling. If the backend call fails silently, the timer exists in local state but not in the database, causing cross-device sync failures.
+- **Missing Test Coverage**: No frontend integration tests verify that timer start/stop operations correctly call the backend API or handle errors.
+- **Symptom**: Timers started in one browser may not appear in another browser due to silent API failures.

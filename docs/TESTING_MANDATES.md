@@ -40,6 +40,8 @@ Time Tracking (DB-backed)
 	•	Aggregation must be reproducible from persisted records (per habit and per day)
 	•	Time summaries must be consistent across UI panels when sourced from the same records
 	•	Active timers must be persisted and visible across devices after refresh
+	•	Timer start/stop operations must call backend API and handle errors gracefully
+	•	Frontend timer functions must be tested for correct API integration (not just local state)
 
 Global Exposure
 	•	If a method or variable is exposed globally (e.g., window.updateEnergyMixData), it must:
