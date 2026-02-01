@@ -4,9 +4,9 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>FocusOS Habit Board</title>
-    <link rel="stylesheet" href="base.css" />
-    <link rel="stylesheet" href="components.css" />
-    <link rel="stylesheet" href="themes.css" />
+    <link rel="stylesheet" href="base.css?v=2" />
+    <link rel="stylesheet" href="components.css?v=2" />
+    <link rel="stylesheet" href="themes.css?v=2" />
   </head>
   <body>
     <header class="hero">
@@ -342,8 +342,21 @@
               State your goal in a short phrase. Link habits below that can count toward it.
             </p>
           </div>
-          <div class="field">
-            <label for="goal-frequency">M — Frequency target</label>
+          <fieldset class="field full measure-toggle">
+            <legend>M — Measurable</legend>
+            <div class="radio-row">
+              <label>
+                <input type="radio" name="measure_type" value="frequency" id="measure-type-frequency" checked />
+                Frequency (times per period)
+              </label>
+              <label>
+                <input type="radio" name="measure_type" value="duration" id="measure-type-duration" />
+                Duration (minutes per period)
+              </label>
+            </div>
+          </fieldset>
+          <div class="field" id="frequency-field">
+            <label for="goal-frequency">Target count</label>
             <input
               id="goal-frequency"
               name="frequency"
@@ -351,10 +364,23 @@
               min="1"
               value="3"
               aria-describedby="goal-frequency-help"
-              required
             />
             <p class="meta helper-text" id="goal-frequency-help">
               How many times per period should you complete a linked habit?
+            </p>
+          </div>
+          <div class="field" id="duration-field" hidden>
+            <label for="goal-duration">Target minutes</label>
+            <input
+              id="goal-duration"
+              name="duration_minutes"
+              type="number"
+              min="1"
+              value="60"
+              aria-describedby="goal-duration-help"
+            />
+            <p class="meta helper-text" id="goal-duration-help">
+              Total minutes per period to spend on linked habits.
             </p>
           </div>
           <div class="field">
@@ -404,6 +430,18 @@
             />
             <p class="meta helper-text" id="goal-quarter-help">
               The quarter this goal is time-bound to (e.g., Q1 2026).
+            </p>
+          </div>
+          <div class="field">
+            <label for="goal-due-date">Due date</label>
+            <input
+              id="goal-due-date"
+              name="due_date"
+              type="date"
+              aria-describedby="goal-due-help"
+            />
+            <p class="meta helper-text" id="goal-due-help">
+              Optional specific deadline within the quarter.
             </p>
           </div>
           <div class="field">
@@ -513,6 +551,6 @@
       </article>
     </template>
 
-    <script src="app.js" type="module"></script>
+    <script src="app.js?v=2" type="module"></script>
   </body>
 </html>

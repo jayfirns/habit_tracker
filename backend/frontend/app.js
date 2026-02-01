@@ -8,6 +8,7 @@ import { createDashboardView } from "./ui/dashboardView.js";
 import { DELETE_HABIT_CONFIRMATION, deleteHabitFlow } from "./ui/deleteHabitFlow.js";
 import { purgeHabitState } from "./ui/habitState.js";
 import { removeHabitFromGoalSelection } from "./ui/goalSelection.js";
+import { parseQuarter, quarterEndDate, buildGoalPayload } from "./ui/smartGoalForm.js";
 
 const API_BASE = window.location.origin;
 
@@ -35,11 +36,17 @@ const goalForm = document.querySelector("#goal-form");
 const goalTitleInput = document.querySelector("#goal-title");
 const goalWhyInput = document.querySelector("#goal-why");
 const goalFrequencyInput = document.querySelector("#goal-frequency");
+const goalDurationInput = document.querySelector("#goal-duration");
 const goalFrequencyPeriodInput = document.querySelector("#goal-frequency-period");
 const goalSuccessThresholdInput = document.querySelector("#goal-success-threshold");
 const goalQuarterInput = document.querySelector("#goal-quarter");
+const goalDueDateInput = document.querySelector("#goal-due-date");
 const goalTagsInput = document.querySelector("#goal-tags");
 const goalFormError = document.querySelector("#goal-form-error");
+const measureTypeFrequency = document.querySelector("#measure-type-frequency");
+const measureTypeDuration = document.querySelector("#measure-type-duration");
+const frequencyField = document.querySelector("#frequency-field");
+const durationField = document.querySelector("#duration-field");
 const openReflectionBtn = document.querySelector("#open-reflection");
 const closeReflectionBtn = document.querySelector("#close-reflection");
 const reflectionOverlay = document.querySelector("#reflection-overlay");
@@ -792,8 +799,11 @@ function setGoalFormError(message = "") {
 periodCta?.addEventListener("click", () => {
   state.editingGoalId = null;
   goalForm.reset();
+  updateMeasureTypeFields();
   resetGoalHabitSelection();
   prefillGoalQuarter();
+  lastAutoPopulatedDueDate = null;
+  autoPopulateDueDate();
   setGoalFormError();
   openOverlay(goalOverlay);
 });
@@ -804,8 +814,11 @@ reflectionCta?.addEventListener("click", () => {
 newGoalBtn?.addEventListener("click", () => {
   state.editingGoalId = null;
   goalForm.reset();
+  updateMeasureTypeFields();
   resetGoalHabitSelection();
   prefillGoalQuarter();
+  lastAutoPopulatedDueDate = null;
+  autoPopulateDueDate();
   setGoalFormError();
   openOverlay(goalOverlay);
 });
@@ -819,6 +832,35 @@ goalOverlay?.addEventListener("click", (e) => {
     closeOverlay(goalOverlay);
   }
 });
+
+function updateMeasureTypeFields() {
+  const isFrequency = measureTypeFrequency?.checked;
+  if (frequencyField) frequencyField.hidden = !isFrequency;
+  if (durationField) durationField.hidden = isFrequency;
+}
+measureTypeFrequency?.addEventListener("change", updateMeasureTypeFields);
+measureTypeDuration?.addEventListener("change", updateMeasureTypeFields);
+
+// Track if due_date was auto-populated (so we don't override manual changes)
+let lastAutoPopulatedDueDate = null;
+
+function autoPopulateDueDate() {
+  if (!goalQuarterInput || !goalDueDateInput) return;
+  const parsed = parseQuarter(goalQuarterInput.value);
+  if (!parsed) return;
+
+  const endDate = quarterEndDate(parsed.quarter, parsed.year);
+  if (!endDate) return;
+
+  // Only auto-populate if empty or matches last auto-populated value
+  const currentDueDate = goalDueDateInput.value;
+  if (!currentDueDate || currentDueDate === lastAutoPopulatedDueDate) {
+    goalDueDateInput.value = endDate;
+    lastAutoPopulatedDueDate = endDate;
+  }
+}
+goalQuarterInput?.addEventListener("change", autoPopulateDueDate);
+goalQuarterInput?.addEventListener("blur", autoPopulateDueDate);
 
 workdaySaveBtn?.addEventListener("click", () => {
   const startVal = workdayStartInput?.value || "09:00";
@@ -910,18 +952,25 @@ goalForm?.addEventListener("submit", async (event) => {
   setGoalFormError();
   const title = goalTitleInput?.value.trim() || "";
   const why_this_matters = goalWhyInput?.value.trim() || "";
-  const frequency = parseInt(goalFrequencyInput?.value, 10) || 1;
+  const measure_type = measureTypeDuration?.checked ? "duration" : "frequency";
+  const frequency = parseInt(goalFrequencyInput?.value, 10) || null;
+  const duration_minutes = parseInt(goalDurationInput?.value, 10) || null;
   const frequency_period = goalFrequencyPeriodInput?.value || "week";
   const success_threshold = parseInt(goalSuccessThresholdInput?.value, 10) || 80;
   const quarter = goalQuarterInput?.value.trim() || "";
+  const due_date = goalDueDateInput?.value || null;
   const tags = parseTags(goalTagsInput?.value || "");
   const habit_ids = getGoalHabitSelection();
   if (!title) {
     setGoalFormError("Add a clear, specific title before saving.");
     return;
   }
-  if (frequency < 1) {
+  if (measure_type === "frequency" && (!frequency || frequency < 1)) {
     setGoalFormError("Frequency must be at least 1.");
+    return;
+  }
+  if (measure_type === "duration" && (!duration_minutes || duration_minutes < 1)) {
+    setGoalFormError("Duration must be at least 1 minute.");
     return;
   }
   if (!quarter) {
@@ -929,16 +978,19 @@ goalForm?.addEventListener("submit", async (event) => {
     return;
   }
   try {
-    const payload = {
+    const payload = buildGoalPayload({
       title,
-      why_this_matters: why_this_matters || null,
+      why_this_matters,
+      measure_type,
       frequency,
+      duration_minutes,
       frequency_period,
       success_threshold,
       quarter,
+      due_date,
       tags,
       habit_ids,
-    };
+    });
     if (state.editingGoalId) {
       await apiClient.updateGoal(state.editingGoalId, payload);
       setStatus("Goal updated");
@@ -948,6 +1000,8 @@ goalForm?.addEventListener("submit", async (event) => {
     }
     closeOverlay(goalOverlay);
     goalForm.reset();
+    updateMeasureTypeFields();
+    lastAutoPopulatedDueDate = null;
     state.editingGoalId = null;
     setGoalFormError();
     await loadGoals();
@@ -1119,10 +1173,16 @@ function openGoalForEdit(goal) {
   state.editingGoalId = goal.id;
   if (goalTitleInput) goalTitleInput.value = goal.title || "";
   if (goalWhyInput) goalWhyInput.value = goal.why_this_matters || "";
-  if (goalFrequencyInput) goalFrequencyInput.value = goal.frequency || 1;
+  const measureType = goal.measure_type || "frequency";
+  if (measureTypeFrequency) measureTypeFrequency.checked = measureType === "frequency";
+  if (measureTypeDuration) measureTypeDuration.checked = measureType === "duration";
+  updateMeasureTypeFields();
+  if (goalFrequencyInput) goalFrequencyInput.value = goal.frequency || 3;
+  if (goalDurationInput) goalDurationInput.value = goal.duration_minutes || 60;
   if (goalFrequencyPeriodInput) goalFrequencyPeriodInput.value = goal.frequency_period || "week";
   if (goalSuccessThresholdInput) goalSuccessThresholdInput.value = goal.success_threshold || 80;
   if (goalQuarterInput) goalQuarterInput.value = goal.quarter || "";
+  if (goalDueDateInput) goalDueDateInput.value = goal.due_date || "";
   if (goalTagsInput) goalTagsInput.value = (goal.tags || []).join(", ");
   const ids = goal.habit_ids || [];
   resetGoalHabitSelection(ids);

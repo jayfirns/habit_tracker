@@ -79,10 +79,13 @@ class SmartGoal(Base):
     id = Column(Integer, primary_key=True, index=True)
     title = Column(String, nullable=False)  # Specific
     why_this_matters = Column(String)  # Relevant (verbose)
-    frequency = Column(Integer, nullable=False)  # Measurable (e.g., 3)
+    measure_type = Column(String, default="frequency")  # "frequency" or "duration"
+    frequency = Column(Integer, nullable=True)  # Measurable: times per period (e.g., 3)
+    duration_minutes = Column(Integer, nullable=True)  # Measurable: minutes per period
     frequency_period = Column(String, default="week")  # "week" or "month"
     success_threshold = Column(Integer, default=80)  # 0-100 percentage
-    quarter = Column(String, nullable=False)  # Time-bound (e.g., "Q1 2026")
+    quarter = Column(String, nullable=False)  # Time-bound quarter (e.g., "Q1 2026")
+    due_date = Column(Date, nullable=True)  # Time-bound specific date
     tags = Column(JSON, default=list)
     status = Column(String, default="active")  # active/complete/archived
     created_at = Column(String)

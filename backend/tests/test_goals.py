@@ -52,10 +52,12 @@ def test_create_goal_with_all_smart_fields(db_session):
         schemas.SmartGoalCreate(
             title="Build fitness habit",
             why_this_matters="I want more energy and to age well",
+            measure_type="frequency",
             frequency=3,
             frequency_period="week",
             success_threshold=80,
             quarter="Q1 2026",
+            due_date=date(2026, 3, 31),
             tags=["health", "energy"],
             habit_ids=[habit.id],
             status="active",
@@ -66,14 +68,79 @@ def test_create_goal_with_all_smart_fields(db_session):
     assert goal.id is not None
     assert goal.title == "Build fitness habit"
     assert goal.why_this_matters == "I want more energy and to age well"
+    assert goal.measure_type == "frequency"
     assert goal.frequency == 3
     assert goal.frequency_period == "week"
     assert goal.success_threshold == 80
     assert goal.quarter == "Q1 2026"
+    assert goal.due_date == date(2026, 3, 31)
     assert goal.tags == ["health", "energy"]
     assert goal.habits[0].id == habit.id
     assert goal.status == "active"
     assert goal.created_at is not None
+
+
+def test_create_goal_with_duration_measure_type(db_session):
+    goal = create_goal(
+        schemas.SmartGoalCreate(
+            title="Practice guitar",
+            measure_type="duration",
+            duration_minutes=60,
+            frequency_period="week",
+            quarter="Q1 2026",
+        ),
+        db_session,
+    )
+
+    assert goal.measure_type == "duration"
+    assert goal.duration_minutes == 60
+    assert goal.frequency is None
+
+
+def test_update_goal_due_date(db_session):
+    goal = create_goal(
+        schemas.SmartGoalCreate(
+            title="Test Goal",
+            frequency=3,
+            quarter="Q1 2026",
+        ),
+        db_session,
+    )
+
+    updated = update_goal(
+        goal.id,
+        schemas.SmartGoalUpdate(
+            due_date=date(2026, 3, 15),
+        ),
+        db_session,
+    )
+
+    assert updated.due_date == date(2026, 3, 15)
+
+
+def test_update_goal_measure_type_to_duration(db_session):
+    goal = create_goal(
+        schemas.SmartGoalCreate(
+            title="Test Goal",
+            measure_type="frequency",
+            frequency=3,
+            quarter="Q1 2026",
+        ),
+        db_session,
+    )
+
+    updated = update_goal(
+        goal.id,
+        schemas.SmartGoalUpdate(
+            measure_type="duration",
+            duration_minutes=90,
+            frequency=None,
+        ),
+        db_session,
+    )
+
+    assert updated.measure_type == "duration"
+    assert updated.duration_minutes == 90
 
 
 def test_create_goal_with_habit_links(db_session):

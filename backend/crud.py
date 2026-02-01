@@ -276,10 +276,13 @@ def create_goal(db: Session, goal_in: schemas.SmartGoalCreate) -> models.SmartGo
     goal = models.SmartGoal(
         title=goal_in.title.strip(),
         why_this_matters=goal_in.why_this_matters,
+        measure_type=goal_in.measure_type or "frequency",
         frequency=goal_in.frequency,
+        duration_minutes=goal_in.duration_minutes,
         frequency_period=goal_in.frequency_period,
         success_threshold=goal_in.success_threshold,
         quarter=goal_in.quarter,
+        due_date=goal_in.due_date,
         tags=tags,
         status=goal_in.status or "active",
         created_at=datetime.now().isoformat(),
@@ -307,14 +310,20 @@ def update_goal(
         goal.title = goal_in.title.strip()
     if goal_in.why_this_matters is not None:
         goal.why_this_matters = goal_in.why_this_matters
+    if goal_in.measure_type is not None:
+        goal.measure_type = goal_in.measure_type
     if goal_in.frequency is not None:
         goal.frequency = goal_in.frequency
+    if goal_in.duration_minutes is not None:
+        goal.duration_minutes = goal_in.duration_minutes
     if goal_in.frequency_period is not None:
         goal.frequency_period = goal_in.frequency_period
     if goal_in.success_threshold is not None:
         goal.success_threshold = goal_in.success_threshold
     if goal_in.quarter is not None:
         goal.quarter = goal_in.quarter
+    if goal_in.due_date is not None:
+        goal.due_date = goal_in.due_date
     if goal_in.tags is not None:
         goal.tags = [t.strip() for t in goal_in.tags if t.strip()]
     if goal_in.habit_ids is not None:

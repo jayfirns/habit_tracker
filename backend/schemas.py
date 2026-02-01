@@ -108,10 +108,13 @@ class HabitRead(HabitBase):
 class SmartGoalBase(BaseModel):
     title: str = Field(..., min_length=1)
     why_this_matters: Optional[str] = None
-    frequency: int = Field(..., ge=1)
+    measure_type: str = Field(default="frequency", pattern="^(frequency|duration)$")
+    frequency: Optional[int] = Field(default=None, ge=1)
+    duration_minutes: Optional[int] = Field(default=None, ge=1)
     frequency_period: str = Field(default="week", pattern="^(week|month)$")
     success_threshold: int = Field(default=80, ge=0, le=100)
     quarter: str
+    due_date: Optional[datetime.date] = None
     tags: List[str] = Field(default_factory=list)
     habit_ids: List[int] = Field(default_factory=list)
     status: str = Field(default="active", pattern="^(active|complete|archived)$")
@@ -129,10 +132,13 @@ class SmartGoalCreate(SmartGoalBase):
 class SmartGoalUpdate(BaseModel):
     title: Optional[str] = Field(default=None, min_length=1)
     why_this_matters: Optional[str] = None
+    measure_type: Optional[str] = Field(default=None, pattern="^(frequency|duration)$")
     frequency: Optional[int] = Field(default=None, ge=1)
+    duration_minutes: Optional[int] = Field(default=None, ge=1)
     frequency_period: Optional[str] = Field(default=None, pattern="^(week|month)$")
     success_threshold: Optional[int] = Field(default=None, ge=0, le=100)
     quarter: Optional[str] = None
+    due_date: Optional[datetime.date] = None
     tags: Optional[List[str]] = None
     habit_ids: Optional[List[int]] = None
     status: Optional[str] = Field(default=None, pattern="^(active|complete|archived)$")

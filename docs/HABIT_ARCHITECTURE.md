@@ -1,6 +1,6 @@
 ---
 created: 2025-12-30T21:52
-updated: 2025-12-31T10:27
+updated: 2026-02-01T16:30
 ---
 # HABIT_ARCHITECTURE.md
 
@@ -16,7 +16,7 @@ This is a design philosophy document. It guides naming, relationships, and syste
 
 > **Everything begins and ends with the habit.**
 
-The system does **not** treat legacy goals as primary entities. Rather, **habits are the atomic unit of transformation**, and all supporting concepts exist to help structure, measure, or encourage them. Milestones replace the legacy Goal concept and serve as structured targets tied to habits.
+The system does **not** treat legacy goals as primary entities. Rather, **habits are the atomic unit of transformation**, and all supporting concepts exist to help structure, measure, or encourage them. SMART Goals replace the legacy Goal/Milestone concepts and provide structured, measurable targets tied to habits.
 
 ---
 
@@ -38,11 +38,19 @@ The system does **not** treat legacy goals as primary entities. Rather, **habits
   - `metrics`: daily, weekly, or interval-based frequency target
   - `category`, `tags`, etc.
 
-### 3. **Milestone / Target (Supporting Entity)**
+### 3. **SMART Goal (Supporting Entity)**
 
-- A milestone is a declarative **target** associated with a Habit.
-- May include due dates, outcome criteria, or numeric thresholds.
-- Can be used to track progress against stretch targets (e.g., "Run 100 miles in 30 days").
+- A SMART Goal is a structured target following the SMART framework: Specific, Measurable, Achievable, Relevant, Time-bound.
+- Implemented as `SmartGoal` in the database model.
+- Key fields:
+  - `title`: Specific goal description
+  - `measure_type`: "frequency" or "duration"
+  - `frequency`/`duration_minutes`: Measurable targets
+  - `success_threshold`: Achievable percentage (0-100)
+  - `why_this_matters`: Relevance explanation
+  - `quarter`/`due_date`: Time-bound constraints
+  - `habit_ids`: Links to contributing habits
+- Can be used to track progress against targets (e.g., "Exercise 3x per week").
 
 ### 4. **Completion (Event Record)**
 
@@ -74,7 +82,13 @@ The system does **not** treat legacy goals as primary entities. Rather, **habits
 ### ❌ Goal (Legacy Term)
 
 - Formerly a standalone model with title, outcome, due_date, etc.
-- Replaced by Milestones to simplify the data model and eliminate semantic confusion.
+- Evolution: Goal → Milestone → SmartGoal
+- Current implementation uses `SmartGoal` model with SMART framework fields.
+
+### ⚠️ Milestone (Transitional Term)
+
+- Previously used as the replacement for Goal.
+- Now superseded by SmartGoal for richer SMART-based goal tracking.
 
 ## Planned Feature
 
@@ -93,8 +107,9 @@ The system does **not** treat legacy goals as primary entities. Rather, **habits
 |------|-------------|-------|
 | `habit` | ✅ core entity | Central object; everything builds on this |
 | `completion` | ✅ core entity | Tied to habit_id; stores date, note |
-| `milestone`, `target`, `challenge` | ✅ supporting entities | Milestone is implemented; synonyms optional |
-| `goal` | ❌ legacy | Do not use |
+| `smart_goal` | ✅ supporting entity | SMART-based goal with habit links |
+| `milestone` | ⚠️ legacy alias | Now replaced by SmartGoal |
+| `goal` | ❌ legacy | Do not use standalone; use SmartGoal |
 | `task`, `todo`, `action` | 🕓 not implemented | Do not imply existence via UI/labels |
 | `workday_state` | ✅ supporting entity | Single shared record for time clock |
 
@@ -119,4 +134,4 @@ The system does **not** treat legacy goals as primary entities. Rather, **habits
 
 ## Last Reviewed
 
-- 2025-12-30
+- 2026-02-01 (Updated terminology: Milestone → SmartGoal)
