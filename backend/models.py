@@ -3,14 +3,14 @@ from sqlalchemy.orm import relationship
 
 from database import Base  # Absolute import for standalone execution
 
-# Association table for many-to-many between habits and milestones
+# Association table for many-to-many between habits and goals
 from sqlalchemy import Table
 
-habit_milestone_table = Table(
-    "habit_milestones",
+habit_goal_table = Table(
+    "habit_goals",
     Base.metadata,
     Column("habit_id", ForeignKey("habits.id"), primary_key=True),
-    Column("milestone_id", ForeignKey("milestones.id"), primary_key=True),
+    Column("goal_id", ForeignKey("smart_goals.id"), primary_key=True),
 )
 
 class Habit(Base):
@@ -39,7 +39,7 @@ class Habit(Base):
         back_populates="habit",
         cascade="all, delete-orphan",
     )
-    milestones = relationship("Milestone", secondary=habit_milestone_table, back_populates="habits")
+    goals = relationship("SmartGoal", secondary=habit_goal_table, back_populates="habits")
 
 class Completion(Base):
     __tablename__ = "completions"
@@ -48,6 +48,7 @@ class Completion(Base):
     habit_id = Column(Integer, ForeignKey("habits.id", ondelete="CASCADE"))
     date = Column(String, nullable=False)  # Stored as ISO format date string
     note = Column(String)
+    goal_id = Column(Integer, ForeignKey("smart_goals.id", ondelete="SET NULL"), nullable=True)
 
     habit = relationship("Habit", back_populates="completions")
 
@@ -72,20 +73,21 @@ class HabitTimer(Base):
     habit = relationship("Habit", back_populates="timers")
 
 
-class Milestone(Base):
-    __tablename__ = "milestones"
+class SmartGoal(Base):
+    __tablename__ = "smart_goals"
 
     id = Column(Integer, primary_key=True, index=True)
-    title = Column(String, nullable=False)
-    description = Column(String)
-    outcome = Column(String)
-    scope = Column(String, nullable=False)  # year, quarter, month
-    start_date = Column(String)
-    due_date = Column(String)
-    status = Column(String, default="active")
+    title = Column(String, nullable=False)  # Specific
+    why_this_matters = Column(String)  # Relevant (verbose)
+    frequency = Column(Integer, nullable=False)  # Measurable (e.g., 3)
+    frequency_period = Column(String, default="week")  # "week" or "month"
+    success_threshold = Column(Integer, default=80)  # 0-100 percentage
+    quarter = Column(String, nullable=False)  # Time-bound (e.g., "Q1 2026")
     tags = Column(JSON, default=list)
+    status = Column(String, default="active")  # active/complete/archived
+    created_at = Column(String)
 
-    habits = relationship("Habit", secondary=habit_milestone_table, back_populates="milestones")
+    habits = relationship("Habit", secondary=habit_goal_table, back_populates="goals")
 
     @property
     def habit_ids(self):
@@ -101,7 +103,7 @@ class Reflection(Base):
     prompts = Column(JSON, default=list)
     responses = Column(JSON, default=list)
     submitted_at = Column(String)
-    milestone_id = Column(Integer, ForeignKey("milestones.id"), nullable=True)
+    goal_id = Column(Integer, ForeignKey("smart_goals.id"), nullable=True)
     rating = Column(String)  # on_track, blocked, ahead, complete
 
 

@@ -89,6 +89,12 @@ def delete_habit(habit_id: int, db: Session = Depends(get_db)):
 def complete_habit(
     habit_id: int, completion: schemas.CompletionCreate, db: Session = Depends(get_db)
 ):
+    # Validate goal_id if provided
+    if completion.goal_id is not None:
+        goal = crud.get_goal(db, completion.goal_id)
+        if goal is None:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Goal not found")
+
     result = crud.create_completion(db, habit_id, completion)
     if result is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Habit not found")
@@ -183,40 +189,66 @@ def list_active_timers(db: Session = Depends(get_db)):
     return crud.list_active_habit_timers(db)
 
 
-@app.get("/milestones", response_model=list[schemas.MilestoneRead])
-def list_milestones(db: Session = Depends(get_db)):
-    return crud.list_milestones(db)
-
-
-@app.get("/milestones/{milestone_id}", response_model=schemas.MilestoneRead)
-def get_milestone(milestone_id: int, db: Session = Depends(get_db)):
-    milestone = crud.get_milestone(db, milestone_id)
-    if milestone is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Milestone not found")
-    return milestone
-
-
-@app.post("/milestones", response_model=schemas.MilestoneRead, status_code=status.HTTP_201_CREATED)
-def create_milestone(milestone: schemas.MilestoneCreate, db: Session = Depends(get_db)):
-    return crud.create_milestone(db, milestone)
-
-
-@app.put("/milestones/{milestone_id}", response_model=schemas.MilestoneRead)
-def update_milestone(
-    milestone_id: int, milestone: schemas.MilestoneUpdate, db: Session = Depends(get_db)
+@app.get("/goals", response_model=list[schemas.SmartGoalRead])
+def list_goals(
+    quarter: str | None = None,
+    status_filter: str | None = None,
+    db: Session = Depends(get_db),
 ):
-    updated = crud.update_milestone(db, milestone_id, milestone)
+    return crud.list_goals(db, quarter=quarter, status=status_filter)
+
+
+@app.get("/goals/weekly-summary", response_model=list[schemas.SmartGoalProgress])
+def get_weekly_summary(db: Session = Depends(get_db)):
+    return crud.get_weekly_summary(db, date.today())
+
+
+@app.get("/goals/{goal_id}", response_model=schemas.SmartGoalRead)
+def get_goal(goal_id: int, db: Session = Depends(get_db)):
+    goal = crud.get_goal(db, goal_id)
+    if goal is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Goal not found")
+    return goal
+
+
+@app.get("/goals/{goal_id}/progress", response_model=schemas.SmartGoalProgress)
+def get_goal_progress(goal_id: int, db: Session = Depends(get_db)):
+    from datetime import timedelta
+
+    today = date.today()
+    week_start = today - timedelta(days=today.weekday())
+    week_end = week_start + timedelta(days=6)
+
+    progress = crud.get_goal_progress(db, goal_id, week_start, week_end)
+    if progress is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Goal not found")
+    return progress
+
+
+@app.post("/goals", response_model=schemas.SmartGoalRead, status_code=status.HTTP_201_CREATED)
+def create_goal(goal: schemas.SmartGoalCreate, db: Session = Depends(get_db)):
+    return crud.create_goal(db, goal)
+
+
+@app.put("/goals/{goal_id}", response_model=schemas.SmartGoalRead)
+def update_goal(goal_id: int, goal: schemas.SmartGoalUpdate, db: Session = Depends(get_db)):
+    updated = crud.update_goal(db, goal_id, goal)
     if updated is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Milestone not found")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Goal not found")
     return updated
 
 
-@app.delete("/milestones/{milestone_id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_milestone(milestone_id: int, db: Session = Depends(get_db)):
-    deleted = crud.delete_milestone(db, milestone_id)
+@app.delete("/goals/{goal_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_goal(goal_id: int, db: Session = Depends(get_db)):
+    deleted = crud.delete_goal(db, goal_id)
     if not deleted:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Milestone not found")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Goal not found")
     return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+
+@app.get("/quarterly-prompt", response_model=schemas.QuarterlyPrompt)
+def get_quarterly_prompt(db: Session = Depends(get_db)):
+    return crud.get_quarterly_prompt(db, date.today(), "John")
 
 
 @app.get("/reflections", response_model=list[schemas.ReflectionRead])

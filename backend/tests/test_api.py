@@ -14,16 +14,16 @@ import models  # noqa: E402
 import schemas  # noqa: E402
 from fastapi import HTTPException  # noqa: E402
 from database import Base  # noqa: E402
+import crud  # noqa: E402
 from main import (  # noqa: E402
     complete_habit,
     create_habit,
-    create_milestone,
+    create_goal,
     delete_habit,
     get_habit,
     get_workday_state,
     list_completions,
     list_habits,
-    list_milestones,
     update_habit,
     update_workday_state,
 )
@@ -132,20 +132,21 @@ def test_delete_habit_removes_completions_from_db(db_session):
     assert completions_after == 0
 
 
-def test_delete_habit_clears_milestone_links(db_session):
+def test_delete_habit_clears_goal_links(db_session):
     habit = create_habit(schemas.HabitCreate(name="Write", category="Work"), db_session)
-    milestone = create_milestone(
-        schemas.MilestoneCreate(
+    goal = create_goal(
+        schemas.SmartGoalCreate(
             title="Ship Draft",
-            scope="quarter",
+            frequency=3,
+            quarter="Q1 2026",
             habit_ids=[habit.id],
         ),
         db_session,
     )
 
     links_before = db_session.execute(
-        select(models.habit_milestone_table).where(
-            models.habit_milestone_table.c.habit_id == habit.id
+        select(models.habit_goal_table).where(
+            models.habit_goal_table.c.habit_id == habit.id
         )
     ).all()
     assert len(links_before) == 1
@@ -154,19 +155,20 @@ def test_delete_habit_clears_milestone_links(db_session):
     assert response.status_code == 204
 
     links_after = db_session.execute(
-        select(models.habit_milestone_table).where(
-            models.habit_milestone_table.c.habit_id == habit.id
+        select(models.habit_goal_table).where(
+            models.habit_goal_table.c.habit_id == habit.id
         )
     ).all()
     assert links_after == []
 
 
-def test_delete_habit_does_not_delete_milestone(db_session):
+def test_delete_habit_does_not_delete_goal(db_session):
     habit = create_habit(schemas.HabitCreate(name="Plan", category="Work"), db_session)
-    milestone = create_milestone(
-        schemas.MilestoneCreate(
+    goal = create_goal(
+        schemas.SmartGoalCreate(
             title="Ship Plan",
-            scope="quarter",
+            frequency=3,
+            quarter="Q1 2026",
             habit_ids=[habit.id],
         ),
         db_session,
@@ -175,10 +177,10 @@ def test_delete_habit_does_not_delete_milestone(db_session):
     response = delete_habit(habit.id, db_session)
     assert response.status_code == 204
 
-    milestones = list_milestones(db_session)
-    assert len(milestones) == 1
-    assert milestones[0].id == milestone.id
-    assert milestones[0].status == "active"
+    goals = crud.list_goals(db_session)
+    assert len(goals) == 1
+    assert goals[0].id == goal.id
+    assert goals[0].status == "active"
 
 
 def test_delete_nonexistent_habit_returns_404(db_session):

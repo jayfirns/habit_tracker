@@ -7,14 +7,14 @@ export function createDashboardView(elements, helpers) {
     periodActions,
     habitCount,
     streakSummaryCard,
-    milestoneCountEl,
-    milestoneHighlightEl,
-    milestoneHabitsLinkedEl,
-    milestoneHabitCoverageEl,
-    milestoneDueCountEl,
-    milestoneDueLabelEl,
-    milestoneScopeHighlightEl,
-    milestoneNextStepEl,
+    goalCountEl,
+    goalHighlightEl,
+    goalHabitsLinkedEl,
+    goalHabitCoverageEl,
+    goalOnTrackCountEl,
+    goalOnTrackLabelEl,
+    goalQuarterHighlightEl,
+    goalNextStepEl,
     chartTotalPill,
     chartCenterValue,
     chartCenterLabel,
@@ -51,13 +51,13 @@ export function createDashboardView(elements, helpers) {
     { formatMinutes },
   );
 
-  function renderDashboard({ now, habits, milestones, reflections, workday, timeLogs, activeTimers }) {
+  function renderDashboard({ now, habits, goals, weeklyProgress, quarterlyPrompt, reflections, workday, timeLogs, activeTimers }) {
     if (!periodLabel || !periodPrompt || !periodActions || !habitCount || !streakSummaryCard)
       return;
 
     const month = now.toLocaleString("default", { month: "long" });
     const quarter = Math.floor(now.getMonth() / 3) + 1;
-    periodLabel.textContent = `Q${quarter} · ${month}`;
+    periodLabel.textContent = quarterlyPrompt?.quarter || `Q${quarter} · ${month}`;
 
     const actions = [
       "Review top 3 habits for this quarter.",
@@ -70,78 +70,70 @@ export function createDashboardView(elements, helpers) {
       li.textContent = item;
       periodActions.appendChild(li);
     });
-    periodPrompt.textContent = `How do your habits today support your Q${quarter} milestones?`;
+    periodPrompt.textContent = quarterlyPrompt?.message || `How do your habits today support your Q${quarter} goals?`;
 
     habitCount.textContent = habits.length;
     streakSummaryCard.textContent = `${habits.reduce((sum, h) => sum + (h.streak || 0), 0)} streak days total`;
-    renderMilestoneInsights(milestones, habits, reflections);
+    renderGoalInsights(goals, weeklyProgress, habits, reflections);
     energyMixPanel.render({ habits, timeLogs, activeTimers, now });
     renderTimeSummary({ habits, workday, timeLogs, activeTimers });
   }
 
-  function renderMilestoneInsights(milestones = [], habits = [], reflections = []) {
-    if (!milestoneCountEl) return;
-    const today = new Date();
-    const activeMilestones = milestones.filter(
-      (milestone) => (milestone.status || "active").toLowerCase() !== "complete",
+  function renderGoalInsights(goals = [], weeklyProgress = [], habits = [], reflections = []) {
+    if (!goalCountEl) return;
+    const activeGoals = goals.filter(
+      (goal) => (goal.status || "active").toLowerCase() === "active",
     );
-    const completedMilestones = milestones.length - activeMilestones.length;
-    milestoneCountEl.textContent = activeMilestones.length;
+    const completedGoals = goals.filter(
+      (goal) => (goal.status || "").toLowerCase() === "complete",
+    ).length;
+    goalCountEl.textContent = activeGoals.length;
 
-    const scopeCounts = activeMilestones.reduce((acc, milestone) => {
-      acc[milestone.scope] = (acc[milestone.scope] || 0) + 1;
+    // Count goals by quarter
+    const quarterCounts = activeGoals.reduce((acc, goal) => {
+      const q = goal.quarter || "Unknown";
+      acc[q] = (acc[q] || 0) + 1;
       return acc;
     }, {});
-    const topScope = Object.entries(scopeCounts).sort((a, b) => b[1] - a[1])[0];
-    if (milestoneScopeHighlightEl) {
-      milestoneScopeHighlightEl.textContent = topScope
-        ? `${topScope[1]} ${topScope[0]} milestones`
+    const topQuarter = Object.entries(quarterCounts).sort((a, b) => b[1] - a[1])[0];
+    if (goalQuarterHighlightEl) {
+      goalQuarterHighlightEl.textContent = topQuarter
+        ? `${topQuarter[1]} goals in ${topQuarter[0]}`
         : "Quarter focus";
     }
 
+    // Linked habits
     const linkedHabitIds = new Set();
-    milestones.forEach((milestone) => (milestone.habit_ids || []).forEach((id) => linkedHabitIds.add(id)));
-    if (milestoneHabitsLinkedEl) {
-      milestoneHabitsLinkedEl.textContent = linkedHabitIds.size;
+    goals.forEach((goal) => (goal.habit_ids || []).forEach((id) => linkedHabitIds.add(id)));
+    if (goalHabitsLinkedEl) {
+      goalHabitsLinkedEl.textContent = linkedHabitIds.size;
     }
     const coverage = habits.length ? Math.round((linkedHabitIds.size / habits.length) * 100) : 0;
-    if (milestoneHabitCoverageEl) {
-      milestoneHabitCoverageEl.textContent = habits.length ? `${coverage}% coverage` : "No habits yet";
+    if (goalHabitCoverageEl) {
+      goalHabitCoverageEl.textContent = habits.length ? `${coverage}% coverage` : "No habits yet";
     }
 
-    const dueSoon = activeMilestones
-      .map((milestone) => ({
-        ...milestone,
-        dueDate: milestone.due_date ? new Date(milestone.due_date) : null,
-      }))
-      .filter((milestone) => milestone.dueDate && !Number.isNaN(milestone.dueDate.getTime()))
-      .sort((a, b) => a.dueDate - b.dueDate);
-    const windowDate = new Date();
-    windowDate.setDate(windowDate.getDate() + 30);
-    const dueThisMonth = dueSoon.filter((milestone) => milestone.dueDate <= windowDate);
-    if (milestoneDueCountEl) {
-      milestoneDueCountEl.textContent = dueThisMonth.length;
+    // On track count from weekly progress
+    const onTrack = weeklyProgress.filter((p) => p.on_track).length;
+    if (goalOnTrackCountEl) {
+      goalOnTrackCountEl.textContent = onTrack;
     }
-    if (milestoneDueLabelEl) {
-      if (dueThisMonth.length) {
-        const nearest = dueThisMonth[0];
-        const daysLeft = Math.max(0, Math.round((nearest.dueDate - today) / (1000 * 60 * 60 * 24)));
-        milestoneDueLabelEl.textContent = `${nearest.title} · ${formatDate(nearest.due_date)} (${daysLeft}d)`;
-      } else if (dueSoon.length) {
-        milestoneDueLabelEl.textContent = `${dueSoon.length} with dates · next ${formatDate(dueSoon[0].due_date)}`;
+    if (goalOnTrackLabelEl) {
+      if (weeklyProgress.length) {
+        goalOnTrackLabelEl.textContent = `${onTrack}/${weeklyProgress.length} goals on track this week`;
       } else {
-        milestoneDueLabelEl.textContent = "No deadlines";
+        goalOnTrackLabelEl.textContent = "No weekly progress yet";
       }
     }
 
-    if (milestoneHighlightEl) {
-      if (activeMilestones.length) {
-        const measurable = activeMilestones.filter((milestone) => milestone.outcome).length;
-        milestoneHighlightEl.textContent = `${measurable}/${activeMilestones.length} have measurable outcomes · ${completedMilestones} completed`;
-      } else if (milestones.length) {
-        milestoneHighlightEl.textContent = `${milestones.length} archived or complete`;
+    if (goalHighlightEl) {
+      if (activeGoals.length) {
+        const withFrequency = activeGoals.filter((goal) => goal.frequency > 0).length;
+        goalHighlightEl.textContent = `${withFrequency}/${activeGoals.length} have frequency targets · ${completedGoals} completed`;
+      } else if (goals.length) {
+        goalHighlightEl.textContent = `${goals.length} archived or complete`;
       } else {
-        milestoneHighlightEl.textContent = "Set your first target";
+        goalHighlightEl.textContent = "Set your first target";
       }
     }
 
@@ -154,15 +146,15 @@ export function createDashboardView(elements, helpers) {
             (new Date(a.submitted_at || a.period_label).getTime() || 0),
         )[0] || null;
 
-    if (milestoneNextStepEl) {
+    if (goalNextStepEl) {
       if (latestReflection) {
         const detail = latestReflection.responses?.[0] || "Keep momentum.";
-        milestoneNextStepEl.textContent = `Last reflection ${latestReflection.period_label}: ${detail}`;
+        goalNextStepEl.textContent = `Last reflection ${latestReflection.period_label}: ${detail}`;
       } else if (habits.length) {
         const topHabit = habits.slice().sort((a, b) => (b.streak || 0) - (a.streak || 0))[0];
-        milestoneNextStepEl.textContent = `Link ${topHabit.name} to a milestone to lock intent.`;
+        goalNextStepEl.textContent = `Link ${topHabit.name} to a goal to lock intent.`;
       } else {
-        milestoneNextStepEl.textContent = "Use SMART to define one measurable outcome this week.";
+        goalNextStepEl.textContent = "Use SMART to define one measurable outcome this week.";
       }
     }
   }

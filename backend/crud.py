@@ -64,8 +64,8 @@ def delete_habit(db: Session, habit_id: int) -> bool:
     if habit is None:
         return False
     db.execute(
-        delete(models.habit_milestone_table).where(
-            models.habit_milestone_table.c.habit_id == habit_id
+        delete(models.habit_goal_table).where(
+            models.habit_goal_table.c.habit_id == habit_id
         )
     )
     db.execute(
@@ -107,6 +107,7 @@ def create_completion(
         habit_id=habit_id,
         date=completion_date.isoformat(),
         note=completion_in.note,
+        goal_id=completion_in.goal_id,
     )
     db.add(completion)
 
@@ -243,90 +244,187 @@ def get_habit_time_totals(
     return {habit_id: int(total or 0) for habit_id, total in results}
 
 
-# Milestone CRUD
-def list_milestones(db: Session) -> List[models.Milestone]:
-    stmt = (
-        select(models.Milestone)
-        .where(or_(models.Milestone.status.is_(None), models.Milestone.status != "archived"))
-        .options(selectinload(models.Milestone.habits))
-    )
+# SmartGoal CRUD
+def list_goals(
+    db: Session, quarter: Optional[str] = None, status: Optional[str] = None
+) -> List[models.SmartGoal]:
+    stmt = select(models.SmartGoal).options(selectinload(models.SmartGoal.habits))
+    if quarter:
+        stmt = stmt.where(models.SmartGoal.quarter == quarter)
+    if status:
+        stmt = stmt.where(models.SmartGoal.status == status)
+    else:
+        stmt = stmt.where(
+            or_(models.SmartGoal.status.is_(None), models.SmartGoal.status != "archived")
+        )
     return db.scalars(stmt).all()
 
 
-def get_milestone(db: Session, milestone_id: int) -> Optional[models.Milestone]:
+def get_goal(db: Session, goal_id: int) -> Optional[models.SmartGoal]:
     stmt = (
-        select(models.Milestone)
-        .where(models.Milestone.id == milestone_id)
-        .options(selectinload(models.Milestone.habits))
+        select(models.SmartGoal)
+        .where(models.SmartGoal.id == goal_id)
+        .options(selectinload(models.SmartGoal.habits))
     )
     return db.scalars(stmt).first()
 
 
-def create_milestone(db: Session, milestone_in: schemas.MilestoneCreate) -> models.Milestone:
-    tags = [t.strip() for t in (milestone_in.tags or []) if t.strip()]
-    milestone = models.Milestone(
-        title=milestone_in.title.strip(),
-        description=milestone_in.description,
-        outcome=milestone_in.outcome,
-        scope=milestone_in.scope,
-        start_date=milestone_in.start_date.isoformat() if milestone_in.start_date else None,
-        due_date=milestone_in.due_date.isoformat() if milestone_in.due_date else None,
+def create_goal(db: Session, goal_in: schemas.SmartGoalCreate) -> models.SmartGoal:
+    from datetime import datetime
+
+    tags = [t.strip() for t in (goal_in.tags or []) if t.strip()]
+    goal = models.SmartGoal(
+        title=goal_in.title.strip(),
+        why_this_matters=goal_in.why_this_matters,
+        frequency=goal_in.frequency,
+        frequency_period=goal_in.frequency_period,
+        success_threshold=goal_in.success_threshold,
+        quarter=goal_in.quarter,
         tags=tags,
-        status=milestone_in.status or "active",
+        status=goal_in.status or "active",
+        created_at=datetime.now().isoformat(),
     )
 
-    if milestone_in.habit_ids:
-        milestone.habits = db.scalars(
-            select(models.Habit).where(models.Habit.id.in_(milestone_in.habit_ids))
+    if goal_in.habit_ids:
+        goal.habits = db.scalars(
+            select(models.Habit).where(models.Habit.id.in_(goal_in.habit_ids))
         ).all()
 
-    db.add(milestone)
+    db.add(goal)
     db.commit()
-    db.refresh(milestone)
-    return milestone
+    db.refresh(goal)
+    return goal
 
 
-def update_milestone(
-    db: Session, milestone_id: int, milestone_in: schemas.MilestoneUpdate
-) -> Optional[models.Milestone]:
-    milestone = db.get(models.Milestone, milestone_id)
-    if milestone is None:
+def update_goal(
+    db: Session, goal_id: int, goal_in: schemas.SmartGoalUpdate
+) -> Optional[models.SmartGoal]:
+    goal = db.get(models.SmartGoal, goal_id)
+    if goal is None:
         return None
 
-    for field in ["title", "description", "outcome", "scope"]:
-        value = getattr(milestone_in, field, None)
-        if value is not None:
-            setattr(milestone, field, value.strip() if isinstance(value, str) else value)
-
-    if milestone_in.start_date is not None:
-        milestone.start_date = (
-            milestone_in.start_date.isoformat() if milestone_in.start_date else None
-        )
-    if milestone_in.due_date is not None:
-        milestone.due_date = milestone_in.due_date.isoformat() if milestone_in.due_date else None
-    if milestone_in.tags is not None:
-        milestone.tags = [t.strip() for t in milestone_in.tags if t.strip()]
-    if milestone_in.habit_ids is not None:
-        milestone.habits = db.scalars(
-            select(models.Habit).where(models.Habit.id.in_(milestone_in.habit_ids))
+    if goal_in.title is not None:
+        goal.title = goal_in.title.strip()
+    if goal_in.why_this_matters is not None:
+        goal.why_this_matters = goal_in.why_this_matters
+    if goal_in.frequency is not None:
+        goal.frequency = goal_in.frequency
+    if goal_in.frequency_period is not None:
+        goal.frequency_period = goal_in.frequency_period
+    if goal_in.success_threshold is not None:
+        goal.success_threshold = goal_in.success_threshold
+    if goal_in.quarter is not None:
+        goal.quarter = goal_in.quarter
+    if goal_in.tags is not None:
+        goal.tags = [t.strip() for t in goal_in.tags if t.strip()]
+    if goal_in.habit_ids is not None:
+        goal.habits = db.scalars(
+            select(models.Habit).where(models.Habit.id.in_(goal_in.habit_ids))
         ).all()
-    if milestone_in.status is not None:
-        milestone.status = milestone_in.status
+    if goal_in.status is not None:
+        goal.status = goal_in.status
 
-    db.add(milestone)
+    db.add(goal)
     db.commit()
-    db.refresh(milestone)
-    return milestone
+    db.refresh(goal)
+    return goal
 
 
-def delete_milestone(db: Session, milestone_id: int) -> bool:
-    milestone = db.get(models.Milestone, milestone_id)
-    if milestone is None:
+def delete_goal(db: Session, goal_id: int) -> bool:
+    goal = db.get(models.SmartGoal, goal_id)
+    if goal is None:
         return False
-    milestone.status = "archived"
-    db.add(milestone)
+    goal.status = "archived"
+    db.add(goal)
     db.commit()
     return True
+
+
+def get_goal_progress(
+    db: Session, goal_id: int, period_start: date, period_end: date
+) -> Optional[schemas.SmartGoalProgress]:
+    goal = get_goal(db, goal_id)
+    if goal is None:
+        return None
+
+    # Count completions attributed to this goal in the period
+    stmt = select(func.count(models.Completion.id)).where(
+        models.Completion.goal_id == goal_id,
+        models.Completion.date >= period_start.isoformat(),
+        models.Completion.date <= period_end.isoformat(),
+    )
+    completed = db.scalar(stmt) or 0
+
+    percentage = (completed / goal.frequency * 100) if goal.frequency > 0 else 0
+    on_track = percentage >= goal.success_threshold
+
+    return schemas.SmartGoalProgress(
+        goal_id=goal_id,
+        title=goal.title,
+        period_start=period_start,
+        period_end=period_end,
+        target=goal.frequency,
+        completed=completed,
+        percentage=min(100.0, percentage),
+        on_track=on_track,
+    )
+
+
+def get_quarterly_prompt(
+    db: Session, today: date, user_name: str = "User"
+) -> schemas.QuarterlyPrompt:
+    quarter_num = (today.month - 1) // 3 + 1
+    year = today.year
+    quarter = f"Q{quarter_num} {year}"
+
+    # Calculate days into quarter
+    quarter_start_month = (quarter_num - 1) * 3 + 1
+    quarter_start = date(year, quarter_start_month, 1)
+    days_into = (today - quarter_start).days
+
+    # Check if new quarter (first 7 days)
+    is_new = days_into < 7
+
+    # Get active goals count for this quarter
+    goals = list_goals(db, quarter=quarter, status="active")
+    active_count = len(goals)
+
+    if is_new and active_count == 0:
+        message = f"{user_name}, your {quarter} SMART Goals are due. Please complete your submission."
+    elif is_new:
+        message = f"{user_name}, {quarter} has begun. You have {active_count} active goals."
+    elif days_into > 80:
+        message = f"{user_name}, {quarter} ends soon. Time to reflect on your progress."
+    else:
+        message = f"{quarter} in progress. {active_count} active goals."
+
+    return schemas.QuarterlyPrompt(
+        quarter=quarter,
+        message=message,
+        is_new_quarter=is_new,
+        days_into_quarter=days_into,
+        active_goals_count=active_count,
+    )
+
+
+def get_weekly_summary(db: Session, today: date) -> List[schemas.SmartGoalProgress]:
+    from datetime import timedelta
+
+    # Calculate current week boundaries (Monday to Sunday)
+    week_start = today - timedelta(days=today.weekday())
+    week_end = week_start + timedelta(days=6)
+
+    # Get all active goals with weekly frequency
+    goals = list_goals(db, status="active")
+    weekly_goals = [g for g in goals if g.frequency_period == "week"]
+
+    result = []
+    for goal in weekly_goals:
+        progress = get_goal_progress(db, goal.id, week_start, week_end)
+        if progress:
+            result.append(progress)
+
+    return result
 
 
 # Reflections
@@ -344,7 +442,7 @@ def create_reflection(db: Session, reflection_in: schemas.ReflectionCreate) -> m
         prompts=reflection_in.prompts,
         responses=reflection_in.responses,
         submitted_at=reflection_in.submitted_at.isoformat() if reflection_in.submitted_at else None,
-        milestone_id=reflection_in.milestone_id,
+        goal_id=reflection_in.goal_id,
         rating=reflection_in.rating,
     )
     db.add(reflection)

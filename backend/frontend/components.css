@@ -34,7 +34,7 @@
   margin-bottom: 6px;
 }
 
-.milestone-line {
+.goal-line {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -45,12 +45,12 @@
   background: color-mix(in srgb, var(--bg1) 80%, transparent);
 }
 
-.milestone-line .meta {
+.goal-line .meta {
   margin: 0;
 }
 
 .hero__actions .ghost,
-.milestone-actions .ghost,
+.goal-actions .ghost,
 .theme-picker .ghost,
 .icon-button {
   background: var(--pill);
@@ -72,7 +72,7 @@
   box-shadow: var(--shadow);
 }
 
-#milestone-dashboard.demoted {
+#goal-dashboard.demoted {
   box-shadow: none;
   opacity: 0.95;
 }
@@ -378,7 +378,7 @@
   grid-column: 1 / -1;
 }
 
-.milestones-card {
+.goals-card {
   grid-column: 1 / -1;
 }
 
@@ -386,7 +386,7 @@
   grid-column: 1 / -1;
 }
 
-#milestone-manager-slot {
+#goal-manager-slot {
   display: contents;
 }
 

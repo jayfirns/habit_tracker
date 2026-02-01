@@ -43,12 +43,21 @@ export function makeApi(baseUrl) {
       request(`/habits/${id}/timer/start`, { method: "POST", body: JSON.stringify(payload) }),
     stopHabitTimer: (id) => request(`/habits/${id}/timer/stop`, { method: "POST" }),
     listActiveTimers: () => request("/timers"),
-    listMilestones: () => request("/milestones"),
-    createMilestone: (payload) =>
-      request("/milestones", { method: "POST", body: JSON.stringify(payload) }),
-    updateMilestone: (id, payload) =>
-      request(`/milestones/${id}`, { method: "PUT", body: JSON.stringify(payload) }),
-    deleteMilestone: (id) => request(`/milestones/${id}`, { method: "DELETE" }),
+    listGoals: ({ quarter, status } = {}) => {
+      const params = new URLSearchParams();
+      if (quarter) params.set("quarter", quarter);
+      if (status) params.set("status", status);
+      const query = params.toString();
+      return request(`/goals${query ? `?${query}` : ""}`);
+    },
+    createGoal: (payload) =>
+      request("/goals", { method: "POST", body: JSON.stringify(payload) }),
+    updateGoal: (id, payload) =>
+      request(`/goals/${id}`, { method: "PUT", body: JSON.stringify(payload) }),
+    deleteGoal: (id) => request(`/goals/${id}`, { method: "DELETE" }),
+    getGoalProgress: (id) => request(`/goals/${id}/progress`),
+    getWeeklySummary: () => request("/goals/weekly-summary"),
+    getQuarterlyPrompt: () => request("/quarterly-prompt"),
     listReflections: () => request("/reflections"),
     createReflection: (payload) =>
       request("/reflections", {
