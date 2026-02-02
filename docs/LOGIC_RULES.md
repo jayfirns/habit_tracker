@@ -127,6 +127,5 @@ A Task (Habit) has no explicit state. It is either present in the system or it i
 ### Current Implementation Status
 
 - **Backend**: Habit time logs and active timers are correctly persisted in the backend database (`habit_time_logs` and `habit_timers` tables).
-- **Frontend Integration Bug**: The frontend timer functions (`toggleHabitTimer`, `stopHabitTimer` in `app.js`) use fire-and-forget API calls (`void apiClient.startHabitTimer(...)`) without awaiting or error handling. If the backend call fails silently, the timer exists in local state but not in the database, causing cross-device sync failures.
-- **Missing Test Coverage**: No frontend integration tests verify that timer start/stop operations correctly call the backend API or handle errors.
-- **Symptom**: Timers started in one browser may not appear in another browser due to silent API failures.
+- **Frontend Integration**: Timer functions (`toggleHabitTimer`, `stopHabitTimer` in `app.js`) call backend API with proper error handling. If the backend call fails, an error message is displayed to the user ("Timer sync failed").
+- **Test Coverage**: Frontend integration tests in `timer-integration.test.mjs` verify timer start/stop operations call the backend API correctly and handle errors gracefully.

@@ -621,7 +621,9 @@ function addHabitMinutes(habitId, minutes) {
   const key = todayKey();
   if (!state.timeLogs[key]) state.timeLogs[key] = {};
   state.timeLogs[key][habitId] = (state.timeLogs[key][habitId] || 0) + minutes;
-  void persistTimeLog(habitId, state.timeLogs[key][habitId], "timer");
+  persistTimeLog(habitId, state.timeLogs[key][habitId], "timer").catch((err) => {
+    console.warn("Failed to persist time log:", err);
+  });
 }
 
 function toggleHabitTimer(habitId) {
@@ -630,14 +632,20 @@ function toggleHabitTimer(habitId) {
     const minutes = Math.max(1, Math.round((Date.now() - timer.start) / 60000));
     addHabitMinutes(habitId, minutes);
     delete state.activeTimers[habitId];
-    void apiClient.stopHabitTimer(habitId);
+    apiClient.stopHabitTimer(habitId).catch((err) => {
+      console.warn("Failed to stop timer on server:", err);
+      setStatus("Timer sync failed", true);
+    });
     const node = habitCardRefs.get(habitId);
     if (node) refreshHabitTimeDisplay(habitId, node);
     return;
   }
   const startedAt = Date.now();
   state.activeTimers[habitId] = { start: startedAt };
-  void apiClient.startHabitTimer(habitId, { started_at_ms: startedAt });
+  apiClient.startHabitTimer(habitId, { started_at_ms: startedAt }).catch((err) => {
+    console.warn("Failed to start timer on server:", err);
+    setStatus("Timer sync failed", true);
+  });
   const node = habitCardRefs.get(habitId);
   if (node) refreshHabitTimeDisplay(habitId, node);
 }
@@ -648,7 +656,10 @@ function stopHabitTimer(habitId) {
   const minutes = Math.max(1, Math.round((Date.now() - timer.start) / 60000));
   addHabitMinutes(habitId, minutes);
   delete state.activeTimers[habitId];
-  void apiClient.stopHabitTimer(habitId);
+  apiClient.stopHabitTimer(habitId).catch((err) => {
+    console.warn("Failed to stop timer on server:", err);
+    setStatus("Timer sync failed", true);
+  });
   const node = habitCardRefs.get(habitId);
   if (node) refreshHabitTimeDisplay(habitId, node);
   return minutes;

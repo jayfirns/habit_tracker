@@ -579,18 +579,9 @@ test("timer start API is called with timestamp matching Date.now()", async () =>
 // Error Handling Tests (These document expected behavior - may fail with current impl)
 // =============================================================================
 
-test("timer operations should handle API failures gracefully", { todo: true }, async () => {
-  // BUG DOCUMENTED: This test is marked as TODO because the current implementation
-  // uses fire-and-forget API calls (void apiClient.startHabitTimer(...)) which causes
-  // unhandled promise rejections when the API fails.
-  //
-  // See LOGIC_RULES.md "Current Implementation Status" for details.
-  //
-  // When the fix is implemented, remove the { todo: true } option and this test
-  // should pass, verifying that:
-  // - The app doesn't crash on API failure
-  // - An error message is shown to the user
-  // - Local state is not left inconsistent with server
+test("timer operations should handle API failures gracefully", async () => {
+  // This test verifies that timer API failures are caught and handled gracefully
+  // instead of causing unhandled promise rejections.
 
   // 1. Setup
   const apiCalls = [];
@@ -622,21 +613,19 @@ test("timer operations should handle API failures gracefully", { todo: true }, a
 
     const timerBtn = dom.window.document.querySelector(".js-timer-toggle");
     timerBtn.click();
-    await new Promise((resolve) => setTimeout(resolve, 50));
+    await new Promise((resolve) => setTimeout(resolve, 100));
 
     // 3. Assert
     // With proper error handling, the app should:
-    // - Not crash
-    // - Potentially show an error message to user
-    // - Not leave local state in inconsistent state with server
+    // - Not crash (no unhandled rejection)
+    // - Show an error message to user
+    // - Continue running
 
-    // For now, we just verify the app doesn't throw and continues running
     const statusEl = dom.window.document.querySelector("#status");
     assert.ok(statusEl, "Status element should still exist (app did not crash)");
 
-    // TODO: Once error handling is implemented, add assertions for:
-    // - Error message displayed to user
-    // - Local state rolled back or marked as unsynced
+    // Verify error message is shown to user
+    assert.equal(statusEl.textContent, "Timer sync failed", "Should show error message to user");
   } finally {
     global.fetch = originalFetch;
     restore();

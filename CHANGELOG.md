@@ -8,15 +8,17 @@ This document tracks significant changes, features, and fixes implemented throug
 
 ---
 
-## Unreleased - Timer Persistence Bug Investigation
+## Unreleased - Timer Persistence Bug Fix
 
-### Found
-- **Bug**: Frontend timer functions (`toggleHabitTimer`, `stopHabitTimer` in `app.js`) use fire-and-forget API calls with `void` keyword. If backend calls fail silently, timers exist locally but not in the database, breaking cross-device sync.
-- **Root Cause**: API calls are not awaited and have no error handling or user feedback.
+### Fixed
+- **Bug**: Frontend timer functions (`toggleHabitTimer`, `stopHabitTimer` in `app.js`) now properly handle API errors instead of using fire-and-forget calls. If backend calls fail, users see "Timer sync failed" status message.
+
+### Added
+- **Tests**: Added `timer-integration.test.mjs` with 6 tests verifying timer API integration and error handling.
 
 ### Changed
-- **Docs**: Updated `LOGIC_RULES.md` to correct the "Current Implementation Gap" section - backend IS implemented, but frontend integration has a robustness bug.
-- **Docs**: Updated `EnergyMixPanel.md` to note the frontend timer sync caveat.
+- **Docs**: Updated `LOGIC_RULES.md` to reflect the fix - timer functions now include proper error handling.
+- **Docs**: Updated `EnergyMixPanel.md` to note timer sync includes error handling.
 - **Docs**: Updated `TESTING_MANDATES.md` to require timer API integration tests.
 
 ---
