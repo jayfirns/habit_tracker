@@ -163,6 +163,66 @@ def test_create_goal_with_habit_links(db_session):
     assert habit2.id in habit_ids
 
 
+def test_list_goals_returns_habit_ids(db_session):
+    """Integration test: verify list_goals API returns habit_ids for frontend edit."""
+    habit1 = create_habit(schemas.HabitCreate(name="Run", category="Fitness"), db_session)
+    habit2 = create_habit(schemas.HabitCreate(name="Bike", category="Fitness"), db_session)
+
+    create_goal(
+        schemas.SmartGoalCreate(
+            title="Fitness Goal",
+            frequency=3,
+            quarter="Q1 2026",
+            habit_ids=[habit1.id, habit2.id],
+        ),
+        db_session,
+    )
+
+    goals = crud.list_goals(db_session)
+    assert len(goals) == 1
+
+    # This is what the frontend receives - verify habit_ids is populated
+    goal_response = goals[0]
+    assert hasattr(goal_response, "habit_ids") or "habit_ids" in dir(goal_response)
+    assert habit1.id in goal_response.habit_ids
+    assert habit2.id in goal_response.habit_ids
+
+
+def test_get_goal_returns_all_edit_fields(db_session):
+    """Integration test: verify get_goal returns all fields needed for edit mode."""
+    habit = create_habit(schemas.HabitCreate(name="Run", category="Fitness"), db_session)
+
+    goal = create_goal(
+        schemas.SmartGoalCreate(
+            title="Test Goal",
+            why_this_matters="For health",
+            measure_type="duration",
+            duration_minutes=45,
+            frequency_period="week",
+            success_threshold=75,
+            quarter="Q1 2026",
+            due_date=date(2026, 3, 15),
+            tags=["health", "fitness"],
+            habit_ids=[habit.id],
+        ),
+        db_session,
+    )
+
+    fetched = get_goal(goal.id, db_session)
+
+    # Verify all fields needed for openGoalForEdit are present
+    assert fetched.title == "Test Goal"
+    assert fetched.why_this_matters == "For health"
+    assert fetched.measure_type == "duration"
+    assert fetched.duration_minutes == 45
+    assert fetched.frequency_period == "week"
+    assert fetched.success_threshold == 75
+    assert fetched.quarter == "Q1 2026"
+    assert fetched.due_date == date(2026, 3, 15)
+    assert fetched.tags == ["health", "fitness"]
+    assert fetched.habit_ids == [habit.id]
+
+
 def test_goal_frequency_validation(db_session):
     with pytest.raises(Exception):
         create_goal(
