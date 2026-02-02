@@ -1,6 +1,6 @@
 ---
 created: 2026-02-01T00:00
-updated: 2026-02-01T18:00
+updated: 2026-02-01T18:30
 ---
 # SMART Goals Data Flow
 
@@ -151,6 +151,9 @@ When adding a field to SmartGoal, update ALL of these:
 2. Set measure_type toggle based on goal.measure_type
 3. Show correct input (frequency or duration) based on toggle
 4. Populate due_date from goal.due_date
+5. Populate habit selection from goal.habit_ids
+6. Allow adding/removing habit associations
+7. Persist habit_ids changes on save
 
 ## Testing Requirements
 
@@ -161,6 +164,8 @@ Per TESTING_MANDATES.md:
 4. Form validation: verify error states
 5. Payload structure: verify only relevant measure field sent
 6. **Edit Mode**: verify `openGoalForEdit()` populates all fields from existing goal data
+7. **Habit association update**: verify adding habits to existing goal persists
+8. **Habit association removal**: verify removing habits from existing goal persists
 
 ## Bug History
 
