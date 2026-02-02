@@ -6,7 +6,7 @@ updated: 2026-02-01T16:30
 
 ## Purpose
 
-This document defines the conceptual hierarchy and naming semantics of the `habit_tracker` system. It is intended to clarify the differences between core entities (such as Habit, Milestone, Task, and To-Do), eliminate ambiguity in naming and architecture, and serve as a long-term reference for maintainability and user experience consistency.
+This document defines the conceptual hierarchy and naming semantics of the `habit_tracker` system. It is intended to clarify the differences between core entities (such as Habit, SMART Goal, Task, and To-Do), eliminate ambiguity in naming and architecture, and serve as a long-term reference for maintainability and user experience consistency.
 
 This is a design philosophy document. It guides naming, relationships, and system boundaries, but does not describe implementation logic (see `LOGIC_RULES.md` for that).
 
@@ -33,7 +33,7 @@ The system does **not** treat legacy goals as primary entities. Rather, **habits
 - A Habit represents a repeatable behavior the user wants to maintain.
 - Tracked over time via completions and streaks.
 - Optional fields (TBD via schema updates):
-  - `target_count`: for milestone-based habits (e.g., "Do 50 workouts")
+  - `target_count`: for target-based habits (e.g., "Do 50 workouts")
   - `scope`: time-bound context (e.g., `month`, `quarter`, `year`)
   - `metrics`: daily, weekly, or interval-based frequency target
   - `category`, `tags`, etc.
@@ -65,7 +65,7 @@ The system does **not** treat legacy goals as primary entities. Rather, **habits
 
 ### 5. **Reflection (Analysis Record)**
 
-- Optional record attached to a Habit (or Milestone) for retrospective insight.
+- Optional record attached to a Habit (or SMART Goal) for retrospective insight.
 - Used to analyze outcomes, emotions, or subjective states.
 - Helps connect intention to long-term outcomes.
 

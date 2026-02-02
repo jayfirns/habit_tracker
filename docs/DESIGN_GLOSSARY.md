@@ -1,6 +1,6 @@
 ---
 created: 2025-12-30T20:19
-updated: 2025-12-31T10:17
+updated: 2026-02-01T19:15
 ---
 ## Audit: `.js-category` Dependencies (read-only, no changes applied)
 
@@ -36,7 +36,7 @@ updated: 2025-12-31T10:17
 
 # UI Design Glossary (New Habit & Habit Board)
 
-- **Detailed Panel Documentation**: For comprehensive design objectives and enhancement matrices of individual UI panels (e.g., Energy Mix Panel, Milestone Dashboard Panel), refer to the dedicated files in the `docs/panels/` directory, indexed by [UI_PANELS_DOCUMENTATION.md](UI_PANELS_DOCUMENTATION.md).
+- **Detailed Panel Documentation**: For comprehensive design objectives and enhancement matrices of individual UI panels (e.g., Energy Mix Panel, SMART Goals Dashboard Panel), refer to the dedicated files in the `docs/panels/` directory, indexed by [UI_PANELS_DOCUMENTATION.md](UI_PANELS_DOCUMENTATION.md).
 
 | Element Name | Description | Text Example | Panel | Style Controlled By | Conforms? | Fix Recommendation |
 |--------------|-------------|--------------|-------|---------------------|-----------|---------------------|

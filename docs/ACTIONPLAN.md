@@ -1,6 +1,6 @@
 ---
 created: 2025-12-30T20:19
-updated: 2025-12-31T10:28
+updated: 2026-02-01T19:00
 ---
 # ACTIONPLAN.md - FocusOS Web Migration Game Plan
 
@@ -21,7 +21,7 @@ This document outlines the high-level action plan for migrating the "My Personal
 **Objective**: Review `docs/HABIT_ARCHITECTURE.md` for alignment with current implementation, terminology usage, and future roadmap, while scoping required tests per `docs/TESTING_MANDATES.md`.
 
 **Steps**:
--   **Baseline scan**: Summarize the current entity hierarchy (Habit, Completion, Milestone/Target, Reflection) and note deprecated terms (Goal, Task/To-Do).
+-   **Baseline scan**: Summarize the current entity hierarchy (Habit, Completion, SMART Goal, Reflection) and note deprecated terms (Goal, Milestone, Task/To-Do).
 -   **Implementation alignment check**: Compare the architecture terms against actual code usage in `backend/models.py`, `backend/schemas.py`, and API routes; log mismatches or terminology drift.
 -   **Schema consistency review**: Verify any referenced optional fields (e.g., `target_count`, `metrics`, `scope`) against the current schema; flag missing fields as either TODOs or doc updates.
 -   **UI labeling audit**: Confirm the frontend/UI does not expose legacy terms (`goal`) or imply unimplemented entities (`task`, `todo`, `action`).
@@ -33,15 +33,15 @@ This document outlines the high-level action plan for migrating the "My Personal
 -   **Deliverables**: A short discrepancy list, doc updates (if needed), and a TDD checklist for any new implementation work.
 
 **Initial Review Notes (Alignment Gaps)**:
--   **Goal → Milestone rename**: Goal terminology has been replaced by Milestone across backend, API, tests, and UI to match architecture.
--   **Reflection linking**: Reflection now links via `milestone_id` to align with Milestone as the target entity.
+-   **Goal → Milestone → SMART Goal evolution**: Goal/Milestone terminology has been replaced by SMART Goal across backend, API, tests, and UI to match architecture.
+-   **Reflection linking**: Reflection now links via `goal_id` to align with SMART Goal as the target entity.
 -   **Task label in UI**: Time summary “Task” label updated to “Habit” to avoid implying a Task entity.
 -   **Habit optional fields**: `category`/`tags` exist; `target_count`, `metrics`, `scope` are not present in the schema yet.
 
 **TDD Follow-Ups (If Changes Proceed)**:
--   **UI logic**: Tests for milestone insights and prompt copy added; extend if overlay flow changes are introduced.
--   **State management**: Ensure milestone field changes propagate to dashboard counts, reflection linking, and habit coverage.
--   **Edge/empty states**: Verify “no milestones/habits” and missing optional fields still render sane fallbacks.
+-   **UI logic**: Tests for SMART Goal insights and prompt copy added; extend if overlay flow changes are introduced.
+-   **State management**: Ensure SMART Goal field changes propagate to dashboard counts, reflection linking, and habit coverage.
+-   **Edge/empty states**: Verify "no SMART Goals/habits" and missing optional fields still render sane fallbacks.
 -   **Global exposure**: If any new helpers are added for renaming/formatting, test existence and repeated calls.
 
 ---
@@ -61,14 +61,14 @@ This document outlines the high-level action plan for migrating the "My Personal
     -   Integration: ensure persistence and local state stay in sync after deletion.
 -   **Deliverables**: Gap list, required test cases, and any doc updates needed.
 -   **Known gaps to resolve**:
-    -   Habit deletion does not explicitly clear join rows in `habit_milestones` (see `backend/models.py` and `backend/crud.py`); validate DB-level cascade or add explicit cleanup.
-    -   Habit deletion does not update `state.milestoneHabitSelection`, which can leave deleted habit IDs in the milestone picker state (see `backend/frontend/app.js`).
+    -   Habit deletion does not explicitly clear join rows in `goal_habits` (see `backend/models.py` and `backend/crud.py`); validate DB-level cascade or add explicit cleanup.
+    -   Habit deletion does not update `state.goalHabitSelection`, which can leave deleted habit IDs in the SMART Goal picker state (see `backend/frontend/app.js`).
 -   **Repeatable test runs**:
     -   `python -m pytest`
     -   `node --test backend/frontend/**/*.test.mjs`
     -   **Expected results (current tests passing)**:
         -   Deleting a habit removes it from listings and deletes completions in persistence (`backend/tests/test_api.py`).
-        -   Deleting a habit does not delete associated milestones (`backend/tests/test_api.py`).
+        -   Deleting a habit does not delete associated SMART Goals (`backend/tests/test_api.py`).
         -   Deleting a habit blocks completion listing for that habit (`backend/tests/test_api.py`).
         -   UI delete wiring calls the delete handler per habit (`backend/frontend/ui/habitsView.test.mjs`).
         -   Delete flow confirms, updates status, purges local logs/timers, and refreshes (`backend/frontend/ui/deleteHabitFlow.test.mjs`).
@@ -129,22 +129,22 @@ This document outlines the high-level action plan for migrating the "My Personal
 
 ## Phase 3: Advanced Features & Refinements
 
-**Objective**: Implement the more complex FocusOS functional and non-functional requirements, including hierarchical milestones, time tracking, advanced representations, and privacy-first LLM integration. This phase will build out the remaining aspects of the Domain Model, Representation, and Interaction & Intent Layers.
+**Objective**: Implement the more complex FocusOS functional and non-functional requirements, including SMART Goals, time tracking, advanced representations, and privacy-first LLM integration. This phase will build out the remaining aspects of the Domain Model, Representation, and Interaction & Intent Layers.
 
 **Key Deliverables**:
--   Extended Domain Model and API for Milestones, Submilestones, Relationships, and TimeEntries.
+-   Extended Domain Model and API for SMART Goals, Relationships, and TimeEntries.
 -   Advanced web views (Strategic, Tactical, Operational, Analytical).
 -   Robust time tracking and reflection mechanisms.
--   SMART milestone enforcement and intention setting.
+-   SMART Goal enforcement and intention setting.
 -   Privacy-first LLM integration for coaching.
 -   Comprehensive testing suite.
 -   Deployment documentation.
 
 **Tasks**:
--   [ ] **Milestones & Hierarchical Structure**:
--   [ ] Extend Domain Model and database schema for `Milestone` entities and `Relationship` entities.
--   [ ] Develop API endpoints for managing milestones, submilestones, and their hierarchical relationships.
--   [ ] Update frontend to display and manage hierarchical milestones.
+-   [x] **SMART Goals**:
+-   [x] Extend Domain Model and database schema for `SmartGoal` entities and `Relationship` entities.
+-   [x] Develop API endpoints for managing SMART Goals and their habit relationships.
+-   [x] Update frontend to display and manage SMART Goals.
     -   [ ] Write tests (TDD).
 -   [ ] **Enhanced Time Tracking & Accountability**:
     -   [ ] Add `TimeEntry` entity to Domain Model.
@@ -153,7 +153,7 @@ This document outlines the high-level action plan for migrating the "My Personal
     -   [x] Refactor Workday Time Glide panel into planned vs actual clocked modes with TDD coverage (state locking, overrides, empty state).
     -   [x] Persist Workday Time Glide state via backend `/workday` API for cross-device sync, with local fallback.
     -   [x] Add backend + frontend tests validating workday persistence and UI state locking.
--   [ ] Implement backend logic to track milestone time boundaries, completion percentages, and surface planned vs. actual effort/drift.
+-   [ ] Implement backend logic to track SMART Goal time boundaries, completion percentages, and surface planned vs. actual effort/drift.
     -   [ ] Develop frontend UI for quarterly and EOY reflection prompts.
     -   [ ] Write tests (TDD).
 -   [ ] **Advanced Representation Layer (Views)**:
@@ -161,10 +161,10 @@ This document outlines the high-level action plan for migrating the "My Personal
     -   [ ] Integrate web-based charting libraries (e.g., Chart.js, D3.js) and calendar components (e.g., FullCalendar.js) into the frontend.
     -   [ ] Develop dedicated frontend views for each representation.
     -   [ ] Write tests (TDD).
--   [ ] **SMART Milestone Enforcement & Intentions**:
--   [ ] Implement robust validation logic in the backend (Interaction & Intent Layer) for SMART milestone criteria.
--   [x] Develop frontend UI to guide users through SMART milestone creation and intention setting, with linked habits.
--   [ ] Implement backend and frontend logic for displaying contextual banners/inspirational messages based on milestone dates.
+-   [ ] **SMART Goal Enforcement & Intentions**:
+-   [ ] Implement robust validation logic in the backend (Interaction & Intent Layer) for SMART Goal criteria.
+-   [x] Develop frontend UI to guide users through SMART Goal creation and intention setting, with linked habits.
+-   [ ] Implement backend and frontend logic for displaying contextual banners/inspirational messages based on SMART Goal dates.
     -   [ ] Write tests (TDD).
 -   [ ] **Privacy-First LLM Integration for Coaching**:
     -   [ ] Research options for small/local/on-device LLMs or limited-context external LLM integration.

@@ -1,6 +1,6 @@
 ---
 created: 2025-12-30T22:02
-updated: 2025-12-31T11:20
+updated: 2026-02-01T18:15
 ---
 # LOGIC_RULES.md
 
@@ -10,14 +10,14 @@ This document defines system-level behavioral rules that govern core logic acros
 
 ---
 
-## Task / Milestone Lifecycle
+## Task / SMART Goal Lifecycle
 
-### Milestone States
+### SMART Goal States
 
-A Milestone **must** exist in one of the following states:
-- `active`: A milestone that is currently in progress.
-- `complete`: A milestone that has been successfully finished.
-- `archived`: A milestone that has been deleted by a user.
+A SMART Goal **must** exist in one of the following states:
+- `active`: A goal that is currently in progress.
+- `complete`: A goal that has been successfully finished.
+- `archived`: A goal that has been deleted by a user.
 
 ### Task States
 
@@ -27,12 +27,12 @@ A Task (Habit) has no explicit state. It is either present in the system or it i
 
 ## Deletion Rules
 
-### On Milestone Deletion
+### On SMART Goal Deletion
 
-- When a Milestone is deleted, its state **must** transition to `archived`.
-- Archived Milestones **must not** appear in standard list views.
-- All associated data, including links to Tasks, **must** be preserved.
-- Deletion of a Milestone **must not** trigger the deletion of any associated Tasks.
+- When a SMART Goal is deleted, its state **must** transition to `archived`.
+- Archived SMART Goals **must not** appear in standard list views.
+- All associated data, including links to Habits, **must** be preserved.
+- Deletion of a SMART Goal **must not** trigger the deletion of any associated Habits.
 
 ### On Task Deletion
 
@@ -43,18 +43,18 @@ A Task (Habit) has no explicit state. It is either present in the system or it i
 
 ---
 
-## Modification of Completed Milestones
+## Modification of Completed SMART Goals
 
-- A Milestone with a `complete` status **must** remain modifiable.
-- The system **guarantees** that the status of a completed Milestone can be reverted to `active`.
+- A SMART Goal with a `complete` status **must** remain modifiable.
+- The system **guarantees** that the status of a completed SMART Goal can be reverted to `active`.
 
 ---
 
 ## Relationship to Tests
 
 - These rules are not merely descriptive; they are enforced by the automated test suite.
-- The repository’s tests are the final authority on system behavior. Any discrepancy between this document and the test suite indicates that this document is out of date.
-- Tests related to Milestones (`test_milestones.py`) assert the `archived` status transition on deletion and the modifiability of completed milestones.
+- The repository's tests are the final authority on system behavior. Any discrepancy between this document and the test suite indicates that this document is out of date.
+- Tests related to SMART Goals (`test_goals.py`) assert the `archived` status transition on deletion and the modifiability of completed goals.
 - Tests related to Tasks (`test_api.py`, `habitState.test.mjs`) assert the permanent deletion of Tasks and the corresponding cleanup of all associated data from both persistence and local state.
 
 ---

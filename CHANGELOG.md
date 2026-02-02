@@ -1,6 +1,6 @@
 ---
 created: 2025-12-30T20:19
-updated: 2026-02-01T18:00
+updated: 2026-02-01T19:20
 ---
 # CHANGELOG.md - FocusOS Project Progress
 
@@ -23,6 +23,12 @@ This document tracks significant changes, features, and fixes implemented throug
 
 ### Changed
 - **Docs**: Deleted redundant `docs/panels/SmartGoalsPanel.md` (consolidated into DATA_FLOW)
+- **Docs**: Updated all documentation to use "SMART Goal" terminology consistently
+  - `LOGIC_RULES.md`: Replaced "Milestone" with "SMART Goal" in lifecycle and deletion rules
+  - `ACTIONPLAN.md`: Updated entity hierarchy, evolution notes, TDD follow-ups, and Phase 3 tasks
+  - `UI_PANELS_DOCUMENTATION.md`: Renamed MilestoneDashboardPanel to SmartGoalsDashboardPanel, added "(Legacy ID.)" notes for code references
+  - `DESIGN_GLOSSARY.md`: Updated panel reference
+  - `HABIT_ARCHITECTURE.md`: Clarified current terminology (legacy references preserved for evolution history)
 
 ### Found (Bugs Documented)
 - **Bug**: `app.js` uses `||` instead of `??` for numeric fields; `success_threshold=0` incorrectly defaults to 80
