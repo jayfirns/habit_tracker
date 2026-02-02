@@ -280,6 +280,85 @@ def test_update_goal_fields(db_session):
     assert updated.why_this_matters == "New reason"
 
 
+def test_update_goal_add_habits(db_session):
+    """Test adding habits to an existing goal that had none."""
+    goal = create_goal(
+        schemas.SmartGoalCreate(
+            title="Fitness Goal",
+            frequency=3,
+            quarter="Q1 2026",
+        ),
+        db_session,
+    )
+    assert len(goal.habits) == 0
+
+    habit1 = create_habit(schemas.HabitCreate(name="Run", category="Fitness"), db_session)
+    habit2 = create_habit(schemas.HabitCreate(name="Bike", category="Fitness"), db_session)
+
+    updated = update_goal(
+        goal.id,
+        schemas.SmartGoalUpdate(habit_ids=[habit1.id, habit2.id]),
+        db_session,
+    )
+
+    assert len(updated.habits) == 2
+    habit_ids = [h.id for h in updated.habits]
+    assert habit1.id in habit_ids
+    assert habit2.id in habit_ids
+
+
+def test_update_goal_remove_habits(db_session):
+    """Test removing all habits from an existing goal."""
+    habit1 = create_habit(schemas.HabitCreate(name="Run", category="Fitness"), db_session)
+    habit2 = create_habit(schemas.HabitCreate(name="Bike", category="Fitness"), db_session)
+
+    goal = create_goal(
+        schemas.SmartGoalCreate(
+            title="Fitness Goal",
+            frequency=3,
+            quarter="Q1 2026",
+            habit_ids=[habit1.id, habit2.id],
+        ),
+        db_session,
+    )
+    assert len(goal.habits) == 2
+
+    updated = update_goal(
+        goal.id,
+        schemas.SmartGoalUpdate(habit_ids=[]),
+        db_session,
+    )
+
+    assert len(updated.habits) == 0
+
+
+def test_update_goal_replace_habits(db_session):
+    """Test replacing habits on an existing goal with different habits."""
+    habit1 = create_habit(schemas.HabitCreate(name="Run", category="Fitness"), db_session)
+    habit2 = create_habit(schemas.HabitCreate(name="Bike", category="Fitness"), db_session)
+    habit3 = create_habit(schemas.HabitCreate(name="Swim", category="Fitness"), db_session)
+
+    goal = create_goal(
+        schemas.SmartGoalCreate(
+            title="Fitness Goal",
+            frequency=3,
+            quarter="Q1 2026",
+            habit_ids=[habit1.id, habit2.id],
+        ),
+        db_session,
+    )
+    assert len(goal.habits) == 2
+
+    updated = update_goal(
+        goal.id,
+        schemas.SmartGoalUpdate(habit_ids=[habit3.id]),
+        db_session,
+    )
+
+    assert len(updated.habits) == 1
+    assert updated.habits[0].id == habit3.id
+
+
 def test_completion_with_goal_attribution(db_session):
     habit = create_habit(schemas.HabitCreate(name="Run", category="Fitness"), db_session)
     goal = create_goal(
