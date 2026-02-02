@@ -1,10 +1,32 @@
 ---
 created: 2025-12-30T20:19
-updated: 2025-12-31T11:26
+updated: 2026-02-01T18:00
 ---
 # CHANGELOG.md - FocusOS Project Progress
 
 This document tracks significant changes, features, and fixes implemented throughout the development of the FocusOS web application. It serves as a record of progress, a reference for debugging, and a tool for quality control.
+
+---
+
+## Unreleased - SMART Goals Edit Investigation
+
+### Added
+- **Docs**: Consolidated SMART Goals documentation into single authoritative file `SMART_GOALS_DATA_FLOW.md`
+- **Docs**: Added frontmatter dates and cross-reference to `HABIT_ARCHITECTURE.md`
+- **Docs**: Added Edit Mode specification items 5-7 (habit selection, add/remove, persist)
+- **Docs**: Added Testing Requirements items 7-8 (habit association update/removal)
+- **Tests**: `test_goals.py` - 3 backend tests for habit association updates (add/remove/replace)
+- **Tests**: `test_goals.py` - 2 integration tests verifying API returns all edit fields
+- **Tests**: `smartGoalEdit.test.mjs` - 36 frontend tests for edit mode form population
+- **Tests**: `smartGoalRender.test.mjs` - 8 integration tests for goal rendering HTML output
+- **Debug**: Added console.log to `openGoalForEdit` for troubleshooting
+
+### Changed
+- **Docs**: Deleted redundant `docs/panels/SmartGoalsPanel.md` (consolidated into DATA_FLOW)
+
+### Found (Bugs Documented)
+- **Bug**: `app.js` uses `||` instead of `??` for numeric fields; `success_threshold=0` incorrectly defaults to 80
+- **Bug**: Duration goals display `nullx/week` instead of duration info in goal list
 
 ---
 
