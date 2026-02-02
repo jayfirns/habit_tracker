@@ -80,10 +80,11 @@ function populateGoalForm(dom, goal, state) {
   if (frequencyField) frequencyField.hidden = !isFrequency;
   if (durationField) durationField.hidden = isFrequency;
 
-  if (goalFrequencyInput) goalFrequencyInput.value = goal.frequency || 3;
-  if (goalDurationInput) goalDurationInput.value = goal.duration_minutes || 60;
+  // Use nullish coalescing (??) to handle 0 correctly (0 is a valid value)
+  if (goalFrequencyInput) goalFrequencyInput.value = goal.frequency ?? 3;
+  if (goalDurationInput) goalDurationInput.value = goal.duration_minutes ?? 60;
   if (goalFrequencyPeriodInput) goalFrequencyPeriodInput.value = goal.frequency_period || "week";
-  if (goalSuccessThresholdInput) goalSuccessThresholdInput.value = goal.success_threshold || 80;
+  if (goalSuccessThresholdInput) goalSuccessThresholdInput.value = goal.success_threshold ?? 80;
   if (goalQuarterInput) goalQuarterInput.value = goal.quarter || "";
   if (goalDueDateInput) goalDueDateInput.value = goal.due_date || "";
   if (goalTagsInput) goalTagsInput.value = (goal.tags || []).join(", ");
@@ -311,5 +312,222 @@ describe("openGoalForEdit", () => {
     assert.equal(doc.querySelector("#goal-due-date").value, "2026-03-31");
     assert.equal(doc.querySelector("#goal-tags").value, "health, fitness");
     assert.equal(state.goalHabitSelection.size, 2);
+  });
+});
+
+describe("openGoalForEdit edge cases", () => {
+  test("handles null why_this_matters gracefully", () => {
+    const dom = createGoalFormDom();
+    const state = {};
+    const goal = { id: 1, title: "Test", why_this_matters: null };
+
+    populateGoalForm(dom, goal, state);
+
+    const whyInput = dom.window.document.querySelector("#goal-why");
+    assert.equal(whyInput.value, "");
+  });
+
+  test("handles null tags gracefully", () => {
+    const dom = createGoalFormDom();
+    const state = {};
+    const goal = { id: 1, title: "Test", tags: null };
+
+    populateGoalForm(dom, goal, state);
+
+    const tagsInput = dom.window.document.querySelector("#goal-tags");
+    assert.equal(tagsInput.value, "");
+  });
+
+  test("handles null due_date gracefully", () => {
+    const dom = createGoalFormDom();
+    const state = {};
+    const goal = { id: 1, title: "Test", due_date: null };
+
+    populateGoalForm(dom, goal, state);
+
+    const dueDateInput = dom.window.document.querySelector("#goal-due-date");
+    assert.equal(dueDateInput.value, "");
+  });
+
+  test("defaults to frequency when measure_type is missing", () => {
+    const dom = createGoalFormDom();
+    const state = {};
+    const goal = { id: 1, title: "Test" }; // no measure_type
+
+    populateGoalForm(dom, goal, state);
+
+    const freqRadio = dom.window.document.querySelector("#measure-type-frequency");
+    const durRadio = dom.window.document.querySelector("#measure-type-duration");
+    assert.equal(freqRadio.checked, true);
+    assert.equal(durRadio.checked, false);
+  });
+
+  test("defaults to frequency when measure_type is null", () => {
+    const dom = createGoalFormDom();
+    const state = {};
+    const goal = { id: 1, title: "Test", measure_type: null };
+
+    populateGoalForm(dom, goal, state);
+
+    const freqRadio = dom.window.document.querySelector("#measure-type-frequency");
+    assert.equal(freqRadio.checked, true);
+  });
+
+  test("handles duration goal with null duration_minutes - uses default 60", () => {
+    const dom = createGoalFormDom();
+    const state = {};
+    const goal = { id: 1, title: "Test", measure_type: "duration", duration_minutes: null };
+
+    populateGoalForm(dom, goal, state);
+
+    const durInput = dom.window.document.querySelector("#goal-duration");
+    assert.equal(durInput.value, "60"); // default
+  });
+
+  test("handles frequency goal with null frequency - uses default 3", () => {
+    const dom = createGoalFormDom();
+    const state = {};
+    const goal = { id: 1, title: "Test", measure_type: "frequency", frequency: null };
+
+    populateGoalForm(dom, goal, state);
+
+    const freqInput = dom.window.document.querySelector("#goal-frequency");
+    assert.equal(freqInput.value, "3"); // default
+  });
+
+  test("populates frequency_period month correctly", () => {
+    const dom = createGoalFormDom();
+    const state = {};
+    const goal = { id: 1, title: "Test", frequency_period: "month" };
+
+    populateGoalForm(dom, goal, state);
+
+    const periodSelect = dom.window.document.querySelector("#goal-frequency-period");
+    assert.equal(periodSelect.value, "month");
+  });
+
+  test("handles completed goal status - form still populates", () => {
+    const dom = createGoalFormDom();
+    const state = {};
+    const goal = { id: 1, title: "Completed Goal", status: "complete", frequency: 5 };
+
+    populateGoalForm(dom, goal, state);
+
+    const titleInput = dom.window.document.querySelector("#goal-title");
+    const freqInput = dom.window.document.querySelector("#goal-frequency");
+    assert.equal(titleInput.value, "Completed Goal");
+    assert.equal(freqInput.value, "5");
+    assert.equal(state.editingGoalId, 1);
+  });
+
+  test("handles due_date in the past", () => {
+    const dom = createGoalFormDom();
+    const state = {};
+    const goal = { id: 1, title: "Test", due_date: "2020-01-01" };
+
+    populateGoalForm(dom, goal, state);
+
+    const dueDateInput = dom.window.document.querySelector("#goal-due-date");
+    assert.equal(dueDateInput.value, "2020-01-01");
+  });
+
+  test("handles special characters in title", () => {
+    const dom = createGoalFormDom();
+    const state = {};
+    const goal = { id: 1, title: "Test <script>alert('xss')</script> & \"quotes\"" };
+
+    populateGoalForm(dom, goal, state);
+
+    const titleInput = dom.window.document.querySelector("#goal-title");
+    assert.equal(titleInput.value, "Test <script>alert('xss')</script> & \"quotes\"");
+  });
+
+  test("handles many tags", () => {
+    const dom = createGoalFormDom();
+    const state = {};
+    const goal = { id: 1, title: "Test", tags: ["a", "b", "c", "d", "e", "f", "g"] };
+
+    populateGoalForm(dom, goal, state);
+
+    const tagsInput = dom.window.document.querySelector("#goal-tags");
+    assert.equal(tagsInput.value, "a, b, c, d, e, f, g");
+  });
+
+  test("handles success_threshold of 0", () => {
+    const dom = createGoalFormDom();
+    const state = {};
+    const goal = { id: 1, title: "Test", success_threshold: 0 };
+
+    populateGoalForm(dom, goal, state);
+
+    const thresholdInput = dom.window.document.querySelector("#goal-success-threshold");
+    // 0 is falsy, but should still show 0, not default to 80
+    assert.equal(thresholdInput.value, "0");
+  });
+
+  test("handles success_threshold of 100", () => {
+    const dom = createGoalFormDom();
+    const state = {};
+    const goal = { id: 1, title: "Test", success_threshold: 100 };
+
+    populateGoalForm(dom, goal, state);
+
+    const thresholdInput = dom.window.document.querySelector("#goal-success-threshold");
+    assert.equal(thresholdInput.value, "100");
+  });
+
+  test("handles frequency of 1", () => {
+    const dom = createGoalFormDom();
+    const state = {};
+    const goal = { id: 1, title: "Test", frequency: 1 };
+
+    populateGoalForm(dom, goal, state);
+
+    const freqInput = dom.window.document.querySelector("#goal-frequency");
+    assert.equal(freqInput.value, "1");
+  });
+
+  test("handles very large habit_ids array", () => {
+    const dom = createGoalFormDom();
+    const state = {};
+    const goal = { id: 1, title: "Test", habit_ids: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] };
+
+    populateGoalForm(dom, goal, state);
+
+    assert.equal(state.goalHabitSelection.size, 10);
+  });
+
+  test("clears previous habit selection when editing different goal", () => {
+    const dom = createGoalFormDom();
+    const state = { goalHabitSelection: new Set([99, 100, 101]) };
+    const goal = { id: 2, title: "New Goal", habit_ids: [1] };
+
+    populateGoalForm(dom, goal, state);
+
+    assert.equal(state.goalHabitSelection.size, 1);
+    assert.ok(state.goalHabitSelection.has(1));
+    assert.ok(!state.goalHabitSelection.has(99));
+  });
+
+  test("handles empty title gracefully", () => {
+    const dom = createGoalFormDom();
+    const state = {};
+    const goal = { id: 1, title: "" };
+
+    populateGoalForm(dom, goal, state);
+
+    const titleInput = dom.window.document.querySelector("#goal-title");
+    assert.equal(titleInput.value, "");
+  });
+
+  test("handles whitespace-only quarter", () => {
+    const dom = createGoalFormDom();
+    const state = {};
+    const goal = { id: 1, title: "Test", quarter: "   " };
+
+    populateGoalForm(dom, goal, state);
+
+    const quarterInput = dom.window.document.querySelector("#goal-quarter");
+    assert.equal(quarterInput.value, "   ");
   });
 });
