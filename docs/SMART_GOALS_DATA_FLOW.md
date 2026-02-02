@@ -115,6 +115,53 @@ When adding a field to SmartGoal, update ALL of these:
 - [ ] `ui/smartGoalForm.test.mjs` - Add frontend tests if applicable
 - [ ] Rebuild Docker: `docker compose build --no-cache && docker compose up -d`
 
+## Behavior Specifications
+
+### Measure Type Toggle
+1. When "Frequency" selected:
+   - Show "Target count" input
+   - Hide "Target minutes" input
+   - Validation requires frequency >= 1
+
+2. When "Duration" selected:
+   - Show "Target minutes" input
+   - Hide "Target count" input
+   - Validation requires duration_minutes >= 1
+
+3. On form reset:
+   - Default to "Frequency" mode
+   - Reset visibility accordingly
+
+### Quarter Auto-Population
+1. When quarter field changes (e.g., "Q1 2026"):
+   - Parse quarter and year
+   - Calculate end of quarter date (Q1=Mar 31, Q2=Jun 30, Q3=Sep 30, Q4=Dec 31)
+   - If due_date is empty OR matches previous auto-calculated value: set due_date
+   - If due_date was manually changed: do not override
+
+### Form Submission
+1. Collect all field values
+2. Validate: title required, measure_type required, frequency >= 1 OR duration_minutes >= 1, quarter required
+3. Build payload with only the relevant measure field (frequency OR duration_minutes, not both)
+4. POST to /goals (create) or PUT to /goals/{id} (update)
+5. On success: close overlay, reset form, reload goals
+
+### Edit Mode
+1. Populate all fields from existing goal
+2. Set measure_type toggle based on goal.measure_type
+3. Show correct input (frequency or duration) based on toggle
+4. Populate due_date from goal.due_date
+
+## Testing Requirements
+
+Per TESTING_MANDATES.md:
+1. Toggle behavior: verify correct input visibility
+2. Quarter parsing: verify date calculation
+3. Auto-population: verify due_date defaults
+4. Form validation: verify error states
+5. Payload structure: verify only relevant measure field sent
+6. **Edit Mode**: verify `openGoalForEdit()` populates all fields from existing goal data
+
 ## Bug History
 
 **FIXED (2026-02-01)**: The following fields were missing from crud.py but have been added:
