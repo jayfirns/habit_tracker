@@ -81,7 +81,7 @@ index.html          Displays in form
 | `tests/test_goals.py` | Backend CRUD and API tests |
 | `tests/test_api.py` | General API tests |
 | `ui/smartGoalForm.test.mjs` | Frontend utility tests |
-| `ui/smartGoalEdit.test.mjs` | **TODO**: Frontend edit flow tests (openGoalForEdit) |
+| `ui/smartGoalEdit.test.mjs` | Frontend edit flow tests (openGoalForEdit) |
 
 ## Current Fields
 
