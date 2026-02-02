@@ -1162,7 +1162,10 @@ function renderGoals() {
     const editBtn = document.createElement("button");
     editBtn.className = "ghost small";
     editBtn.textContent = "Edit";
-    editBtn.addEventListener("click", () => openGoalForEdit(goal));
+    editBtn.addEventListener("click", () => {
+      console.log("[DEBUG] Edit button clicked for goal:", goal.id, goal.title);
+      openGoalForEdit(goal);
+    });
     const reflectBtn = document.createElement("button");
     reflectBtn.className = "ghost small";
     reflectBtn.textContent = "Reflect";
@@ -1181,6 +1184,9 @@ function renderGoals() {
 }
 
 function openGoalForEdit(goal) {
+  console.log("[DEBUG] openGoalForEdit called with:", JSON.stringify(goal, null, 2));
+  console.log("[DEBUG] goalOverlay element:", goalOverlay);
+  console.log("[DEBUG] goalTitleInput element:", goalTitleInput);
   state.editingGoalId = goal.id;
   if (goalTitleInput) goalTitleInput.value = goal.title || "";
   if (goalWhyInput) goalWhyInput.value = goal.why_this_matters || "";
@@ -1198,7 +1204,9 @@ function openGoalForEdit(goal) {
   const ids = goal.habit_ids || [];
   resetGoalHabitSelection(ids);
   setGoalFormError();
+  console.log("[DEBUG] About to call openOverlay, goalOverlay.hidden =", goalOverlay?.hidden);
   openOverlay(goalOverlay);
+  console.log("[DEBUG] After openOverlay, goalOverlay.hidden =", goalOverlay?.hidden);
 }
 
 function openReflectionForGoal(goal) {
