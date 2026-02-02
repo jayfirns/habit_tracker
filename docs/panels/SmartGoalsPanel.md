@@ -1,4 +1,10 @@
+---
+created: 2026-02-01T00:00
+updated: 2026-02-01T18:00
+---
 # SMART Goals Panel
+
+> **Authoritative architecture**: See [HABIT_ARCHITECTURE.md](../HABIT_ARCHITECTURE.md) for entity definitions and naming guidelines.
 
 ## Overview
 
@@ -126,3 +132,4 @@ Per TESTING_MANDATES.md:
 3. Auto-population: verify due_date defaults
 4. Form validation: verify error states
 5. Payload structure: verify only relevant measure field sent
+6. **Edit Mode**: verify `openGoalForEdit()` populates all fields from existing goal data

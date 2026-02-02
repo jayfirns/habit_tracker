@@ -1,4 +1,10 @@
+---
+created: 2026-02-01T00:00
+updated: 2026-02-01T18:00
+---
 # SMART Goals Data Flow
+
+> **Authoritative architecture**: See [HABIT_ARCHITECTURE.md](HABIT_ARCHITECTURE.md) for entity definitions and naming guidelines.
 
 ## Overview
 
@@ -75,6 +81,7 @@ index.html          Displays in form
 | `tests/test_goals.py` | Backend CRUD and API tests |
 | `tests/test_api.py` | General API tests |
 | `ui/smartGoalForm.test.mjs` | Frontend utility tests |
+| `ui/smartGoalEdit.test.mjs` | **TODO**: Frontend edit flow tests (openGoalForEdit) |
 
 ## Current Fields
 
