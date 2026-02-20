@@ -8,6 +8,11 @@ export function makeApi(baseUrl) {
       ...options,
     });
 
+    if (response.status === 401) {
+      window.location.href = '/login';
+      return;
+    }
+
     if (!response.ok) {
       const message = await response.text();
       throw new Error(message || `Request failed (${response.status})`);

@@ -18,3 +18,4 @@ backend/data/
 # Frontend dependencies
 backend/frontend/node_modules/
 backend/frontend/node_modules/.package-lock.json
+.env

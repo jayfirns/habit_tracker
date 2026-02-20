@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FocusOS Login</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #1a1a2e;
+            color: #e0e0e0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .login-box {
+            background: #16213e;
+            border: 1px solid #0f3460;
+            border-radius: 8px;
+            padding: 40px;
+            width: 360px;
+        }
+        .login-box h1 {
+            text-align: center;
+            color: #e94560;
+            font-size: 22px;
+            margin-bottom: 8px;
+        }
+        .login-box p {
+            text-align: center;
+            color: #8b949e;
+            font-size: 13px;
+            margin-bottom: 24px;
+        }
+        label {
+            display: block;
+            font-size: 13px;
+            color: #8b949e;
+            margin-bottom: 6px;
+        }
+        input[type="text"], input[type="password"] {
+            width: 100%;
+            background: #1a1a2e;
+            border: 1px solid #0f3460;
+            border-radius: 6px;
+            padding: 10px 14px;
+            color: #e0e0e0;
+            font-size: 14px;
+            outline: none;
+            margin-bottom: 16px;
+        }
+        input:focus { border-color: #e94560; }
+        button {
+            width: 100%;
+            background: #e94560;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            padding: 12px;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+        button:hover { background: #c73652; }
+        button:disabled { background: #333; color: #666; cursor: not-allowed; }
+        .error-msg {
+            background: #d32f2f;
+            color: #fff;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            margin-bottom: 16px;
+            display: none;
+        }
+        .pw-wrap { position: relative; display: block; }
+        .pw-toggle { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; font-size: 16px; opacity: .5; padding: 4px; line-height: 1; width: auto; }
+        .pw-toggle:hover { opacity: .8; background: none; }
+    </style>
+</head>
+<body>
+    <div class="login-box">
+        <h1>FocusOS</h1>
+        <p>Authentication required</p>
+        <div class="error-msg" id="error-msg"></div>
+        <form id="login-form" onsubmit="doLogin(event)">
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" autocomplete="username" required autofocus>
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" autocomplete="current-password" required>
+            <button type="submit" id="login-btn">Sign in</button>
+        </form>
+    </div>
+    <script>
+        async function doLogin(e) {
+            e.preventDefault();
+            const btn = document.getElementById('login-btn');
+            const errEl = document.getElementById('error-msg');
+            errEl.style.display = 'none';
+            btn.disabled = true;
+            btn.textContent = 'Signing in...';
+
+            try {
+                const res = await fetch('/auth/login', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        username: document.getElementById('username').value,
+                        password: document.getElementById('password').value
+                    })
+                });
+                const data = await res.json();
+                if (res.ok) {
+                    window.location.href = '/ui/';
+                } else {
+                    errEl.textContent = data.detail || 'Login failed';
+                    errEl.style.display = 'block';
+                }
+            } catch (err) {
+                errEl.textContent = 'Connection error';
+                errEl.style.display = 'block';
+            }
+            btn.disabled = false;
+            btn.textContent = 'Sign in';
+        }
+    </script>
+    <script>
+    document.querySelectorAll('input[type="password"]').forEach(function(inp){
+        var wrap=document.createElement('div');wrap.className='pw-wrap';
+        inp.parentNode.insertBefore(wrap,inp);wrap.appendChild(inp);
+        var btn=document.createElement('button');btn.type='button';btn.className='pw-toggle';
+        btn.setAttribute('tabindex','-1');
+        btn.innerHTML='&#128065;';
+        btn.addEventListener('click',function(){
+            if(inp.type==='password'){inp.type='text';btn.style.opacity='1'}
+            else{inp.type='password';btn.style.opacity='.5'}
+        });
+        wrap.appendChild(btn);
+    });
+    </script>
+</body>
+</html>

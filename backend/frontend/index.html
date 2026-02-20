@@ -29,6 +29,9 @@
                   <button class="ghost small" type="button" data-theme="cyberpunk">Cyberpunk</button>
                   <button class="ghost small" type="button" data-theme="enterprise">Enterprise</button>
                   <button class="ghost small" type="button" data-theme="terminal">Terminal</button>
+                <hr style="border:none;border-top:1px solid var(--border);margin:8px 0">
+                <button class="ghost small" type="button" onclick="document.getElementById('pw-modal').style.display='flex';document.getElementById('options-panel').hidden=true">Change Password</button>
+                <a class="ghost small" href="/auth/logout" style="display:block;text-decoration:none;text-align:left">Logout</a>
                 </div>
               </div>
             </div>
@@ -286,6 +289,8 @@
         </div>
         <button class="button ghost" id="open-reflection">Reflect</button>
         <a class="button" href="/docs" target="_blank" rel="noreferrer">API Docs</a>
+        <button class="button ghost" onclick="document.getElementById('pw-modal').style.display='flex'">Change Password</button>
+        <a class="button ghost" href="/auth/logout">Logout</a>
       </div>
     </section>
 
@@ -509,6 +514,52 @@
       </article>
     </template>
 
+
+    <style>.pw-field-modal{position:relative}.pw-field-modal .pw-eye{position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:18px;opacity:.4;padding:2px 4px;line-height:1;z-index:1}.pw-field-modal .pw-eye:hover{opacity:.7}</style>
+    <div id="pw-modal" style="position:fixed;inset:0;background:rgba(0,0,0,0.6);display:none;align-items:center;justify-content:center;z-index:9999">
+        <div style="background:#1a1a2e;border:1px solid #0f3460;border-radius:8px;padding:32px;width:340px">
+            <h3 style="color:#e94560;margin-bottom:16px;font-size:18px">Change Password</h3>
+            <div id="pw-msg" style="display:none;padding:8px 12px;border-radius:6px;font-size:13px;margin-bottom:12px"></div>
+            <div class="pw-field-modal" style="margin-bottom:12px">
+            <label style="display:block;font-size:13px;color:#8b949e;margin-bottom:4px">Current Password</label>
+            <input type="password" id="pw-current" style="width:100%;background:#16213e;border:1px solid #0f3460;border-radius:6px;padding:8px 36px 8px 12px;color:#e0e0e0;font-size:14px;outline:none">
+            <button type="button" class="pw-eye" tabindex="-1" onclick="var i=document.getElementById('pw-current');if(i.type==='password'){i.type='text';this.style.opacity='.9'}else{i.type='password';this.style.opacity='.4'}">&#128065;</button>
+            </div>
+            <div class="pw-field-modal" style="margin-bottom:12px">
+            <label style="display:block;font-size:13px;color:#8b949e;margin-bottom:4px">New Password</label>
+            <input type="password" id="pw-new" style="width:100%;background:#16213e;border:1px solid #0f3460;border-radius:6px;padding:8px 36px 8px 12px;color:#e0e0e0;font-size:14px;outline:none">
+            <button type="button" class="pw-eye" tabindex="-1" onclick="var i=document.getElementById('pw-new');if(i.type==='password'){i.type='text';this.style.opacity='.9'}else{i.type='password';this.style.opacity='.4'}">&#128065;</button>
+            </div>
+            <div class="pw-field-modal" style="margin-bottom:16px">
+            <label style="display:block;font-size:13px;color:#8b949e;margin-bottom:4px">Confirm New Password</label>
+            <input type="password" id="pw-confirm" style="width:100%;background:#16213e;border:1px solid #0f3460;border-radius:6px;padding:8px 36px 8px 12px;color:#e0e0e0;font-size:14px;outline:none">
+            <button type="button" class="pw-eye" tabindex="-1" onclick="var i=document.getElementById('pw-confirm');if(i.type==='password'){i.type='text';this.style.opacity='.9'}else{i.type='password';this.style.opacity='.4'}">&#128065;</button>
+            </div>
+            <div style="display:flex;gap:8px">
+                <button onclick="submitPwChange()" style="flex:1;background:#e94560;color:#fff;border:none;border-radius:6px;padding:10px;font-size:14px;cursor:pointer">Update</button>
+                <button onclick="document.getElementById('pw-modal').style.display='none'" style="flex:1;background:#16213e;color:#e0e0e0;border:1px solid #0f3460;border-radius:6px;padding:10px;font-size:14px;cursor:pointer">Cancel</button>
+            </div>
+        </div>
+    </div>
+    <script>
+    async function submitPwChange() {
+        const msg = document.getElementById('pw-msg');
+        const cur = document.getElementById('pw-current').value;
+        const np = document.getElementById('pw-new').value;
+        const conf = document.getElementById('pw-confirm').value;
+        msg.style.display = 'none';
+        if (!cur || !np) { msg.textContent = 'All fields required'; msg.style.background = '#d32f2f'; msg.style.color = '#fff'; msg.style.display = 'block'; return; }
+        if (np !== conf) { msg.textContent = 'Passwords do not match'; msg.style.background = '#d32f2f'; msg.style.color = '#fff'; msg.style.display = 'block'; return; }
+        try {
+            const res = await fetch('/auth/change-password', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({current_password: cur, new_password: np}) });
+            const data = await res.json();
+            if (res.ok) { msg.textContent = 'Password changed!'; msg.style.background = '#2e7d32'; msg.style.color = '#fff'; msg.style.display = 'block'; document.getElementById('pw-current').value = ''; document.getElementById('pw-new').value = ''; document.getElementById('pw-confirm').value = ''; setTimeout(function(){ document.getElementById('pw-modal').style.display='none'; msg.style.display='none'; }, 1500); }
+            else { msg.textContent = data.detail || 'Failed'; msg.style.background = '#d32f2f'; msg.style.color = '#fff'; msg.style.display = 'block'; }
+        } catch(e) { msg.textContent = 'Connection error'; msg.style.background = '#d32f2f'; msg.style.color = '#fff'; msg.style.display = 'block'; }
+    }
+    </script>
+
     <script src="app.js" type="module"></script>
-  </body>
+  
+</body>
 </html>
