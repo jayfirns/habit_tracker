@@ -77,6 +77,8 @@ async def auth_login(request: Request, creds: LoginRequest):
             request.session['user'] = creds.username
             return {"status": "ok"}
 
+    client_ip = request.headers.get("X-Forwarded-For", client_ip)
+    logger.warning("AUTH_FAILURE: user=%s src=%s service=habit-tracker", creds.username, client_ip)
     raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
                         detail="Invalid credentials")
 
